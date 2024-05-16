@@ -1,23 +1,23 @@
 import Tabs from '../components/Tabs.jsx';
 import RelatedList from '../components/RelatedList.jsx';
 
-export default function ProfileRelatedDataTabs({ profile, personId, selectedTab, person, className }) {
+export default function ProfileRelatedDataTabs({ profileId, selectedTab, personId, className, items }) {
 
   function getHref(tabName) {
-    return `/people/${personId}/profiles/${profile.key[2]}/${tabName}`;
+    return `/people/${personId}/profiles/${profileId}/${tabName}`;
   }
 
   function getRelatedList() {
 
     switch (selectedTab) {
       case 'Email Addresses':
-        return <RelatedList items={person.value.emailAddresses} display={emailAddress => emailAddress.value} borderless />
+        return <RelatedList items={items} display={emailAddress => emailAddress.value} borderless />
         
       case 'Phone Numbers':
-        return <RelatedList items={person.value.phoneNumbers} display={phoneNumber => phoneNumber.value} borderless />
+        return <RelatedList items={items} display={phoneNumber => phoneNumber.value} borderless />
       
       case 'Preferences':
-        return <RelatedList items={profile.value.preferences} display={preference => preference.value} borderless />      
+        return <RelatedList items={items} display={preference => preference.value} borderless />      
     }
 
   }

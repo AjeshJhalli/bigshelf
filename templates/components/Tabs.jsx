@@ -7,7 +7,7 @@ export default function Tabs({ id, title, tabs, selectedTab, children, className
       <ul className='flex shadow text-blue-500'>
         {tabs.map((tab) => (
           tab.name === selectedTab ?
-            <li className='max-w-72 text-center font-semibold px-5 py-1 cursor-pointer' hx-get={tab.href} hx-target={`#${id}`} hx-swap='outerHTML'>
+            <li className='max-w-72 text-center font-semibold px-5 py-1 cursor-pointer'>
               {tab.name}
             </li>
           :

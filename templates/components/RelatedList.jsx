@@ -1,6 +1,6 @@
 import classNames from 'https://deno.land/x/classnames@0.1.1/index.ts';
 
-export default function RelatedList({ title, items, display, borderless }) {
+export default function RelatedList({ title, items, display, borderless, editable, deletable, extraButtons, editFormHref }) {
   return (
     <section className={classNames('bg-white', {'shadow p-2': !borderless})}>
       <h3 className='font-semibold text-gray-400 py-1 px-3'>{title}</h3>
@@ -19,10 +19,14 @@ export default function RelatedList({ title, items, display, borderless }) {
                   </span>
                   }
                 <div className='flex gap-x-5 px-5 text-white'>
-                  <button className='text-green-400 material-symbols-outlined'>
+                  {extraButtons}
+                  <button
+                    className='bg-green-400 text-white flex gap-x-3 items-center w-7 h-7 justify-center rounded material-symbols-outlined'
+                    hx-get={`${editFormHref}/${item.id}`} hx-target='body' hx-swap='beforeend'
+                  >
                     edit
                   </button>
-                  <button className='text-red-400 material-symbols-outlined'>
+                  <button className='bg-red-400 text-white flex gap-x-3 items-center w-7 h-7 justify-center rounded material-symbols-outlined'>
                     delete
                   </button>
                 </div>

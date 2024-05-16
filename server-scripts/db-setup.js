@@ -17,6 +17,7 @@ const person = {
   ],
   emailAddresses: [
     {
+      id: 1,
       default: true,
       value: "jenniekim@gmail.com",
       linkedProfiles: [1, 2],
@@ -24,6 +25,7 @@ const person = {
   ],
   phoneNumbers: [
     {
+      id: 1,
       default: true,
       value: "+1 3343 458943",
       linkedProfiles: [2, 3, 4]

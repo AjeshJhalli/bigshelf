@@ -9,6 +9,7 @@ export default function Layout({ children }) {
         />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
         <script src="https://unpkg.com/htmx.org@1.9.12" />
+        <script src='/public/main.js' />
         <meta charSet='utf-8' />
       </head>
       <body className='flex flex-col h-screen bg-blue-50'>
