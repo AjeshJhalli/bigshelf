@@ -5,7 +5,7 @@ export default function PersonDataCard({ person }) {
         <h2 className="card-title">
           {person.firstName + " " + person.lastName}
         </h2>
-        <div class="text-sm opacity-50">Software Engineer</div>
+        <div class="text-sm opacity-50">{person.jobTitle}</div>
         <div className="overflow-x-auto">
           <table className="table table-sm">
             <tbody>

@@ -12,7 +12,7 @@ export default function Layout({ children }) {
         <script src='/public/main.js' />
         <meta charSet='utf-8' />
       </head>
-      <body className='flex flex-col h-screen bg-base-300'>
+      <body className='flex flex-col'>
         <Navbar />
         <main className='flex flex-col flex-grow p-3'>
           {children}
