@@ -10,13 +10,21 @@ export default function Person({ person }) {
 
   return (
     <>
-      <h2 className="font-semibold text-blue-500 px-3 flex-none">
-        <a href='/people'>People {'>'}</a> {person.name_first + ' ' + person.name_last}
+      <h2 className="text-sm breadcrumbs">
+        <ul>
+          <li>
+            <a href='/people'>People</a>
+          </li>
+          <li>
+            <a href={`/people/${person.id}`}>{person.name_first + ' ' + person.name_last}</a>
+          </li>
+        </ul>
+        
+        
       </h2>
-      <div className='grid grid-cols-2 grid-rows-3 h-full gap-3 border-gray-300 p-3'>
+      <div className='grid grid-cols-2 grid-rows-2 items-start gap-3 border-gray-300 p-3'>
         <PersonDataCard person={person} />
-        <PersonRelatedDataTabs person={person} selectedTab='Email Addresses' />
-        {
+        {/* {
           (person.profiles && person.profiles.length > 0) ?      
           <ProfileTabs
             person={person}
@@ -27,7 +35,7 @@ export default function Person({ person }) {
           />
           :
           'This person has no profiles'
-        }
+        } */}
       </div>
     </>
   );

@@ -31,7 +31,6 @@ export default function ProfileRelatedDataTabs({ profileId, selectedTab, personI
       ]}
       id='profile-related-data-tabs'
       selectedTab={selectedTab}
-      className={className}
     >
       {getRelatedList()}
     </Tabs>

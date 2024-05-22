@@ -4,11 +4,12 @@ import { Pool } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
 
 import Person from '../templates/person/Person.jsx';
-import PersonRelatedDataTabs from '../templates/person/PersonRelatedDataTabs.jsx';
 import PersonDataCard from '../templates/person/PersonDataCard.jsx';
 import routerProfile from './routerProfile.jsx';
 import r from '../utils/r.jsx';
 import getPerson from './getPerson.js';
+import PersonTabContent from '../templates/person/PersonTabContent.jsx';
+import PersonForm from '../templates/person/PersonForm.jsx';
 
 const env = await load();
 const databaseUrl = env["DATABASE_URL"];
@@ -47,52 +48,35 @@ routerPerson
 
     const data = await context.request.body.form();
 
-    const name_first = data.get('First Name');
-    const name_last = data.get('Last Name');
-    const gender = data.get('Gender');
-    let dob = data.get('DOB');
-
-    console.log(dob);
+    const firstName = data.get('firstName');
+    const lastName = data.get('lastName');
+    const jobTitle = data.get('jobTitle');
+    let dob = new Date(data.get('dob'));
+    const gender = data.get('gender');
+    
 
     if (!dob) {
-      dob = null;
+      dob = new Date();
     }
+
+    console.log(dob)
 
     const personUpdateResponse = await connection.queryArray(`
       UPDATE
         person
       SET
-        person_name_first = $name_first,
-        person_name_last = $name_last,
+        person_name_first = $firstName,
+        person_name_last = $lastName,
+        person_job_title = $jobTitle,
         person_gender = $gender,
         person_dob = $dob
       WHERE
         z_pk_person = $personId
       `,
-      { personId, name_first, name_last, gender, dob }
+      { personId, firstName, lastName, gender, dob, jobTitle }
     );
 
-    const personResponse = await connection.queryArray(`
-      SELECT
-        person_name_first,
-        person_name_last,
-        person_gender,
-        person_dob
-      FROM
-        person
-      WHERE
-        z_pk_person = $personId
-      `,
-      { personId }
-    );
-
-    const person = {
-      id: personId,
-      name_first: personResponse.rows[0][0],
-      name_last: personResponse.rows[0][1],
-      gender: personResponse.rows[0][2],
-      dob: personResponse.rows[0][3].toISOString().substring(0, 10)
-    };
+    const person = await getPerson(connection, personId);
 
     context.response.body = render(<PersonDataCard person={person} />)
     
@@ -100,10 +84,18 @@ routerPerson
   .get('/cancel-edit', async (context) => {
 
     const personId = parseInt(context.params.personId);
-    const person = await db.get(['person', personId]);
+    const person = await getPerson(connection, personId);
 
     context.response.body = render(<PersonDataCard person={person} />);
-    
+
+  })
+  .get('/edit-form', async (context) => {
+
+    const personId = parseInt(context.params.personId);
+    const person = await getPerson(connection, personId);
+
+    context.response.body = render(<PersonForm person={person} />);
+
   })
   .get('/:relatedDataTab', async (context) => {
 
@@ -114,11 +106,8 @@ routerPerson
 
     switch (relatedDataTab) {
       case 'email-addresses':
-        context.response.body = render(<PersonRelatedDataTabs person={person} selectedTab='Email Addresses' />);
-        break;
-
       case 'phone-numbers':
-        context.response.body = render(<PersonRelatedDataTabs person={person} selectedTab='Phone Numbers' />);
+        context.response.body = render(<PersonTabContent person={person} selectedTab={relatedDataTab} />);
         break;
       
       default:
@@ -126,7 +115,8 @@ routerPerson
         context.response.status = 500;
     }
 
-  })
+  });
+
 
 routerPerson.use('/profiles/:profileId', routerProfile.routes());
 

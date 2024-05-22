@@ -4,21 +4,18 @@ export default function DataCard({ title, fields, borderless, className, editHre
   return (
     <form
       id={id}
-      className={classNames('p-3 bg-white shadow flex flex-col justify-between h-full',
-        className,
-        { 'shadow': !borderless }
-      )}
+      className='card w-96 bg-base-100 shadow-xl'
       hx-post={editHref}
       hx-swap='outerHTML'
     >
-      {title && <h3 className='font-semibold bg-cyan-300'>{title}</h3>}
-      <div className='grid grid-cols-2 gap-y-2'>
+      <div className='card-body'>
+        {title && <h3 className='card-title'>{title}</h3>}
         {fields ? 
           fields.map(field =>           
             <>
               <span className='font-semibold'>{field.name}</span>
               <input
-                className='border border-gray-300 rounded px-2 h-7'
+                className='input input-bordered w-full max-w-xs'
                 name={field.name}
                 type={field.type === 'dropdown' ? 'text' : field.type}
                 value={field.value}
@@ -31,16 +28,16 @@ export default function DataCard({ title, fields, borderless, className, editHre
           'No data to display'
         }
       </div>
-      <div className='flex justify-end text-white gap-x-2'>
+      <div className='card-actions'>
         <button
           type='button'
-          className={`${id}-button hidden bg-red-400 rounded w-20 px-2`}
+          className={``}
           hx-get={cancelHref}
           hx-target={`#${id}`}
         >
           Cancel
         </button>
-        <button type='submit' className={`${id}-button hidden bg-green-400 rounded w-20 px-2`}>
+        <button type='submit'>
           Save
         </button>
       </div>

@@ -1,34 +1,42 @@
-import Tabs from '../components/Tabs.jsx';
-import RelatedList from '../components/RelatedList.jsx';
+import PersonTabContent from './PersonTabContent.jsx';
 
-export default function PersonRelatedDataTabs({ selectedTab, person, className }) {
-
+export default function PersonRelatedDataTabs(
+  { selectedTab, person },
+) {
   function getHref(tabName) {
     return `/people/${person.id}/${tabName}`;
   }
 
-  function getRelatedList() {
-
-    switch (selectedTab) {
-      case 'Email Addresses':
-        return <RelatedList items={person.emailAddresses} display={emailAddress => emailAddress.value} borderless />
-      case 'Phone Numbers':
-        return <RelatedList items={person.phoneNumbers} display={phoneNumber => phoneNumber.value} borderless />
-    }
-
-  }
-
   return (
-    <Tabs
-      tabs={[
-        { name: 'Email Addresses', href: getHref('email-addresses') },
-        { name: 'Phone Numbers', href: getHref('phone-numbers') }
-      ]}
-      id='person-related-data-tabs'
-      selectedTab={selectedTab}
-      className={className}
+    <section
+      className="tabs tabs-lifted"
+      id="person-related-data-tabs"
+      role="tablist"
     >
-      {getRelatedList()}
-    </Tabs>
+      {[{ displayName: "Email Addresses", name: 'email-addresses', href: getHref("email-addresses") }, {
+        displayName: "Phone Numbers", name: 'phone-numbers',
+        href: getHref("phone-numbers"),
+      }].map((tab, index) => (
+        <>
+          <input
+            type="radio"
+            role="tab"
+            className="tab"
+            checked={tab.name === selectedTab}
+            name={`person-tabs-${person.id}`}
+            aria-label={tab.displayName}
+            hx-get={tab.href}
+            hx-target='.person-tabs-content'
+            hx-swap="innerHTML"
+          />
+          <div
+            role="tabpanel"
+            className="person-tabs-content tab-content bg-base-100 border-base-300 rounded-box p-6"
+          >
+            {tab.name === selectedTab && <PersonTabContent person={person} selectedTab={selectedTab} />}
+          </div>
+        </>
+      ))}
+    </section>
   );
 }
