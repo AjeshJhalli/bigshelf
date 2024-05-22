@@ -3,7 +3,7 @@ export default function PersonDataCard({ person }) {
     <div id="person-data-card" className="card bg-base-100 shadow-xl">
       <div className="card-body">
         <h2 className="card-title">
-          {person.name_first + " " + person.name_last}
+          {person.firstName + " " + person.lastName}
         </h2>
         <div class="text-sm opacity-50">Software Engineer</div>
         <div className="overflow-x-auto">
@@ -15,11 +15,11 @@ export default function PersonDataCard({ person }) {
               </tr>
               <tr>
                 <th>Full Name</th>
-                <td>{person.name_first + " " + person.name_last}</td>
+                <td>{person.firstName + " " + person.lastName}</td>
               </tr>
               <tr>
                 <th>Job Title</th>
-                <td>{person.job_title}</td>
+                <td>{person.jobTitle}</td>
               </tr>
               <tr>
                 <th>DOB</th>
@@ -87,12 +87,5 @@ export default function PersonDataCard({ person }) {
         </div>
       </div>
     </div>
-    // <DataCard
-    //   id='person-data-card'
-    //   title={person.name_first + ' ' + person.name_last}
-    //   fields={personFields}
-    //   editHref={`/people/${person.id}/edit`}
-    //   cancelHref={`/people/${person.id}/cancel-edit`}
-    // />
   );
 }

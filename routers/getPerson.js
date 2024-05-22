@@ -54,11 +54,11 @@ export default async function getPerson(connection, personId) {
 
   return {
     id: personId,
-    name_first: personResponse.rows[0][0],
-    name_last: personResponse.rows[0][1],
+    firstName: personResponse.rows[0][0],
+    lastName: personResponse.rows[0][1],
     gender: personResponse.rows[0][2],
     dob: personResponse.rows[0][3]?.toISOString().substring(0, 10),
-    job_title: personResponse.rows[0][4],
+    jobTitle: personResponse.rows[0][4],
     profiles: profilesResponse.rows.map(([ id, linkedEmailAddresses, name, ff5 ]) => ({ id, linkedEmailAddresses, name, ff5 })),
     emailAddresses: emailAddressesResponse.rows.map(([ id, value ]) => ({ id, value }) ),
     phoneNumbers: phoneNumbersResponse.rows.map(([ value ]) => ({ value }) )

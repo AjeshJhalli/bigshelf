@@ -16,7 +16,7 @@ export default function Person({ person }) {
             <a href='/people'>People</a>
           </li>
           <li>
-            <a href={`/people/${person.id}`}>{person.name_first + ' ' + person.name_last}</a>
+            <a href={`/people/${person.id}`}>{person.firstName + ' ' + person.lastName}</a>
           </li>
         </ul>
         

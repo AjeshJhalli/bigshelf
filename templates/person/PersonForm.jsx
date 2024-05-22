@@ -4,7 +4,7 @@ export default function PersonForm({ person }) {
       <div className="card-body flex">
         <h2 className="card-title">Person Edit</h2>
         <div class="text-sm opacity-50">
-          {person.name_first} {person.name_last}
+          {person.firstName} {person.lastName}
         </div>
         <div className="form-control flex flex-col gap-y-1 justify-start items-start">
           <label class="form-control w-full max-w-xs">
@@ -16,7 +16,7 @@ export default function PersonForm({ person }) {
               placeholder="First Name"
               name="firstName"
               className="input input-sm input-bordered w-full max-w-xs"
-              value={person.name_first}
+              value={person.firstName}
             />
           </label>
           <label class="form-control w-full max-w-xs">
@@ -28,7 +28,7 @@ export default function PersonForm({ person }) {
               placeholder="Last Name"
               name="lastName"
               className="input input-sm input-bordered w-full max-w-xs"
-              value={person.name_last}
+              value={person.lastName}
             />
           </label>
           <label class="form-control w-full max-w-xs">
@@ -40,7 +40,7 @@ export default function PersonForm({ person }) {
               placeholder="Job Title"
               name="jobTitle"
               className="input input-sm input-bordered w-full max-w-xs"
-              value={person.job_title}
+              value={person.jobTitle}
             />
           </label>
           <label class="form-control w-full max-w-xs">
