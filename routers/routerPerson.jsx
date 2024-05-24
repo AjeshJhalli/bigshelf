@@ -16,8 +16,6 @@ const databaseUrl = env["DATABASE_URL"];
 const pool = new Pool(databaseUrl, 3, true);
 const connection = await pool.connect();
 
-const db = await Deno.openKv();
-
 const routerPerson = new Router();
 
 routerPerson
@@ -42,7 +40,7 @@ routerPerson
     }
 
   })
-  .post('/edit', async (context) => {
+  .post('/', async (context) => {
 
     const personId = parseInt(context.params.personId);
 
@@ -78,7 +76,7 @@ routerPerson
 
     const person = await getPerson(connection, personId);
 
-    context.response.body = render(<PersonDataCard person={person} />)
+    context.response.body = r(<Person person={person} />)
     
   })
   .get('/cancel-edit', async (context) => {

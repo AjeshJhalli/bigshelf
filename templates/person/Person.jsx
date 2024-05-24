@@ -1,12 +1,6 @@
 import PersonDataCard from "./PersonDataCard.jsx";
-import PersonRelatedDataTabs from "./PersonRelatedDataTabs.jsx";
-import ProfileTabs from './ProfileTabs.jsx';
 
 export default function Person({ person }) {
-
-
-  const profileEmailAddresses = person.emailAddresses
-    .filter(({ id }) => person.profiles[0].linkedEmailAddresses.includes(id));
 
   return (
     <>
@@ -19,8 +13,6 @@ export default function Person({ person }) {
             <a href={`/people/${person.id}`}>{person.firstName + ' ' + person.lastName}</a>
           </li>
         </ul>
-        
-        
       </h2>
       <div className='grid grid-cols-2 grid-rows-2 items-start gap-3 border-gray-300 p-3'>
         <PersonDataCard person={person} />

@@ -22,16 +22,7 @@ export default function Navbar() {
           <h1>Bigshelf</h1>
         </a>
       </div>
-      <div class="navbar-center">
-        <div class="form-control">
-          <input
-            type="text"
-            placeholder="Search"
-            class="input input-bordered w-24 md:w-auto"
-          />
-        </div>
-      </div>
-      <div class="navbar-end">
+      <div class="navbar-end flex gap-x-6 px-6 items-center">
         <button class="btn btn-ghost btn-circle">
           <div class="indicator">
             <svg
