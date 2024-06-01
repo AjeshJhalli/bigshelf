@@ -1,18 +1,14 @@
 export default function People({ people }) {
   return (
     <>
-      <h2 className="text-sm breadcrumbs">
-        <ul>
-          <li>
-            <a href="/people">People</a>
-          </li>
-        </ul>
-      </h2>
-      <div className="card bg-base-100 shadow-lg">
+      <div className="card bg-base-100 shadow-lg flex flex-grow">
         <div className="card-body">
-          <div className="card-actions">
-            <a className="btn btn-sm" href='/people/new'>New Person</a>
-          </div>
+          <h2 className="card-title flex justify-between">
+            <span>People</span>
+            <div className="card-actions">
+              <a className="btn btn-sm" href="/people/new">New Person</a>
+            </div>
+          </h2>
           <div className="overflow-x-auto">
             <table className="table">
               {/* head */}

@@ -57,11 +57,17 @@ routerPeople
           $gender,
           $dob
         )
+      RETURNING
+        z_pk_person
       `,
       { firstName, lastName, gender, dob, jobTitle }
     );
 
-    context.response.redirect('/people');
+    console.log(personCreateResponse);
+
+    const personId = personCreateResponse.rows[0][0];
+
+    context.response.redirect(`/people/${personId}`);
   });
 
 routerPeople.use("/:personId", routerPerson.routes());
