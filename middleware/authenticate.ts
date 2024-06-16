@@ -1,15 +1,13 @@
 import { Middleware } from "https://deno.land/x/oak/mod.ts";
 import { decode } from "https://deno.land/x/djwt/mod.ts";
-import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
 
-const env = await load();
 const kv = await Deno.openKv();
 
-const tenant = env["TENANT_NAME"];
-const clientId = env["APP_CLIENT_ID"];
-const clientSecret = env["APP_CLIENT_SECRET"];
-const policy = env["POLICY"];
-const redirectUri = env["APP_REDIRECT_URI"];
+const tenant = Deno.env.get("TENANT_NAME");
+const clientId = Deno.env.get("APP_CLIENT_ID");
+const clientSecret = Deno.env.get("APP_CLIENT_SECRET");
+const policy = Deno.env.get("POLICY");
+const redirectUri = Deno.env.get("APP_REDIRECT_URI");
 const scope = "openid offline_access";
 
 // Middleware to authenticate users with Azure B2C
