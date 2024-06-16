@@ -3,13 +3,10 @@ import { Router } from 'jsr:@oak/oak/router';
 import { Pool } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
 
-import Person from '../templates/person/Person.jsx';
-import PersonDataCard from '../templates/person/PersonDataCard.jsx';
-import routerProfile from './routerProfile.jsx';
+import Person from '../pages/person/Person.tsx';
 import r from '../utils/r.jsx';
-import getPerson from './getPerson.js';
-import PersonTabContent from '../templates/person/PersonTabContent.jsx';
-import PersonForm from '../templates/person/PersonForm.jsx';
+import getPerson from './getPerson.ts';
+import PersonForm from '../pages/person/PersonForm.jsx';
 
 const env = await load();
 const databaseUrl = env["DATABASE_URL"];
@@ -59,7 +56,7 @@ routerPerson
 
     console.log(dob)
 
-    const personUpdateResponse = await connection.queryArray(`
+    await connection.queryArray(`
       UPDATE
         person
       SET
@@ -79,43 +76,19 @@ routerPerson
     context.response.body = r(<Person person={person} />)
     
   })
-  .get('/cancel-edit', async (context) => {
-
-    const personId = parseInt(context.params.personId);
-    const person = await getPerson(connection, personId);
-
-    context.response.body = render(<PersonDataCard person={person} />);
-
-  })
   .get('/edit-form', async (context) => {
+
+    if (typeof context.params.personId !== "string") {
+      context.response.body = "Person not found";
+      context.response.status = 404;
+      return;
+    }
 
     const personId = parseInt(context.params.personId);
     const person = await getPerson(connection, personId);
 
     context.response.body = render(<PersonForm person={person} />);
 
-  })
-  .get('/:relatedDataTab', async (context) => {
-
-    const personId = parseInt(context.params.personId)
-    const relatedDataTab = context.params.relatedDataTab;
-
-    const person = await getPerson(connection, personId);
-
-    switch (relatedDataTab) {
-      case 'email-addresses':
-      case 'phone-numbers':
-        context.response.body = render(<PersonTabContent person={person} selectedTab={relatedDataTab} />);
-        break;
-      
-      default:
-        context.response.body = 'An unexpected error has occurred';
-        context.response.status = 500;
-    }
-
   });
-
-
-routerPerson.use('/profiles/:profileId', routerProfile.routes());
 
 export default routerPerson;

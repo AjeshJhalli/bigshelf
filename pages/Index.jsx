@@ -9,7 +9,7 @@ export default function Index() {
       </p>
       <ul className='list-disc list-inside'>
         <li>
-          <a className='text-blue-500 underline' href='/people/1'>People</a>
+          <a className='text-blue-500 underline' href='/people'>People</a>
         </li>
       </ul>
     </>

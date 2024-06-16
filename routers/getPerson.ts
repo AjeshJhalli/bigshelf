@@ -1,4 +1,6 @@
-export default async function getPerson(connection, personId) {
+import { PoolClient } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
+
+export default async function getPerson(connection: PoolClient, personId: number) {
 
   const personResponse = await connection.queryArray(`
     SELECT

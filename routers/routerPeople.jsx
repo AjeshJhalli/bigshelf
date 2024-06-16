@@ -2,11 +2,11 @@ import { Router } from "jsr:@oak/oak/router";
 import { Pool } from "https://deno.land/x/postgres@v0.17.0/mod.ts";
 import { load } from "https://deno.land/std@0.224.0/dotenv/mod.ts";
 
-import People from "../templates/People.jsx";
+import People from "../pages/People.jsx";
 import r from "../utils/r.jsx";
-import routerPerson from "./routerPerson.jsx";
-import getPeople from "./getPeople.js";
-import PersonForm from "../templates/person/PersonForm.jsx";
+import routerPerson from "./routerPerson.tsx";
+import getPeople from "./getPeople.ts";
+import PersonForm from "../pages/person/PersonForm.jsx";
 
 const env = await load();
 const databaseUrl = env["DATABASE_URL"];
@@ -62,8 +62,6 @@ routerPeople
       `,
       { firstName, lastName, gender, dob, jobTitle }
     );
-
-    console.log(personCreateResponse);
 
     const personId = personCreateResponse.rows[0][0];
 

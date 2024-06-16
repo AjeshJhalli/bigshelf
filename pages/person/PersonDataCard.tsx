@@ -1,4 +1,6 @@
-export default function PersonDataCard({ person }) {
+import { TypePerson } from "../../types/types.ts";
+
+export default function PersonDataCard({ person }: { person: TypePerson }) {
   return (
     <div id="person-data-card" className="card bg-base-100 shadow-xl">
       <div className="card-body">
@@ -37,43 +39,6 @@ export default function PersonDataCard({ person }) {
               </tr>
             </tbody>
           </table>
-          <div className="divider" />
-          <div className="flex gap-x-6 items-start">
-            <table className="table table-sm">
-              <thead>
-                <tr>
-                  <th>
-                    Email Addresses
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {person.emailAddresses.map((emailAddress) => (
-                  <tr>
-                    <td>
-                      {emailAddress.value}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <table className="table table-sm">
-              <thead>
-                <tr>
-                  <th>Phone Numbers</th>
-                </tr>
-              </thead>
-              <tbody>
-                {person.phoneNumbers.map((phoneNumbers) => (
-                  <tr>
-                    <td>
-                      {phoneNumbers.value}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </div>
         <div className="card-actions justify-end">
           <button
