@@ -9,9 +9,10 @@ import getPerson from "./getPerson.ts";
 import PersonForm from "../pages/person/PersonForm.jsx";
 
 const env = await load();
-const databaseUrl = Deno.env.get("DATABASE_URL");
-const pool = new Pool(databaseUrl, 3, true);
-const connection = await pool.connect();
+// const databaseUrl = Deno.env.get("DATABASE_URL");
+// console.log(databaseUrl)
+// const pool = new Pool(databaseUrl, 2, true);
+// const connection = await pool.connect();
 
 const routerPerson = new Router();
 

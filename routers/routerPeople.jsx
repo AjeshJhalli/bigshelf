@@ -8,10 +8,10 @@ import routerPerson from "./routerPerson.tsx";
 import getPeople from "./getPeople.ts";
 import PersonForm from "../pages/person/PersonForm.jsx";
 
-const env = await load();
-const databaseUrl = env["DATABASE_URL"];
-const pool = new Pool(databaseUrl, 3, true);
-const connection = await pool.connect();
+// const env = await load();
+// const databaseUrl = Deno.env.get("DATABASE_URL");
+// const pool = new Pool(databaseUrl, 3, true);
+// const connection = await pool.connect();
 
 const routerPeople = new Router();
 
