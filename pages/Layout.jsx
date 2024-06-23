@@ -2,7 +2,7 @@ import Navbar from "../components/Navbar.jsx";
 
 export default function Layout({ children }) {
   return (
-    <html data-theme="light">
+    <html data-theme="dark">
       <head>
         <title>Bigshelf</title>
         <link

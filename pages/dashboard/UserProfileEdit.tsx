@@ -1,7 +1,11 @@
 import EditForm, { FormField } from "../../components/EditForm.tsx";
-import { User }from "../../types/types.ts";
+import { User } from "../../types/types.ts";
+import decodeDate from "../../utils/decodeDate.ts";
 
 export default function UserProfileEdit({ user }: { user: User }) {
+
+  const { year, month, day } = decodeDate(user.value.dob || "");
+
   const fields: Array<FormField> = [
     {
       type: "text",
@@ -58,9 +62,9 @@ export default function UserProfileEdit({ user }: { user: User }) {
       displayName: "DOB",
       value: "",
       options: [],
-      day: "12",
-      month: "November",
-      year: "2002"
+      day,
+      month,
+      year
     }
   ];
 
