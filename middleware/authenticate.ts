@@ -10,12 +10,6 @@ const policy = Deno.env.get("POLICY");
 const redirectUri = Deno.env.get("APP_REDIRECT_URI");
 const scope = "openid offline_access";
 
-console.log(`the tenant is ${tenant}`);
-console.log(`the client id is ${clientId}`);
-console.log(`the client secret is ${clientSecret}`);
-console.log(`the policy is ${policy}`);
-console.log(`the redirect ${redirectUri}`);
-
 // Middleware to authenticate users with Azure B2C
 const azureB2CAuth: Middleware = async (ctx, next) => {
   const token = await ctx.cookies.get("id_token");
@@ -41,8 +35,6 @@ const azureB2CAuth: Middleware = async (ctx, next) => {
         throw new Error("Refresh token not found");
       }
 
-      console.log(policy);
-
       const tokenResponse = await fetch(
         `https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${policy}/oauth2/v2.0/token`,
         {
@@ -56,7 +48,7 @@ const azureB2CAuth: Middleware = async (ctx, next) => {
             refresh_token: refreshToken,
             grant_type: "refresh_token",
             client_secret: clientSecret,
-          }),
+          } as Record<string, string>),
         },
       );
 
@@ -71,9 +63,7 @@ const azureB2CAuth: Middleware = async (ctx, next) => {
       });
 
       ctx.state.user = await setUser(tokenData.id_token);
-
     } else {
-      console.log('hola')
       ctx.state.user = await setUser(token);
     }
 
@@ -109,7 +99,7 @@ const handleAzureB2CCallback: Middleware = async (ctx) => {
         redirect_uri: redirectUri,
         grant_type: "authorization_code",
         client_secret: clientSecret,
-      }.toString()),
+      } as Record<string, string>),
     },
   );
 
@@ -142,7 +132,7 @@ async function setUser(idToken: string) {
   if (!user) {
     await kv.set(["user", oid], {
       firstName,
-      lastName,
+      lastName
     });
     user = await kv.get(["user", oid]);
   }

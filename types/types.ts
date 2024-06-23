@@ -1,5 +1,3 @@
-
-
 export type TypePerson = {
   id: number;
   firstName: string;
@@ -9,13 +7,13 @@ export type TypePerson = {
   dob: string;
 };
 
-const testPerson: TypePerson = {
-  id: 1,
-  firstName: "Ajesh",
-  lastName: "Jhalli",
-  jobTitle: "Software Engineer",
-  gender: "Male",
-  dob: "2002-11-12"
+export type User = {
+  key: ["user", string];
+  value: {
+    firstName: string,
+    lastName: string,
+    jobTitle: string | undefined;
+    gender: string | undefined;
+    dob: string | undefined;
+  }
 };
-
-console.log(testPerson);

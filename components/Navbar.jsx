@@ -19,7 +19,7 @@ export default function Navbar() {
             </path>
           </svg>
         </label>
-        <a className="btn btn-ghost text-xl" href="/">
+        <a className="btn btn-ghost text-xl" href="/dashboard">
           <h1>Bigshelf</h1>
         </a>
       </div>
