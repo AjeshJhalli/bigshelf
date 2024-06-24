@@ -3,7 +3,6 @@ import { User } from "../../types/types.ts";
 import decodeDate from "../../utils/decodeDate.ts";
 
 export default function UserProfileEdit({ user }: { user: User }) {
-
   const { year, month, day } = decodeDate(user.value.dob || "");
 
   const fields: Array<FormField> = [
@@ -12,30 +11,18 @@ export default function UserProfileEdit({ user }: { user: User }) {
       name: "firstName",
       displayName: "First Name",
       value: user.value.firstName,
-      options: [],
-      day: "",
-      month: "",
-      year: ""
     },
     {
       type: "text",
       name: "lastName",
       displayName: "Last Name",
       value: user.value.lastName,
-      options: [],
-      day: "",
-      month: "",
-      year: ""
     },
     {
       type: "text",
       name: "jobTitle",
       displayName: "Job Title",
       value: user.value.jobTitle || "",
-      options: [],
-      day: "",
-      month: "",
-      year: ""
     },
     {
       type: "dropdown",
@@ -45,32 +32,32 @@ export default function UserProfileEdit({ user }: { user: User }) {
       options: [
         {
           value: "Male",
-          displayName: "Male"
+          displayName: "Male",
         },
         {
           value: "Female",
-          displayName: "Female"
+          displayName: "Female",
         },
       ],
-      day: "",
-      month: "",
-      year: ""
     },
     {
       type: "date",
       name: "dob",
       displayName: "DOB",
-      value: "",
-      options: [],
       day,
       month,
-      year
-    }
+      year,
+    },
   ];
 
   return (
     <div class="grid grid-cols-2">
-      <EditForm fields={fields} cancelHref="/dashboard" saveHref="/dashboard/me/edit" title="Edit User" />
+      <EditForm
+        fields={fields}
+        cancelHref="/dashboard"
+        saveHref="/dashboard/me/edit"
+        title="Edit User"
+      />
     </div>
   );
 }

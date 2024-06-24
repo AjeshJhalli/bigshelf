@@ -36,15 +36,11 @@ export default function Layout({ children }) {
             >
             </label>
             <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
-              {/* Sidebar content here */}
               <li>
-                <a href='/'>Home</a>
+                <a href='/dashboard'>Dashboard</a>
               </li>
               <li>
-                <a href='/people'>People</a>
-              </li>
-              <li>
-                <a href='/bookings'>Bookings</a>
+                <a href='/customers'>Customers</a>
               </li>
             </ul>
           </div>

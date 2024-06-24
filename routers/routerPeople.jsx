@@ -6,7 +6,7 @@ import People from "../pages/People.jsx";
 import r from "../utils/r.jsx";
 import routerPerson from "./routerPerson.tsx";
 import getPeople from "./getPeople.ts";
-import PersonForm from "../pages/person/PersonForm.jsx";
+import PersonForm from "../pages/person/PersonForm.tsx";
 
 // const env = await load();
 // const databaseUrl = Deno.env.get("DATABASE_URL");

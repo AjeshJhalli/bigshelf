@@ -2,8 +2,10 @@ export default function Navbar() {
   return (
     <nav className="navbar bg-base-100 shadow-md">
       <div class="navbar-start">
-        <label class="btn btn-square btn-ghost drawer-button"               htmlFor="my-drawer"
-              >
+        <label
+          class="btn btn-square btn-ghost drawer-button"
+          htmlFor="my-drawer"
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"

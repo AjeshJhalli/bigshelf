@@ -1,15 +1,7 @@
-export type FormField = {
-  type: string;
-  name: string;
-  displayName: string;
-  value: string;
-  options: Array<FieldDropdownOption>;
-  day: string;
-  month: string;
-  year: string;
-};
+export type FormField = FieldText | FieldDropdown | FieldDate;
 
 export type FieldText = {
+  type: "text";
   name: string;
   displayName: string;
   value: string;
@@ -21,6 +13,7 @@ export type FieldDropdownOption = {
 };
 
 export type FieldDropdown = {
+  type: "dropdown",
   name: string;
   displayName: string;
   options: Array<FieldDropdownOption>;
@@ -28,6 +21,7 @@ export type FieldDropdown = {
 };
 
 export type FieldDate = {
+  type: "date",
   displayName: string;
   name: string;
   day: string;
