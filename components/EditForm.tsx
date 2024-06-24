@@ -13,7 +13,7 @@ export type FieldDropdownOption = {
 };
 
 export type FieldDropdown = {
-  type: "dropdown",
+  type: "dropdown";
   name: string;
   displayName: string;
   options: Array<FieldDropdownOption>;
@@ -21,7 +21,7 @@ export type FieldDropdown = {
 };
 
 export type FieldDate = {
-  type: "date",
+  type: "date";
   displayName: string;
   name: string;
   day: string;
@@ -67,6 +67,7 @@ function field(field: FormField) {
     case "text":
       return (
         <FieldText
+          type={field.type}
           name={field.name}
           displayName={field.displayName}
           value={field.value}
@@ -76,6 +77,7 @@ function field(field: FormField) {
       return field.options.length
         ? (
           <FieldDropdown
+            type={field.type}
             name={field.name}
             displayName={field.displayName}
             options={field.options}
@@ -86,6 +88,7 @@ function field(field: FormField) {
     case "date":
       return (
         <FieldDate
+          type={field.type}
           displayName={field.displayName}
           name={field.name}
           day={field.day}
@@ -164,7 +167,10 @@ function FieldDate({ displayName, name, day, month, year }: FieldDate) {
         <span className="label-text">{displayName}</span>
       </div>
       <div className="grid grid-cols-3 gap-x-1 w-full">
-        <select className="select select-sm select-bordered" name={`${name}Day`}>
+        <select
+          className="select select-sm select-bordered"
+          name={`${name}Day`}
+        >
           <option disabled selected={day === ""}>Day</option>
           {days.map((d) => (
             <option selected={d === day}>
@@ -172,7 +178,10 @@ function FieldDate({ displayName, name, day, month, year }: FieldDate) {
             </option>
           ))}
         </select>
-        <select className="select select-sm select-bordered" name={`${name}Month`}>
+        <select
+          className="select select-sm select-bordered"
+          name={`${name}Month`}
+        >
           <option disabled selected={month === ""}>Month</option>
           {months.map((m) => (
             <option selected={m === month}>
@@ -180,7 +189,10 @@ function FieldDate({ displayName, name, day, month, year }: FieldDate) {
             </option>
           ))}
         </select>
-        <select className="select select-sm select-bordered" name={`${name}Year`}>
+        <select
+          className="select select-sm select-bordered"
+          name={`${name}Year`}
+        >
           <option disabled selected={year === ""}>Year</option>
           {years.map((y) => (
             <option selected={y === year}>
