@@ -70,7 +70,7 @@ export default function UserProfileEdit({ user }: { user: User }) {
 
   return (
     <div class="grid grid-cols-2">
-      <EditForm fields={fields} cancelHref="" saveHref="" title="Edit User" />
+      <EditForm fields={fields} cancelHref="/dashboard" saveHref="/dashboard/me/edit" title="Edit User" />
     </div>
   );
 }

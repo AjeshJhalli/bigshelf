@@ -5,7 +5,6 @@ export default function UserProfile({ user }) {
         <h2 className="card-title">
           User Profile
         </h2>
-        <div class="text-sm opacity-50">{user.value.jobTitle}</div>
         <div className="overflow-x-auto">
           <table className="table table-sm">
             <tbody>

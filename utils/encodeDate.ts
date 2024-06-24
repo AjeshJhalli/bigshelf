@@ -1,9 +1,14 @@
-import { Month } from "../types/types.ts";
-import { Day } from "../types/types.ts";
-import { Year, MM } from "../types/types.ts";
-import { DateString } from "../types/types.ts";
+import { DateString, DD, MM, Month, YYYY } from "../types/types.ts";
 
-export default function encodeDate(year: Year, month: Month, day: Day): DateString {
+export default function encodeDate(
+  year: string,
+  month: string,
+  day: string,
+): DateString | "" {
+
+  if (!year || !month || !day) {
+    return "";
+  }
 
   const monthMap = {
     "Jan": "01",
@@ -17,8 +22,29 @@ export default function encodeDate(year: Year, month: Month, day: Day): DateStri
     "Sep": "09",
     "Oct": "10",
     "Nov": "11",
-    "Dec": "12"
+    "Dec": "12",
   };
 
-  return `${year}-${monthMap[month]}-${day.length === 2 ? day : `0${day}`}`;
+  if (
+    ![
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ].includes(month)
+  ) {
+    return "";
+  }
+
+  return `${year as YYYY}-${monthMap[month as Month] as MM}-${(day.length === 2
+    ? day
+    : `0${day}`) as DD}`;
 }

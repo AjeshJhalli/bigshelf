@@ -29,6 +29,7 @@ export type FieldDropdown = {
 
 export type FieldDate = {
   displayName: string;
+  name: string;
   day: string;
   month: string;
   year: string;
@@ -92,6 +93,7 @@ function field(field: FormField) {
       return (
         <FieldDate
           displayName={field.displayName}
+          name={field.name}
           day={field.day}
           month={field.month}
           year={field.year}
@@ -139,7 +141,7 @@ function FieldDropdown({ name, displayName, options, value }: FieldDropdown) {
   );
 }
 
-function FieldDate({ displayName, day, month, year }: FieldDate) {
+function FieldDate({ displayName, name, day, month, year }: FieldDate) {
   const days = [...Array(32).keys()].slice(1).map((year) => year.toString());
 
   const months = [
@@ -168,7 +170,7 @@ function FieldDate({ displayName, day, month, year }: FieldDate) {
         <span className="label-text">{displayName}</span>
       </div>
       <div className="grid grid-cols-3 gap-x-1 w-full">
-        <select className="select select-sm select-bordered">
+        <select className="select select-sm select-bordered" name={`${name}Day`}>
           <option disabled selected={day === ""}>Day</option>
           {days.map((d) => (
             <option selected={d === day}>
@@ -176,7 +178,7 @@ function FieldDate({ displayName, day, month, year }: FieldDate) {
             </option>
           ))}
         </select>
-        <select className="select select-sm select-bordered">
+        <select className="select select-sm select-bordered" name={`${name}Month`}>
           <option disabled selected={month === ""}>Month</option>
           {months.map((m) => (
             <option selected={m === month}>
@@ -184,7 +186,7 @@ function FieldDate({ displayName, day, month, year }: FieldDate) {
             </option>
           ))}
         </select>
-        <select className="select select-sm select-bordered">
+        <select className="select select-sm select-bordered" name={`${name}Year`}>
           <option disabled selected={year === ""}>Year</option>
           {years.map((y) => (
             <option selected={y === year}>
