@@ -2,7 +2,7 @@ import Navbar from "../components/Navbar.jsx";
 
 export default function Layout({ children }) {
   return (
-    <html data-theme="dark">
+    <html data-theme="light">
       <head>
         <title>Bigshelf</title>
         <link
@@ -19,7 +19,7 @@ export default function Layout({ children }) {
         <script src="/public/main.js" />
         <meta charSet="utf-8" />
       </head>
-      <body className="flex flex-col bg-base-200">
+      <body className="flex flex-col bg-base-300">
         <div className="drawer">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content">

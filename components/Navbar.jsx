@@ -1,6 +1,6 @@
 export default function Navbar() {
   return (
-    <nav className="navbar bg-base-100 shadow-md">
+    <nav className="navbar bg-base-200 shadow-md">
       <div class="navbar-start">
         <label
           class="btn btn-square btn-ghost drawer-button"

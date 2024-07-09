@@ -19,7 +19,7 @@ export default function Customers({ customers }) {
               </thead>
               <tbody>
                 {customers.map((customer) => (
-                  <tr>
+                  <tr className="hover:bg-base-200 hover:cursor-pointer" onClick={`window.location.href='/customers/${customer.key[2]}'`}>
                     <td>
                       {customer.key[2]}
                     </td>

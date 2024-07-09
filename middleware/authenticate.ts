@@ -12,6 +12,12 @@ const scope = "openid offline_access";
 
 // Middleware to authenticate users with Azure B2C
 const azureB2CAuth: Middleware = async (ctx, next) => {
+
+  if (ctx.request.url.pathname === "/") {
+    await next();
+    return;
+  }
+
   const token = await ctx.cookies.get("id_token");
   const refreshToken = await ctx.cookies.get("refresh_token");
 

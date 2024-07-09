@@ -2,15 +2,13 @@ import { Application } from "jsr:@oak/oak/application";
 import { Router } from "jsr:@oak/oak/router";
 
 import Index from "./pages/Index.jsx";
-import Dashboard from "./pages/dashboard/Dashboard.tsx";
-import r from "./utils/r.jsx";
+import { render } from 'https://cdn.skypack.dev/preact-render-to-string@v5.1.12';
 
 import {
   azureB2CAuth,
   handleAzureB2CCallback,
 } from "./middleware/authenticate.ts";
 
-import routerPeople from "./routers/routerPeople.jsx";
 import routerCustomers from "./routers/routerCustomers.tsx";
 import routerPublic from "./routers/routerPublic.js";
 import routerDashboard from "./routers/routerDashboard.tsx";
@@ -20,12 +18,12 @@ const app = new Application();
 
 router
   .get("/", (context) => {
-    context.response.body = r(<Index />);
+    console.log(context)
+    context.response.body = render(<Index />);
   })
   .get("/auth/callback", handleAzureB2CCallback);
 
 router.use("/public", routerPublic.routes());
-router.use("/people", routerPeople.routes());
 router.use("/customers", routerCustomers.routes());
 router.use("/dashboard", routerDashboard.routes());
 

@@ -30,39 +30,6 @@ export type FieldDate = {
   year: string;
 };
 
-export default function EditForm(
-  { fields, cancelHref, saveHref, title }: {
-    fields: Array<FormField>;
-    cancelHref: string;
-    saveHref: string;
-    title: string;
-  },
-) {
-  return (
-    <form
-      id="user-profile-edit-form"
-      className="card bg-base-100 shadow-xl"
-      method="POST"
-      action={saveHref}
-    >
-      <div className="card-body flex">
-        <h2 className="card-title">{title}</h2>
-        <div className="form-control flex flex-col gap-y-1 justify-start items-start">
-          {fields.map(field)}
-        </div>
-        <div className="card-actions justify-end">
-          <a className="btn btn-primary btn-sm" href={cancelHref}>
-            Cancel
-          </a>
-          <button className="btn btn-primary btn-sm">
-            Save
-          </button>
-        </div>
-      </div>
-    </form>
-  );
-}
-
 function field(field: FormField) {
   switch (field.type) {
     case "text":
@@ -203,5 +170,44 @@ function FieldDate({ displayName, name, day, month, year }: FieldDate) {
         </select>
       </div>
     </label>
+  );
+}
+
+export default function EditFormModal(
+  { fields, cancelHref, saveHref, title }: {
+    fields: Array<FormField>;
+    cancelHref: string;
+    saveHref: string;
+    title: string;
+  },
+) {
+  return (
+    <div
+      id="edit-form-modal"
+      className="modal modal-open"
+      _={"on closeModal add .closing then wait for animationend then remove me"}
+    >
+      <form
+        id="user-profile-edit-form"
+        className="modal-box bg-base-100 shadow-xl"
+        method="POST"
+        action={saveHref}
+      >
+        <div className="card-body flex">
+          <div className="card-actions justify-end">
+            <button type="button" className="btn btn-primary btn-sm" onClick="document.getElementById('edit-form-modal').remove()">
+              Cancel
+            </button>
+            <button className="btn btn-primary btn-sm">
+              Save
+            </button>
+          </div>
+          <h2 className="card-title">{title}</h2>
+          <div className="form-control flex flex-col gap-y-1 justify-start items-start">
+            {fields.map(field)}
+          </div>
+        </div>
+      </form>
+    </div>
   );
 }

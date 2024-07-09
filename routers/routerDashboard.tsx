@@ -3,7 +3,6 @@ import r from "../utils/r.jsx";
 import Dashboard from "../pages/dashboard/Dashboard.tsx";
 import UserProfileEdit from "../pages/dashboard/UserProfileEdit.tsx";
 import encodeDate from "../utils/encodeDate.ts";
-import { Day, Month, Year } from "../types/types.ts";
 
 const kv = await Deno.openKv();
 
