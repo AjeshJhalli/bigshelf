@@ -174,9 +174,8 @@ function FieldDate({ displayName, name, day, month, year }: FieldDate) {
 }
 
 export default function EditFormModal(
-  { fields, cancelHref, saveHref, title }: {
+  { fields, saveHref, title }: {
     fields: Array<FormField>;
-    cancelHref: string;
     saveHref: string;
     title: string;
   },

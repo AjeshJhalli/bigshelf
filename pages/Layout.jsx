@@ -19,12 +19,12 @@ export default function Layout({ children }) {
         <script src="/public/main.js" />
         <meta charSet="utf-8" />
       </head>
-      <body className="flex flex-col bg-base-300">
+      <body className="flex flex-col bg-base-300 h-screen">
         <div className="drawer">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content">
             <Navbar />
-            <main className="flex flex-col flex-grow p-3">
+            <main className="flex flex-col flex-grow p-3 h-full">
               {children}
             </main>
           </div>

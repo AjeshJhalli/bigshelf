@@ -13,12 +13,12 @@ export default function Tabs(
   }
 
   return (
-    <div id={tabsId} className="">
-      <ul className="tabs ">
+    <div id={tabsId} className="h-full">
+      <ul className="tabs tabs-bordered max-w-[600px]">
         {tabs.map((tab) => (
           <li
             className={classNames("tab", {
-              "tab-active bg-base-100": selectedTabName === tab.name,
+              "tab-active": selectedTabName === tab.name,
             })}
             hx-get={tab.href}
             hx-target={`#${tabsId}`}
@@ -27,7 +27,7 @@ export default function Tabs(
           </li>
         ))}
       </ul>
-      <div className="bg-base-100 min-h-[300px] p-6">{tabContent()}</div>
+      <div className="min-h-[300px] py-6 w-full h-full">{tabContent()}</div>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 export default function UserProfile({ user }) {
   return (
-    <div id="user-profile-data-card" className="card bg-base-100 shadow-xl">
+    <div id="user-profile-data-card" className="card bg-base-100 shadow-xl rounded-none">
       <div className="card-body">
         <h2 className="card-title">
           User Profile

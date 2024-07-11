@@ -3,9 +3,9 @@ import Tabs from "../../components/Tabs.tsx";
 
 export default function Customer({ customer, people }) {
   return (
-    <div className="card bg-base-200 shadow-xl rounded-none">
-      <div className="card-body">
-        <div className="">
+    <div className="card bg-base-100 shadow-xl rounded-none h-full">
+      <div className="card-body h-full">
+        <div className="h-full">
           <div className="card-actions justify-between">
             <h2 className="card-title py-3">
               {customer.value.name}
@@ -17,9 +17,7 @@ export default function Customer({ customer, people }) {
               Edit
             </a>
           </div>
-          <div className="flex gap-x-3">
-            <CustomerAddress address={customer.value.address} />
-          </div>
+          <CustomerAddress address={customer.value.address} />
         </div>
         <Tabs
           selectedTabName="people"
@@ -48,7 +46,7 @@ export default function Customer({ customer, people }) {
 
 function CustomerAddress({ address }: any) {
   return (
-    <address className="p-3 w-72 bg-base-100">
+    <address className="w-72">
       <div>{address.line1}</div>
       <div>{address.line2}</div>
       <div>{address.city}</div>
