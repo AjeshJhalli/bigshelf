@@ -1,6 +1,5 @@
 export function CustomerPeopleTab({ people }) {
-  const defaultEmail = (emails: Array<any>) =>
-    emails.find((email: any) => email.default).value || "";
+  const defaultEmail = () => "ajeshjhalli@gmail.com"; //(emails: Array<any>) => emails.find((email: any) => email.default).value || "";
 
   return (
     <table className="table border w-full">
@@ -14,7 +13,7 @@ export function CustomerPeopleTab({ people }) {
           <th className="flex justify-end">
             <button
               className="btn btn-sm btn-primary m-0"
-              hx-get={`/customers/${people.key[2]}/people/new`}
+              hx-get={`/customers/${people[0].key[2]}/people/new`}
               hx-target="body"
               hx-swap="beforeend"
             >

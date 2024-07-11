@@ -10,6 +10,7 @@ import EditFormModal from "../components/EditFormModal.tsx";
 import { FormField } from "../components/EditFormModal.tsx";
 import decodeDate from "../utils/decodeDate.ts";
 import encodeDate from "../utils/encodeDate.ts";
+import { cuid } from "https://deno.land/x/cuid@v1.0.0/index.js";
 
 const kv = await Deno.openKv();
 
@@ -76,7 +77,7 @@ routerCustomer
             content: CustomerBookingsTab,
             data: {},
             href: `/customers/${customerId}/tab-bookings`,
-          }
+          },
         ]}
       />,
     );
@@ -160,7 +161,10 @@ routerCustomer
     const dobMonth = data.get("dobMonth");
     const dobYear = data.get("dobYear");
 
-    if (!(typeof dobDay === "string" && typeof dobMonth === "string" && typeof dobYear === "string")) {
+    if (
+      !(typeof dobDay === "string" && typeof dobMonth === "string" &&
+        typeof dobYear === "string")
+    ) {
       return;
     }
 
@@ -168,7 +172,12 @@ routerCustomer
 
     // Validate the data here
 
-    const oldPerson = await kv.get(["bigshelf_test", "person", customerId, personId]);
+    const oldPerson = await kv.get([
+      "bigshelf_test",
+      "person",
+      customerId,
+      personId,
+    ]);
 
     await kv.set(["bigshelf_test", "person", customerId, personId], {
       ...(oldPerson.value as object),
@@ -176,9 +185,101 @@ routerCustomer
       lastName,
       jobTitle,
       gender,
-      dob
+      dob,
     });
 
+    context.response.redirect(`/customers/${customerId}`);
+  }).get("/people/new", (context) => {
+    const customerId = parseInt(context.params.customerId || "");
+
+    const fields: Array<FormField> = [
+      {
+        type: "text",
+        name: "firstName",
+        displayName: "First Name",
+        value: "",
+      },
+      {
+        type: "text",
+        name: "lastName",
+        displayName: "Last Name",
+        value: "",
+      },
+      {
+        type: "text",
+        name: "jobTitle",
+        displayName: "Job Title",
+        value: "",
+      },
+      {
+        type: "dropdown",
+        name: "gender",
+        displayName: "Gender",
+        value: "",
+        options: [
+          {
+            value: "Male",
+            displayName: "Male",
+          },
+          {
+            value: "Female",
+            displayName: "Female",
+          },
+        ],
+      },
+      {
+        type: "date",
+        name: "dob",
+        displayName: "DOB",
+        day: "",
+        month: "",
+        year: "",
+      },
+    ];
+
+    context.response.body = render(
+      <EditFormModal
+        fields={fields}
+        saveHref={`/customers/${customerId}/people/new`}
+        title=""
+      />,
+    );
+  })
+  .post("/people/new", async (context) => {
+    const customerId = parseInt(context.params.customerId || "");
+
+    const data = await context.request.body.formData();
+
+    const firstName = data.get("firstName");
+    const lastName = data.get("lastName");
+    const jobTitle = data.get("jobTitle");
+    const gender = data.get("gender");
+
+    const dobDay = data.get("dobDay");
+    const dobMonth = data.get("dobMonth");
+    const dobYear = data.get("dobYear");
+
+    if (
+      !(typeof dobDay === "string" && typeof dobMonth === "string" &&
+        typeof dobYear === "string")
+    ) {
+      return;
+    }
+
+    const dob = encodeDate(dobYear, dobMonth, dobDay);
+
+    // Validate the data here
+
+    const personId = cuid();
+
+    await kv.set(["bigshelf_test", "person", customerId, personId], {
+      firstName,
+      lastName,
+      jobTitle,
+      gender,
+      dob,
+    });
+    
     context.response.redirect(`/customers/${customerId}`);
   });
 
