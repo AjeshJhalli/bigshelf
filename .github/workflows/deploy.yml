@@ -26,5 +26,5 @@ jobs:
       - name: Upload to Deno Deploy
         uses: denoland/deployctl@v1
         with:
-          project: "example-project" # 📝 Update the deploy project name if necessary
+          project: "ed6799c9-c00e-4ae0-94eb-4a09b273c0ec" # 📝 Update the deploy project name if necessary
           entrypoint: "./main.jsx" # 📝 Update the entrypoint if necessary
