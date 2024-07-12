@@ -13,7 +13,7 @@ const scope = "openid offline_access";
 // Middleware to authenticate users with Azure B2C
 const azureB2CAuth: Middleware = async (ctx, next) => {
 
-  if (ctx.request.url.pathname === "/") {
+  if (ctx.request.url.pathname === "/" || ctx.request.url.pathname === "/auth/callback") {
     await next();
     return;
   }
@@ -24,7 +24,8 @@ const azureB2CAuth: Middleware = async (ctx, next) => {
   if (!token) {
     // Redirect to Azure B2C login page
     const authUrl =
-      `https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${policy}/oauth2/v2.0/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&response_mode=query&scope=${scope}`;
+      `https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${policy}/oauth2/v2.0/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&response_mode=query&scope=${scope}`;
+    console.log('redirect to microsoft');
     ctx.response.redirect(authUrl);
     return;
   }
@@ -38,6 +39,7 @@ const azureB2CAuth: Middleware = async (ctx, next) => {
     if (exp < now) {
       // Token is expired, try to refresh
       if (!refreshToken) {
+        console.log("no refresh token")
         throw new Error("Refresh token not found");
       }
 
@@ -60,6 +62,7 @@ const azureB2CAuth: Middleware = async (ctx, next) => {
 
       const tokenData = await tokenResponse.json();
       if (!tokenResponse.ok) {
+        console.log("could not refresh")
         throw new Error(tokenData.error_description || "Token refresh failed");
       }
 
@@ -68,8 +71,11 @@ const azureB2CAuth: Middleware = async (ctx, next) => {
         httpOnly: true,
       });
 
+      console.log(tokenData)
+
       ctx.state.user = await setUser(tokenData.id_token);
     } else {
+      console.log('set the user')
       ctx.state.user = await setUser(token);
     }
 
@@ -83,11 +89,17 @@ const azureB2CAuth: Middleware = async (ctx, next) => {
 
 // Route to handle Azure B2C callback
 const handleAzureB2CCallback: Middleware = async (ctx) => {
+
+  console.log("I am ever reached")
+
   const code = ctx.request.url.searchParams.get("code");
+
+  console.log("scoopy")
 
   if (!code) {
     ctx.response.status = 400;
     ctx.response.body = { error: "Code not found" };
+    console.log("no code")
     return;
   }
 
@@ -109,12 +121,15 @@ const handleAzureB2CCallback: Middleware = async (ctx) => {
     },
   );
 
+  console.log('bruh monument')
+
   const tokenData = await tokenResponse.json();
   if (!tokenResponse.ok) {
     ctx.response.status = 401;
     ctx.response.body = {
       error: tokenData.error_description || "Token exchange failed",
     };
+    console.log("token exchange failed")
     return;
   }
 
@@ -123,11 +138,17 @@ const handleAzureB2CCallback: Middleware = async (ctx) => {
   });
   await ctx.cookies.set("id_token", tokenData.id_token, { httpOnly: true });
 
+  console.log(tokenData);
+
+  console.log("redirect to dashboard")
   ctx.response.redirect("/dashboard");
 };
 
 async function setUser(idToken: string) {
   const payload = decode(idToken)[1];
+
+  console.log('id:' + idToken);
+  console.log(payload);
 
   const oid = payload.oid;
   const firstName = payload.given_name;

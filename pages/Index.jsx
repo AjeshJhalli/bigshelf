@@ -30,7 +30,7 @@ export default function Index() {
               <p className="py-6">
                 Bigshelf is a traveller profile management app for travel agencies.
               </p>
-              <a className="btn btn-primary" href={`https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${policy}/oauth2/v2.0/authorize?client_id=${clientId}&response_type=code&redirect_uri=${redirectUri}&response_mode=query&scope=${scope}`}>
+              <a className="btn btn-primary" href={`https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${policy}/oauth2/v2.0/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&response_mode=query&scope=${scope}`}>
                 Sign in
               </a>
             </div>
