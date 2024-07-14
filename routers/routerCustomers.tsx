@@ -19,10 +19,6 @@ routerCustomers
       kv.list<CustomerValue>({ prefix: ["bigshelf_test", "customer"] }),
     );
 
-    if (customers.length === 0) {
-      return;
-    }
-
     const customerRecords = customers as Array<CustomerRecord>;
 
     context.response.body = r(<Customers customers={customerRecords} />);
