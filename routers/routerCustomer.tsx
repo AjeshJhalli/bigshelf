@@ -11,12 +11,12 @@ import decodeDate from "../utils/decodeDate.ts";
 import encodeDate from "../utils/encodeDate.ts";
 import { cuid } from "https://deno.land/x/cuid@v1.0.0/index.js";
 import {
+  Address,
   CustomerRecord,
   CustomerValue,
   DateString,
   PersonRecord,
   PersonValue,
-  Address
 } from "../types/types.ts";
 
 const kv = await Deno.openKv();
@@ -41,8 +41,16 @@ routerCustomer
     const people = await Array.fromAsync(
       kv.list({ prefix: ["bigshelf_test", "person", customerId] }),
     );
+
     context.response.body = r(
       <Customer customer={customerRecord} people={people} />,
+      [{
+        displayName: "Customers",
+        href: "/customers",
+      },{
+        displayName: customerRecord.value.name,
+        href: `/customers/${customerId}`,
+      }],
     );
   })
   .get("/edit", async (context) => {
@@ -102,6 +110,8 @@ routerCustomer
       <EditFormModal
         fields={fields}
         saveHref={`/customers/${customerRecord.key[2]}/edit`}
+        deleteHref={`/customers/${customerRecord.key[2]}`}
+        deleteConfirmation="Are you sure you want to delete this customer?"
         title=""
       />,
     );
@@ -227,6 +237,8 @@ routerCustomer
       <EditFormModal
         fields={fields}
         saveHref={`/customers/${customerId}/people/${personId}/edit`}
+        deleteHref={`/customers/${customerId}/people/${personId}`}
+        deleteConfirmation="Are you sure you want to delete this person?"
         title=""
       />,
     );
@@ -356,8 +368,6 @@ routerCustomer
       dob = encodeDate(dobYear, dobMonth, dobDay);
     }
 
-    
-
     // Validate the data here
 
     const personId = cuid();
@@ -388,11 +398,11 @@ routerCustomer
 
     // Validate the data here
 
-    console.log(data)
+    console.log(data);
 
     await kv.set(["bigshelf_test", "customer", customerId], {
       name,
-      address
+      address,
     });
 
     context.response.redirect(`/customers/${customerId}`);
@@ -400,7 +410,11 @@ routerCustomer
   .delete("/", async (context) => {
     const customerId = context.params.customerId as string;
 
-    const customer = await kv.get<CustomerRecord>(["bigshelf_test", "customer", customerId]);
+    const customer = await kv.get<CustomerRecord>([
+      "bigshelf_test",
+      "customer",
+      customerId,
+    ]);
     if (customer.value === null) {
       return;
     }
@@ -409,14 +423,24 @@ routerCustomer
       .check(customer)
       .delete(["bigshelf_test", "customer", customerId]);
 
-    for await (const person of kv.list({ prefix: ["bigshelf_test", "person", customerId] })) {
+    for await (
+      const person of kv.list({
+        prefix: ["bigshelf_test", "person", customerId],
+      })
+    ) {
       console.log(person);
       deleteCustomerTransaction.delete(person.key);
-    };
+    }
 
     await deleteCustomerTransaction.commit();
 
     context.response.headers.append("HX-Redirect", "/customers");
+  })
+  .delete("/people/:personId", async (context) => {
+    const customerId = context.params.customerId as string;
+    const personId = context.params.personId as string;
+    await kv.delete(["bigshelf_test", "person", customerId, personId]);
+    context.response.headers.append("HX-Redirect", `/customers/${customerId}`);
   });
 
 export default routerCustomer;

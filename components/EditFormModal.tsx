@@ -1,3 +1,5 @@
+import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
+
 export type FormField = FieldText | FieldDropdown | FieldDate;
 
 export type FieldText = {
@@ -174,10 +176,12 @@ function FieldDate({ displayName, name, day, month, year }: FieldDate) {
 }
 
 export default function EditFormModal(
-  { fields, saveHref, title }: {
+  { fields, saveHref, title, deleteHref, deleteConfirmation }: {
     fields: Array<FormField>;
     saveHref: string;
     title: string;
+    deleteHref?: string;
+    deleteConfirmation?: string;
   },
 ) {
   return (
@@ -193,13 +197,32 @@ export default function EditFormModal(
         action={saveHref}
       >
         <div className="card-body flex">
-          <div className="card-actions justify-end">
-            <button type="button" className="btn btn-primary btn-sm" onClick="document.getElementById('edit-form-modal').remove()">
-              Cancel
-            </button>
-            <button className="btn btn-primary btn-sm">
-              Save
-            </button>
+          <div className={classNames("card-actions", {
+            "justify-between": deleteHref,
+            "justify-end": !deleteHref
+          })}>
+            {deleteHref && (
+              <button
+                type="button"
+                className="btn btn-error btn-sm mr-10"
+                hx-delete={deleteHref}
+                hx-confirm={deleteConfirmation}
+              >
+                Delete
+              </button>
+            )}
+            <div className="flex justify-end gap-x-3">
+              <button
+                type="button"
+                className="btn btn-primary btn-sm"
+                onClick="document.getElementById('edit-form-modal').remove()"
+              >
+                Cancel
+              </button>
+              <button className="btn btn-primary btn-sm">
+                Save
+              </button>
+            </div>
           </div>
           <h2 className="card-title">{title}</h2>
           <div className="form-control flex flex-col gap-y-1 justify-start items-start">

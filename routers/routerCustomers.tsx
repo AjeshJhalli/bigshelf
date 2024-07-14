@@ -21,7 +21,10 @@ routerCustomers
 
     const customerRecords = customers as Array<CustomerRecord>;
 
-    context.response.body = r(<Customers customers={customerRecords} />);
+    context.response.body = r(<Customers customers={customerRecords} />,  [{
+      displayName: "Customers",
+      href: "/customers",
+    }]);
   })
   .get("/new", (context) => {
     const fields: Array<FormField> = [

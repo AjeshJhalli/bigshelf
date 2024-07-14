@@ -120,3 +120,8 @@ export type Tab = {
   href: string;
   selected?: false;
 };
+
+export type Breadcrumb = {
+  displayName: string;
+  href: string;
+}

@@ -10,13 +10,15 @@ const routerDashboard = new Router();
 
 routerDashboard
   .get("/", (context) => {
-    context.response.body = r(<Dashboard user={context.state.user} />);
+    context.response.body = r(<Dashboard user={context.state.user} />, [{
+      displayName: "Dashboard",
+      href: "/dashboard",
+    }]);
   })
   .get("/me/edit", (context) => {
-    context.response.body = r(<UserProfileEdit user={context.state.user} />);;
+    context.response.body = r(<UserProfileEdit user={context.state.user} />);
   })
   .post("/me/edit", async (context) => {
-
     const user = context.state.user;
 
     const data = await context.request.body.formData();
@@ -27,8 +29,8 @@ routerDashboard
     const gender = data.get("gender");
 
     const dobYear = data.get("dobYear")?.toString() || "";
-    const dobMonth = data.get("dobMonth")?.toString() || "";;
-    const dobDay = data.get("dobDay")?.toString() || "";;
+    const dobMonth = data.get("dobMonth")?.toString() || "";
+    const dobDay = data.get("dobDay")?.toString() || "";
 
     const dob = encodeDate(dobYear, dobMonth, dobDay);
 
@@ -40,11 +42,10 @@ routerDashboard
       lastName,
       jobTitle,
       gender,
-      dob
+      dob,
     });
 
     context.response.redirect(`/dashboard`);
-
   });
 
 export default routerDashboard;
