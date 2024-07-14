@@ -1,5 +1,5 @@
 import { Router } from "jsr:@oak/oak/router";
-import r from "../utils/r.jsx";
+import r from "../utils/r.tsx";
 import Dashboard from "../pages/dashboard/Dashboard.tsx";
 import UserProfileEdit from "../pages/dashboard/UserProfileEdit.tsx";
 import encodeDate from "../utils/encodeDate.ts";
@@ -20,8 +20,6 @@ routerDashboard
     const user = context.state.user;
 
     const data = await context.request.body.formData();
-
-    data.forEach(console.log)
 
     const firstName = data.get("firstName");
     const lastName = data.get("lastName");

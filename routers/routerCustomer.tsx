@@ -1,16 +1,23 @@
 import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
 import { Router } from "jsr:@oak/oak/router";
-import r from "../utils/r.jsx";
+import r from "../utils/r.tsx";
 import Customer from "../pages/Customer/Customer.tsx";
 import { CustomerPeopleTab } from "../pages/Customer/CustomerTabs.tsx";
 import { CustomerBookingsTab } from "../pages/Customer/CustomerTabs.tsx";
 import Tabs from "../components/Tabs.tsx";
-import CustomerEdit from "../pages/Customer/CustomerEdit.tsx";
 import EditFormModal from "../components/EditFormModal.tsx";
 import { FormField } from "../components/EditFormModal.tsx";
 import decodeDate from "../utils/decodeDate.ts";
 import encodeDate from "../utils/encodeDate.ts";
 import { cuid } from "https://deno.land/x/cuid@v1.0.0/index.js";
+import {
+  CustomerRecord,
+  CustomerValue,
+  DateString,
+  PersonRecord,
+  PersonValue,
+  Address
+} from "../types/types.ts";
 
 const kv = await Deno.openKv();
 
@@ -18,80 +25,158 @@ const routerCustomer = new Router();
 
 routerCustomer
   .get("/", async (context) => {
-    const customerId = parseInt(context.params.customerId || "");
-    const customer = await kv.get(["bigshelf_test", "customer", customerId]);
+    const customerId = context.params.customerId as string;
+    const customer = await kv.get<CustomerValue>([
+      "bigshelf_test",
+      "customer",
+      customerId,
+    ]);
+
+    if (!customer.versionstamp) {
+      return;
+    }
+
+    const customerRecord = customer as CustomerRecord;
+
     const people = await Array.fromAsync(
       kv.list({ prefix: ["bigshelf_test", "person", customerId] }),
     );
-    context.response.body = r(<Customer customer={customer} people={people} />);
+    context.response.body = r(
+      <Customer customer={customerRecord} people={people} />,
+    );
   })
   .get("/edit", async (context) => {
-    const customerId = parseInt(context.params.customerId || "");
-    const customer = await kv.get(["bigshelf_test", "customer", customerId]);
-    context.response.body = r(<CustomerEdit customer={customer} />);
-  }).get("/tab-people", async (context) => {
-    const customerId = parseInt(context.params.customerId || "");
-    console.log(customerId);
-    const people = await Array.fromAsync(
-      kv.list({ prefix: ["bigshelf_test", "person", customerId] }),
-    );
-    context.response.body = render(
-      <Tabs
-        selectedTabName="people"
-        tabsId="customer-tabs"
-        tabs={[
-          {
-            displayName: "People",
-            name: "people",
-            content: CustomerPeopleTab,
-            data: { people },
-            href: `/customers/${customerId}/tab-people`,
-          },
-          {
-            displayName: "Bookings",
-            name: "bookings",
-            content: CustomerBookingsTab,
-            data: {},
-            href: `/customers/${customerId}/tab-bookings`,
-          },
-        ]}
-      />,
-    );
-  }).get("/tab-bookings", async (context) => {
-    const customerId = parseInt(context.params.customerId || "");
-    context.response.body = render(
-      <Tabs
-        selectedTabName="bookings"
-        tabsId="customer-tabs"
-        tabs={[
-          {
-            displayName: "People",
-            name: "people",
-            content: CustomerPeopleTab,
-            data: {},
-            href: `/customers/${customerId}/tab-people`,
-          },
-          {
-            displayName: "Bookings",
-            name: "bookings",
-            content: CustomerBookingsTab,
-            data: {},
-            href: `/customers/${customerId}/tab-bookings`,
-          },
-        ]}
-      />,
-    );
-  }).get("/people/:personId/edit", async (context) => {
-    const customerId = parseInt(context.params.customerId || "");
-    const personId = parseInt(context.params.personId || "");
+    const customerId = context.params.customerId as string;
+    const customer = await kv.get<CustomerValue>([
+      "bigshelf_test",
+      "customer",
+      customerId,
+    ]);
 
-    const person = await kv.get([
+    if (!customer.versionstamp) {
+      return;
+    }
+
+    const customerRecord = customer as CustomerRecord;
+
+    const fields: Array<FormField> = [
+      {
+        type: "text",
+        name: "name",
+        displayName: "Customer Name",
+        value: customerRecord.value.name,
+      },
+      {
+        type: "text",
+        name: "addressLine1",
+        displayName: "Address Line 1",
+        value: customerRecord.value.address.line1,
+      },
+      {
+        type: "text",
+        name: "addressLine2",
+        displayName: "Address Line 2",
+        value: customerRecord.value.address.line2,
+      },
+      {
+        type: "text",
+        name: "addressCity",
+        displayName: "City",
+        value: customerRecord.value.address.city,
+      },
+      {
+        type: "text",
+        name: "addressCountry",
+        displayName: "Country",
+        value: customerRecord.value.address.country,
+      },
+      {
+        type: "text",
+        name: "addressPostcode",
+        displayName: "Postcode",
+        value: customerRecord.value.address.postcode,
+      },
+    ];
+
+    context.response.body = render(
+      <EditFormModal
+        fields={fields}
+        saveHref={`/customers/${customerRecord.key[2]}/edit`}
+        title=""
+      />,
+    );
+  })
+  .get("/tab-people", async (context) => {
+    const customerId = context.params.customerId as string;
+    const people = await Array.fromAsync(
+      kv.list<PersonValue>({ prefix: ["bigshelf_test", "person", customerId] }),
+    );
+
+    context.response.body = render(
+      <Tabs
+        tabsId="customer-tabs"
+        tabs={[
+          {
+            displayName: "People",
+            name: "people",
+            content: (
+              <CustomerPeopleTab
+                customerId={customerId}
+                people={people as Array<PersonRecord>}
+              />
+            ),
+            href: `/customers/${customerId}/tab-people`,
+            selected: true,
+          },
+          {
+            displayName: "Bookings",
+            name: "bookings",
+            href: `/customers/${customerId}/tab-bookings`,
+          },
+        ]}
+      />,
+    );
+  })
+  .get("/tab-bookings", (context) => {
+    const customerId = context.params.customerId;
+    context.response.body = render(
+      <Tabs
+        tabsId="customer-tabs"
+        tabs={[
+          {
+            displayName: "People",
+            name: "people",
+            href: `/customers/${customerId}/tab-people`,
+          },
+          {
+            displayName: "Bookings",
+            name: "bookings",
+            content: <CustomerBookingsTab />,
+            href: `/customers/${customerId}/tab-bookings`,
+            selected: true,
+          },
+        ]}
+      />,
+    );
+  })
+  .get("/people/:personId/edit", async (context) => {
+    const customerId = context.params.customerId as string;
+    const personId = context.params.personId;
+
+    const person = await kv.get<PersonValue>([
       "bigshelf_test",
       "person",
       customerId,
       personId,
     ]);
-    const { year, month, day } = decodeDate(person.value.dob || "");
+
+    if (!person.versionstamp) {
+      return;
+    }
+
+    const { year, month, day } = decodeDate(
+      person.value.dob as DateString || "",
+    );
 
     const fields: Array<FormField> = [
       {
@@ -147,8 +232,8 @@ routerCustomer
     );
   })
   .post("/people/:personId/edit", async (context) => {
-    const customerId = parseInt(context.params.customerId || "");
-    const personId = parseInt(context.params.personId || "");
+    const customerId = context.params.customerId as string;
+    const personId = context.params.personId;
 
     const data = await context.request.body.formData();
 
@@ -180,7 +265,7 @@ routerCustomer
     ]);
 
     await kv.set(["bigshelf_test", "person", customerId, personId], {
-      ...(oldPerson.value as object),
+      ...(oldPerson.value as PersonValue),
       firstName,
       lastName,
       jobTitle,
@@ -189,8 +274,9 @@ routerCustomer
     });
 
     context.response.redirect(`/customers/${customerId}`);
-  }).get("/people/new", (context) => {
-    const customerId = parseInt(context.params.customerId || "");
+  })
+  .get("/people/new", (context) => {
+    const customerId = context.params.customerId;
 
     const fields: Array<FormField> = [
       {
@@ -246,7 +332,7 @@ routerCustomer
     );
   })
   .post("/people/new", async (context) => {
-    const customerId = parseInt(context.params.customerId || "");
+    const customerId = context.params.customerId as string;
 
     const data = await context.request.body.formData();
 
@@ -279,7 +365,32 @@ routerCustomer
       gender,
       dob,
     });
-    
+
+    context.response.redirect(`/customers/${customerId}`);
+  })
+  .post("/edit", async (context) => {
+    const customerId = context.params.customerId as string;
+
+    const data = await context.request.body.formData();
+
+    const name = data.get("name") as string;
+    const address = {
+      line1: data.get("addressLine1") as string,
+      line2: data.get("addressLine2") as string,
+      city: data.get("addressCity") as string,
+      country: data.get("addressCountry") as string,
+      postcode: data.get("addressPostcode") as string,
+    };
+
+    // Validate the data here
+
+    console.log(data)
+
+    await kv.set(["bigshelf_test", "customer", customerId], {
+      name,
+      address
+    });
+
     context.response.redirect(`/customers/${customerId}`);
   });
 

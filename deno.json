@@ -1,7 +1,7 @@
 {
   "lock": false,
   "tasks": {
-    "start": "deno run -A  --unstable-kv --allow-env  --watch main.jsx"
+    "start": "deno run -A  --unstable-kv --allow-env  --watch main.tsx"
   },
   "lint": {
     "rules": {
@@ -34,6 +34,6 @@
       "**/node_modules"
     ],
     "include": [],
-    "entrypoint": "main.jsx"
+    "entrypoint": "main.tsx"
   }
 }

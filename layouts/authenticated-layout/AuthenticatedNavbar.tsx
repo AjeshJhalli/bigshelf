@@ -1,4 +1,4 @@
-export default function Navbar() {
+export default function AuthenticatedNavbar() {
   return (
     <nav className="navbar bg-base-200 shadow-md">
       <div class="navbar-start">

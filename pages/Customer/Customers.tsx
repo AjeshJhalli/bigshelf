@@ -1,19 +1,31 @@
-export default function Customers({ customers }) {
+import { CustomerRecord } from "../../types/types.ts";
+import addressLateral from "../../utils/addressLateral.ts";
+
+export default function Customers(
+  { customers }: { customers: Array<CustomerRecord> },
+) {
   return (
     <div className="card bg-base-100 shadow-lg flex flex-grow rounded-none">
       <div className="card-body">
         <h2 className="card-title flex justify-between">
           <span>Customers</span>
           <div className="card-actions">
-            <a className="btn btn-sm" href="/people/new">New Customer</a>
+            <a
+              className="btn btn-sm btn-primary"
+              hx-get="/customers/new"
+              hx-target="body"
+              hx-swap="beforeend"
+            >
+              New Customer
+            </a>
           </div>
         </h2>
         <div className="overflow-x-auto">
           <table className="table">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Name</th>
+                <th>Address</th>
               </tr>
             </thead>
             <tbody>
@@ -25,10 +37,10 @@ export default function Customers({ customers }) {
                   }'`}
                 >
                   <td>
-                    {customer.key[2]}
+                    {customer.value.name}
                   </td>
                   <td>
-                    {customer.value.name}
+                    {addressLateral(customer.value.address)}
                   </td>
                 </tr>
               ))}

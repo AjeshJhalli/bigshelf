@@ -1,5 +1,6 @@
 import { Middleware } from "https://deno.land/x/oak/mod.ts";
 import { decode } from "https://deno.land/x/djwt/mod.ts";
+import authUrl from "../utils/authUrl.ts";
 
 const kv = await Deno.openKv();
 
@@ -11,22 +12,18 @@ const redirectUri = Deno.env.get("APP_REDIRECT_URI");
 const scope = "openid offline_access";
 
 // Middleware to authenticate users with Azure B2C
-const azureB2CAuth: Middleware = async (ctx, next) => {
+const azureB2CAuth: Middleware = async (context, next) => {
 
-  if (ctx.request.url.pathname === "/" || ctx.request.url.pathname === "/auth/callback") {
+  if (context.request.url.pathname === "/" || context.request.url.pathname === "/auth/callback") {
     await next();
     return;
   }
 
-  const token = await ctx.cookies.get("id_token");
-  const refreshToken = await ctx.cookies.get("refresh_token");
+  const token = await context.cookies.get("id_token");
+  const refreshToken = await context.cookies.get("refresh_token");
 
   if (!token) {
-    // Redirect to Azure B2C login page
-    const authUrl =
-      `https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${policy}/oauth2/v2.0/authorize?client_id=${clientId}&response_type=code&redirect_uri=${encodeURIComponent(redirectUri)}&response_mode=query&scope=${scope}`;
-    console.log('redirect to microsoft');
-    ctx.response.redirect(authUrl);
+    context.response.redirect(authUrl);
     return;
   }
 
@@ -66,39 +63,32 @@ const azureB2CAuth: Middleware = async (ctx, next) => {
         throw new Error(tokenData.error_description || "Token refresh failed");
       }
 
-      await ctx.cookies.set("id_token", tokenData.id_token, { httpOnly: true });
-      await ctx.cookies.set("refresh_token", tokenData.refresh_token, {
+      await context.cookies.set("id_token", tokenData.id_token, { httpOnly: true });
+      await context.cookies.set("refresh_token", tokenData.refresh_token, {
         httpOnly: true,
       });
 
-      console.log(tokenData)
-
-      ctx.state.user = await setUser(tokenData.id_token);
+      context.state.user = await setUser(tokenData.id_token);
     } else {
-      console.log('set the user')
-      ctx.state.user = await setUser(token);
+      context.state.user = await setUser(token);
     }
 
     await next();
   } catch (error) {
     console.error("Authentication error:", error);
-    ctx.response.status = 401;
-    ctx.response.body = { error: "Authentication required" };
+    context.response.status = 401;
+    context.response.body = { error: "Authentication required" };
   }
 };
 
 // Route to handle Azure B2C callback
-const handleAzureB2CCallback: Middleware = async (ctx) => {
+const handleAzureB2CCallback: Middleware = async (context) => {
 
-  console.log("I am ever reached")
-
-  const code = ctx.request.url.searchParams.get("code");
-
-  console.log("scoopy")
+  const code = context.request.url.searchParams.get("code");
 
   if (!code) {
-    ctx.response.status = 400;
-    ctx.response.body = { error: "Code not found" };
+    context.response.status = 400;
+    context.response.body = { error: "Code not found" };
     console.log("no code")
     return;
   }
@@ -121,34 +111,25 @@ const handleAzureB2CCallback: Middleware = async (ctx) => {
     },
   );
 
-  console.log('bruh monument')
-
   const tokenData = await tokenResponse.json();
   if (!tokenResponse.ok) {
-    ctx.response.status = 401;
-    ctx.response.body = {
+    context.response.status = 401;
+    context.response.body = {
       error: tokenData.error_description || "Token exchange failed",
     };
-    console.log("token exchange failed")
     return;
   }
 
-  await ctx.cookies.set("refresh_token", tokenData.refresh_token, {
+  await context.cookies.set("refresh_token", tokenData.refresh_token, {
     httpOnly: true,
   });
-  await ctx.cookies.set("id_token", tokenData.id_token, { httpOnly: true });
+  await context.cookies.set("id_token", tokenData.id_token, { httpOnly: true });
 
-  console.log(tokenData);
-
-  console.log("redirect to dashboard")
-  ctx.response.redirect("/dashboard");
+  context.response.redirect("/dashboard");
 };
 
 async function setUser(idToken: string) {
   const payload = decode(idToken)[1];
-
-  console.log('id:' + idToken);
-  console.log(payload);
 
   const oid = payload.oid;
   const firstName = payload.given_name;

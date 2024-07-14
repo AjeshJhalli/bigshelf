@@ -1,11 +1,4 @@
-export type TypePerson = {
-  id: number;
-  firstName: string;
-  lastName: string;
-  jobTitle: string;
-  gender: string;
-  dob: string;
-};
+import { JSX } from "preact/jsx-runtime";
 
 export type User = {
   key: ["user", string];
@@ -18,12 +11,17 @@ export type User = {
   };
 };
 
-type oneToNine = "1" | "2" | "3" |"4" | "5" | "6" | "7" | "8" | "9";
+type oneToNine = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 type zeroToNine = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 
-export type YYYY = `19${zeroToNine}${zeroToNine}` | `20${zeroToNine}${zeroToNine}`;
+export type YYYY =
+  | `19${zeroToNine}${zeroToNine}`
+  | `20${zeroToNine}${zeroToNine}`;
 export type MM = `0${oneToNine}` | `1${"0" | "1" | "2"}`;
-export type DD = `${0}${oneToNine}` | `${"1" | "2"}${zeroToNine}` | `3${"0" | "1"}`;
+export type DD =
+  | `${0}${oneToNine}`
+  | `${"1" | "2"}${zeroToNine}`
+  | `3${"0" | "1"}`;
 
 export type Year =
   | `19${zeroToNine}${zeroToNine}`
@@ -75,3 +73,50 @@ export type Day =
   | "31";
 
 export type DateString = `${YYYY}-${MM}-${DD}`;
+
+export type Address = {
+  line1: string;
+  line2: string;
+  city: string;
+  country: string;
+  postcode: string;
+};
+
+export type CustomerValue = {
+  name: string;
+  address: Address;
+};
+
+export type CustomerRecord = {
+  key: ["bigshelf_test", "customer", string];
+  value: CustomerValue;
+  versionstamp: string | null;
+};
+
+export type PersonValue = {
+  firstName: string;
+  lastName: string;
+  jobTitle: string;
+  gender: string;
+  dob: string;
+  email?: string;
+};
+
+export type PersonRecord = {
+  key: ["bigshelf_test", "person", string, string];
+  value: PersonValue;
+  versionstamp: string | null;
+};
+
+export type Tab = {
+  displayName: string;
+  name: string;
+  content: JSX.Element;
+  href: string;
+  selected: true;
+} | {
+  displayName: string;
+  name: string;
+  href: string;
+  selected?: false;
+};

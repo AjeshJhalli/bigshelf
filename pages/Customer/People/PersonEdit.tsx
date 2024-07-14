@@ -1,7 +1,8 @@
 import EditForm, { FormField } from "../../../components/EditForm.tsx";
+import { PersonRecord } from "../../../types/types.ts";
 import decodeDate from "../../../utils/decodeDate.ts";
 
-export default function PersonEdit({ person }) {
+export default function PersonEdit({ person }: { person: PersonRecord }) {
   const { year, month, day } = decodeDate(person.value.dob || "");
 
   const fields: Array<FormField> = [

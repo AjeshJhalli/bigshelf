@@ -1,7 +1,15 @@
-import { CustomerBookingsTab, CustomerPeopleTab } from "./CustomerTabs.tsx";
+import { CustomerPeopleTab } from "./CustomerTabs.tsx";
 import Tabs from "../../components/Tabs.tsx";
+import { CustomerRecord } from "../../types/types.ts";
+import { PersonRecord } from "../../types/types.ts";
+import { Address } from "../../types/types.ts";
 
-export default function Customer({ customer, people }) {
+export default function Customer(
+  { customer, people }: {
+    customer: CustomerRecord;
+    people: Array<PersonRecord>;
+  },
+) {
   return (
     <div className="card bg-base-100 shadow-xl rounded-none h-full">
       <div className="card-body h-full">
@@ -10,31 +18,44 @@ export default function Customer({ customer, people }) {
             <h2 className="card-title py-3">
               {customer.value.name}
             </h2>
-            <a
-              className="btn btn-primary btn-sm"
-              href={`/customers/${customer.key[2]}/edit`}
-            >
-              Edit
-            </a>
+            <div className="flex gap-x-6">
+              <button
+                className="btn btn-primary btn-sm"
+                hx-get={`/customers/${customer.key[2]}/edit`}
+                hx-target="body"
+                hx-swap="beforeend"
+              >
+                Edit
+              </button>
+              <button
+                className="btn btn-primary btn-sm"
+                hx-delete={`/customers/${customer.key[2]}`}
+                hx-confirm="Are you sure you want to delete this customer?"
+              >
+                Delete
+              </button>
+            </div>
           </div>
           <CustomerAddress address={customer.value.address} />
         </div>
         <Tabs
-          selectedTabName="people"
           tabsId="customer-people-tab"
           tabs={[
             {
               displayName: "People",
               name: "people",
-              content: CustomerPeopleTab,
-              data: { people },
+              content: (
+                <CustomerPeopleTab
+                  customerId={customer.key[2]}
+                  people={people}
+                />
+              ),
               href: `/customers/${customer.key[2]}/tab-people`,
+              selected: true,
             },
             {
               displayName: "Bookings",
               name: "bookings",
-              content: CustomerBookingsTab,
-              data: {},
               href: `/customers/${customer.key[2]}/tab-bookings`,
             },
           ]}
@@ -44,7 +65,7 @@ export default function Customer({ customer, people }) {
   );
 }
 
-function CustomerAddress({ address }: any) {
+function CustomerAddress({ address }: { address: Address }) {
   return (
     <address className="w-72">
       <div>{address.line1}</div>
@@ -53,38 +74,5 @@ function CustomerAddress({ address }: any) {
       <div>{address.country}</div>
       <div>{address.postcode}</div>
     </address>
-  );
-}
-
-function CustomerKeyContacts({ people }: any) {
-  return (
-    <div className="overflow-x-auto bg-base-100">
-      <table className="table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Job Title / Contact Type</th>
-            <th>Email</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr className="hover">
-            <td>Olivia Rodrigo</td>
-            <td>Key contact</td>
-            <td>ajeshjhalli@gmail.com</td>
-          </tr>
-          <tr className="hover">
-            <td>Info</td>
-            <td></td>
-            <td>ajeshjhalli@gmail.com</td>
-          </tr>
-          <tr className="hover">
-            <td>Accounts</td>
-            <td></td>
-            <td>ajeshjhalli@gmail.com</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
   );
 }

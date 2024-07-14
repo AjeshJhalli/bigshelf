@@ -1,15 +1,16 @@
 import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
+import { Tab } from "../types/types.ts";
 
 export default function Tabs(
-  { tabsId, tabs, selectedTabName }: {
+  { tabsId, tabs }: {
     tabsId: string;
-    tabs: Array<any>;
-    selectedTabName: string;
+    tabs: Array<Tab>;
   },
 ) {
   function tabContent() {
-    const tab = tabs.find((t) => t.name === selectedTabName);
-    return tab.content(tab.data);
+    const tab = tabs.find(t => t.selected);
+    if (!tab || !tab.selected) return null;
+    return tab.content;
   }
 
   return (
@@ -18,7 +19,7 @@ export default function Tabs(
         {tabs.map((tab) => (
           <li
             className={classNames("tab", {
-              "tab-active": selectedTabName === tab.name,
+              "tab-active": tab.selected,
             })}
             hx-get={tab.href}
             hx-target={`#${tabsId}`}

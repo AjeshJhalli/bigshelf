@@ -10,7 +10,6 @@ import {
 } from "./middleware/authenticate.ts";
 
 import routerCustomers from "./routers/routerCustomers.tsx";
-import routerPublic from "./routers/routerPublic.js";
 import routerDashboard from "./routers/routerDashboard.tsx";
 
 const router = new Router();
@@ -18,12 +17,10 @@ const app = new Application();
 
 router
   .get("/", (context) => {
-    console.log(context)
     context.response.body = render(<Index />);
   })
   .get("/auth/callback", handleAzureB2CCallback);
 
-router.use("/public", routerPublic.routes());
 router.use("/customers", routerCustomers.routes());
 router.use("/dashboard", routerDashboard.routes());
 

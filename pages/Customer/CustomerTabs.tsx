@@ -1,4 +1,6 @@
-export function CustomerPeopleTab({ people }) {
+import { PersonRecord } from "../../types/types.ts";
+
+export function CustomerPeopleTab({ people, customerId }: { people: Array<PersonRecord>, customerId: string }) {
   const defaultEmail = () => "ajeshjhalli@gmail.com"; //(emails: Array<any>) => emails.find((email: any) => email.default).value || "";
 
   return (
@@ -12,8 +14,8 @@ export function CustomerPeopleTab({ people }) {
           <th>Email</th>
           <th className="flex justify-end">
             <button
-              className="btn btn-sm btn-primary m-0"
-              hx-get={`/customers/${people[0].key[2]}/people/new`}
+              className="btn btn-sm btn-primary"
+              hx-get={`/customers/${customerId}/people/new`}
               hx-target="body"
               hx-swap="beforeend"
             >
@@ -26,7 +28,7 @@ export function CustomerPeopleTab({ people }) {
         {people.map((person) => (
           <tr
             className="hover"
-            hx-get={`/customers/${person.key[2]}/people/${person.key[3]}/edit`}
+            hx-get={`/customers/${customerId}/people/${person.key[3]}/edit`}
             hx-target="body"
             hx-swap="beforeend"
           >
@@ -34,7 +36,7 @@ export function CustomerPeopleTab({ people }) {
             <td>{person.value.dob}</td>
             <td>{person.value.gender}</td>
             <td>{person.value.jobTitle}</td>
-            <td>{defaultEmail(person.value.emails)}</td>
+            <td>{defaultEmail()}</td>
             <td></td>
           </tr>
         ))}
@@ -43,6 +45,6 @@ export function CustomerPeopleTab({ people }) {
   );
 }
 
-export function CustomerBookingsTab({ bookings }) {
+export function CustomerBookingsTab() {
   return <p>Bookings module not yet implemented</p>;
 }
