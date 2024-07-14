@@ -345,14 +345,18 @@ routerCustomer
     const dobMonth = data.get("dobMonth");
     const dobYear = data.get("dobYear");
 
+    let dob;
+
     if (
       !(typeof dobDay === "string" && typeof dobMonth === "string" &&
         typeof dobYear === "string")
     ) {
-      return;
+      dob = "";
+    } else {
+      dob = encodeDate(dobYear, dobMonth, dobDay);
     }
 
-    const dob = encodeDate(dobYear, dobMonth, dobDay);
+    
 
     // Validate the data here
 
@@ -392,6 +396,27 @@ routerCustomer
     });
 
     context.response.redirect(`/customers/${customerId}`);
+  })
+  .delete("/", async (context) => {
+    const customerId = context.params.customerId as string;
+
+    const customer = await kv.get<CustomerRecord>(["bigshelf_test", "customer", customerId]);
+    if (customer.value === null) {
+      return;
+    }
+
+    const deleteCustomerTransaction = kv.atomic()
+      .check(customer)
+      .delete(["bigshelf_test", "customer", customerId]);
+
+    for await (const person of kv.list({ prefix: ["bigshelf_test", "person", customerId] })) {
+      console.log(person);
+      deleteCustomerTransaction.delete(person.key);
+    };
+
+    await deleteCustomerTransaction.commit();
+
+    context.response.headers.append("HX-Redirect", "/customers");
   });
 
 export default routerCustomer;

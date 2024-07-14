@@ -2,7 +2,7 @@ import { cuid } from "https://deno.land/x/cuid@v1.0.0/index.js";
 
 const kv = await Deno.openKv();
 
-const records = await kv.list({ prefix: ["bigshelf_test"] });
+const records = await kv.list({ prefix: [] });
 
 let record = await records.next();
 while (record) {
