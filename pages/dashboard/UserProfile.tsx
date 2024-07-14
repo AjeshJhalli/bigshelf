@@ -22,11 +22,7 @@ export default function UserProfile({ user }) {
               <tr>
                 <th>DOB</th>
                 <td>
-                  {new Date(user.value.dob).toLocaleString("en-GB", {
-                    year: "numeric",
-                    month: "numeric",
-                    day: "numeric",
-                  })}
+                  {user.value.dob}
                 </td>
               </tr>
               <tr>

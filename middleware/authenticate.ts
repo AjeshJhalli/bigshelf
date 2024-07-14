@@ -137,7 +137,7 @@ async function setUser(idToken: string) {
 
   let user = await kv.get(["user", oid]);
 
-  if (!user) {
+  if (!user.versionstamp) {
     await kv.set(["user", oid], {
       firstName,
       lastName
