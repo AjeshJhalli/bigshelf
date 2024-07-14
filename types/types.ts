@@ -99,7 +99,7 @@ export type PersonValue = {
   jobTitle: string;
   gender: string;
   dob: string;
-  email?: string;
+  emailAddress: string;
 };
 
 export type PersonRecord = {

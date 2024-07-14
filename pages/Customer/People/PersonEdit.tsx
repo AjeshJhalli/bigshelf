@@ -48,6 +48,12 @@ export default function PersonEdit({ person }: { person: PersonRecord }) {
       month,
       year,
     },
+    {
+      type: "text",
+      name: "emailAddress",
+      displayName: "Email",
+      value: person.value.emailAddress || "",
+    },
   ];
 
   return (

@@ -47,7 +47,7 @@ routerCustomer
       [{
         displayName: "Customers",
         href: "/customers",
-      },{
+      }, {
         displayName: customerRecord.value.name,
         href: `/customers/${customerId}`,
       }],
@@ -231,6 +231,12 @@ routerCustomer
         month,
         year,
       },
+      {
+        type: "text",
+        name: "emailAddress",
+        displayName: "Email",
+        value: person.value.emailAddress || "",
+      },
     ];
 
     context.response.body = render(
@@ -253,6 +259,7 @@ routerCustomer
     const lastName = data.get("lastName");
     const jobTitle = data.get("jobTitle");
     const gender = data.get("gender");
+    const emailAddress = data.get("emailAddress");
 
     const dobDay = data.get("dobDay");
     const dobMonth = data.get("dobMonth");
@@ -283,6 +290,7 @@ routerCustomer
       jobTitle,
       gender,
       dob,
+      emailAddress
     });
 
     context.response.redirect(`/customers/${customerId}`);
@@ -332,6 +340,12 @@ routerCustomer
         day: "",
         month: "",
         year: "",
+      },
+      {
+        type: "text",
+        name: "emailAddress",
+        displayName: "Email",
+        value: "",
       },
     ];
 

@@ -1,8 +1,6 @@
 import { PersonRecord } from "../../types/types.ts";
 
 export function CustomerPeopleTab({ people, customerId }: { people: Array<PersonRecord>, customerId: string }) {
-  const defaultEmail = () => "ajeshjhalli@gmail.com"; //(emails: Array<any>) => emails.find((email: any) => email.default).value || "";
-
   return (
     <table className="table border w-full">
       <thead>
@@ -36,7 +34,7 @@ export function CustomerPeopleTab({ people, customerId }: { people: Array<Person
             <td>{person.value.dob}</td>
             <td>{person.value.gender}</td>
             <td>{person.value.jobTitle}</td>
-            <td>{defaultEmail()}</td>
+            <td>{person.value.emailAddress}</td>
             <td></td>
           </tr>
         ))}
