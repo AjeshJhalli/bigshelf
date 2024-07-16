@@ -11,7 +11,7 @@ export default function AuthenticatedLayout(
   },
 ) {
   return (
-    <html data-theme="light">
+    <html data-theme="dark">
       <Head />
       <body className="flex flex-col bg-base-300 h-screen">
         <div className="drawer">
