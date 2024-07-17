@@ -2,7 +2,7 @@ import { PersonRecord } from "../../types/types.ts";
 
 export function CustomerPeopleTab({ people, customerId }: { people: Array<PersonRecord>, customerId: string }) {
   return (
-    <table className="table border w-full">
+    <table className="table w-full">
       <thead>
         <tr>
           <th>Name</th>
