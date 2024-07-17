@@ -14,7 +14,7 @@ const scope = "openid offline_access";
 // Middleware to authenticate users with Azure B2C
 const azureB2CAuth: Middleware = async (context, next) => {
 
-  if (context.request.url.pathname === "/" || context.request.url.pathname === "/auth/callback") {
+  if (context.request.url.pathname === "/auth/callback") {
     await next();
     return;
   }
@@ -23,8 +23,13 @@ const azureB2CAuth: Middleware = async (context, next) => {
   const refreshToken = await context.cookies.get("refresh_token");
 
   if (!token) {
-    context.response.redirect(authUrl);
-    return;
+    if (context.request.url.pathname === "/") {
+      await next();
+      return;
+    } else {
+      context.response.redirect("/");
+      return;
+    }
   }
 
   try {
@@ -69,11 +74,18 @@ const azureB2CAuth: Middleware = async (context, next) => {
       });
 
       context.state.user = await setUser(tokenData.id_token);
+
     } else {
       context.state.user = await setUser(token);
     }
 
-    await next();
+    if (context.request.url.pathname === "/") {
+      context.response.redirect("/dashboard");
+      return;
+    } else {
+      await next();
+    }
+
   } catch (error) {
     console.error("Authentication error:", error);
     context.response.status = 401;

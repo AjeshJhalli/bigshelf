@@ -15,7 +15,7 @@ export default function AuthenticatedSidebar() {
           <a href="/customers">Customers</a>
         </li>
         <li>
-          <a className="btn btn-primary btn-sm mt-10" href="/auth/signout">Sign Out</a>
+          <a className="btn btn-primary btn-sm mt-10" href="/auth/sign-out">Sign Out</a>
         </li>
       </ul>
     </div>

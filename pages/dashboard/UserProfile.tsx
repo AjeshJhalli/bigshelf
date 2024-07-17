@@ -2,14 +2,14 @@ export default function UserProfile({ user }) {
   return (
     <div
       id="user-profile-data-card"
-      className="card bg-base-100 shadow-xl rounded-none"
+      className="card bg-base-100 shadow-xl rounded-none max-w-[600px]"
     >
       <div className="card-body">
         <h2 className="card-title">
           User Profile
         </h2>
         <div className="overflow-x-auto">
-          <table className="table table-sm">
+          <table className="table table-sm border-separate">
             <tbody>
               <tr>
                 <th>Full Name</th>

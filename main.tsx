@@ -19,6 +19,12 @@ router
   .get("/", (context) => {
     context.response.body = render(<Index />);
   })
+  .get("/auth/sign-out", async (context) => {
+
+    await context.cookies.clear({});
+
+    context.response.redirect(`https://${Deno.env.get("TENANT_NAME")}.b2clogin.com/${Deno.env.get("TENANT_NAME")}.onmicrosoft.com/${Deno.env.get("POLICY")}/oauth2/v2.0/logout?post_logout_redirect_uri=${Deno.env.get("POST_SIGNOUT_REDIRECT_URI")}`);
+  })
   .get("/auth/callback", handleAzureB2CCallback);
 
 router.use("/customers", routerCustomers.routes());

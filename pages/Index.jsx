@@ -5,7 +5,7 @@ export default function Index() {
   return (
     <html>
       <Head />
-      <body data-theme="light">
+      <body data-theme="dark">
         <div className="hero bg-base-200 min-h-screen">
           <div className="hero-content text-center">
             <div className="max-w-md">
