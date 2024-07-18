@@ -51,7 +51,7 @@ routerCustomer
         displayName: customerRecord.value.name,
         href: `/customers/${customerId}`,
       }],
-      "customers"
+      "customers",
     );
   })
   .get("/edit", async (context) => {
@@ -291,7 +291,7 @@ routerCustomer
       jobTitle,
       gender,
       dob,
-      emailAddress
+      emailAddress,
     });
 
     context.response.redirect(`/customers/${customerId}`);
@@ -367,6 +367,7 @@ routerCustomer
     const lastName = data.get("lastName");
     const jobTitle = data.get("jobTitle");
     const gender = data.get("gender");
+    const emailAddress = data.get("emailAddress");
 
     const dobDay = data.get("dobDay");
     const dobMonth = data.get("dobMonth");
@@ -393,6 +394,7 @@ routerCustomer
       jobTitle,
       gender,
       dob,
+      emailAddress
     });
 
     context.response.redirect(`/customers/${customerId}`);
@@ -412,8 +414,6 @@ routerCustomer
     };
 
     // Validate the data here
-
-    console.log(data);
 
     await kv.set(["bigshelf_test", "customer", customerId], {
       name,
