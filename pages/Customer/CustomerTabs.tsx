@@ -1,4 +1,5 @@
 import { PersonRecord } from "../../types/types.ts";
+import formatDate from "../../utils/formatDate.ts";
 
 export function CustomerPeopleTab({ people, customerId }: { people: Array<PersonRecord>, customerId: string }) {
   return (
@@ -31,7 +32,7 @@ export function CustomerPeopleTab({ people, customerId }: { people: Array<Person
             hx-swap="beforeend"
           >
             <td>{`${person.value.firstName} ${person.value.lastName}`}</td>
-            <td>{person.value.dob}</td>
+            <td>{formatDate(person.value.dob)}</td>
             <td>{person.value.gender}</td>
             <td>{person.value.jobTitle}</td>
             <td>{person.value.emailAddress}</td>

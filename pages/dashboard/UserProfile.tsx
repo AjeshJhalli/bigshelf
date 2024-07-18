@@ -1,3 +1,5 @@
+import formatDate from "../../utils/formatDate.ts";
+
 export default function UserProfile({ user }) {
   return (
     <div
@@ -22,7 +24,7 @@ export default function UserProfile({ user }) {
               <tr>
                 <th>DOB</th>
                 <td>
-                  {user.value.dob}
+                  {formatDate(user.value.dob)}
                 </td>
               </tr>
               <tr>
