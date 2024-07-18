@@ -52,6 +52,7 @@ routerCustomer
         href: `/customers/${customerId}`,
       }],
       "customers",
+      context.state.user.initials,
     );
   })
   .get("/edit", async (context) => {
@@ -114,59 +115,6 @@ routerCustomer
         deleteHref={`/customers/${customerRecord.key[2]}`}
         deleteConfirmation="Are you sure you want to delete this customer?"
         title=""
-      />,
-    );
-  })
-  .get("/tab-people", async (context) => {
-    const customerId = context.params.customerId as string;
-    const people = await Array.fromAsync(
-      kv.list<PersonValue>({ prefix: ["bigshelf_test", "person", customerId] }),
-    );
-
-    context.response.body = render(
-      <Tabs
-        tabsId="customer-tabs"
-        tabs={[
-          {
-            displayName: "People",
-            name: "people",
-            content: (
-              <CustomerPeopleTab
-                customerId={customerId}
-                people={people as Array<PersonRecord>}
-              />
-            ),
-            href: `/customers/${customerId}/tab-people`,
-            selected: true,
-          },
-          {
-            displayName: "Bookings",
-            name: "bookings",
-            href: `/customers/${customerId}/tab-bookings`,
-          },
-        ]}
-      />,
-    );
-  })
-  .get("/tab-bookings", (context) => {
-    const customerId = context.params.customerId;
-    context.response.body = render(
-      <Tabs
-        tabsId="customer-tabs"
-        tabs={[
-          {
-            displayName: "People",
-            name: "people",
-            href: `/customers/${customerId}/tab-people`,
-          },
-          {
-            displayName: "Bookings",
-            name: "bookings",
-            content: <CustomerBookingsTab />,
-            href: `/customers/${customerId}/tab-bookings`,
-            selected: true,
-          },
-        ]}
       />,
     );
   })
@@ -394,7 +342,7 @@ routerCustomer
       jobTitle,
       gender,
       dob,
-      emailAddress
+      emailAddress,
     });
 
     context.response.redirect(`/customers/${customerId}`);

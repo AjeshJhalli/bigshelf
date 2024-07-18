@@ -10,13 +10,23 @@ const routerDashboard = new Router();
 
 routerDashboard
   .get("/", (context) => {
-    context.response.body = r(<Dashboard user={context.state.user} />, [{
-      displayName: "Dashboard",
-      href: "/dashboard",
-    }], "dashboard");
+    context.response.body = r(
+      <Dashboard user={context.state.user} />,
+      [{
+        displayName: "Dashboard",
+        href: "/dashboard",
+      }],
+      "dashboard",
+      context.state.user.initials,
+    );
   })
   .get("/me/edit", (context) => {
-    context.response.body = r(<UserProfileEdit user={context.state.user} />, [], "dashboard");
+    context.response.body = r(
+      <UserProfileEdit user={context.state.user} />,
+      [],
+      "dashboard",
+      context.state.user.initials,
+    );
   })
   .post("/me/edit", async (context) => {
     const user = context.state.user;

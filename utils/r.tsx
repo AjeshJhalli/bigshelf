@@ -7,9 +7,10 @@ export default function r(
   component: JSX.Element,
   breadcrumbs: Array<Breadcrumb> = [],
   activeModule: string,
+  initials: string,
 ) {
   return render(
-    <AuthenticatedLayout breadcrumbs={breadcrumbs} activeModule={activeModule}>
+    <AuthenticatedLayout breadcrumbs={breadcrumbs} activeModule={activeModule} initials={initials}>
       {component}
     </AuthenticatedLayout>,
   );

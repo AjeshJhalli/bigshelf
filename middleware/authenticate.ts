@@ -13,7 +13,6 @@ const scope = "openid offline_access";
 
 // Middleware to authenticate users with Azure B2C
 const azureB2CAuth: Middleware = async (context, next) => {
-
   if (context.request.url.pathname === "/auth/callback") {
     await next();
     return;
@@ -41,7 +40,7 @@ const azureB2CAuth: Middleware = async (context, next) => {
     if (exp < now) {
       // Token is expired, try to refresh
       if (!refreshToken) {
-        console.log("no refresh token")
+        console.log("no refresh token");
         throw new Error("Refresh token not found");
       }
 
@@ -64,19 +63,28 @@ const azureB2CAuth: Middleware = async (context, next) => {
 
       const tokenData = await tokenResponse.json();
       if (!tokenResponse.ok) {
-        console.log("could not refresh")
+        console.log("could not refresh");
         throw new Error(tokenData.error_description || "Token refresh failed");
       }
 
-      await context.cookies.set("id_token", tokenData.id_token, { httpOnly: true });
+      await context.cookies.set("id_token", tokenData.id_token, {
+        httpOnly: true,
+      });
       await context.cookies.set("refresh_token", tokenData.refresh_token, {
         httpOnly: true,
       });
 
       context.state.user = await setUser(tokenData.id_token);
-
+      console.log(context.state.user);
+      context.state.user.initials = `${context.state.user.value.firstName[0]}${
+        context.state.user.value.lastName[0]
+      }`;
     } else {
       context.state.user = await setUser(token);
+      console.log(context.state.user);
+      context.state.user.initials = `${context.state.user.value.firstName[0]}${
+        context.state.user.value.lastName[0]
+      }`;
     }
 
     if (context.request.url.pathname === "/") {
@@ -85,7 +93,6 @@ const azureB2CAuth: Middleware = async (context, next) => {
     } else {
       await next();
     }
-
   } catch (error) {
     console.error("Authentication error:", error);
     context.response.status = 401;
@@ -95,13 +102,12 @@ const azureB2CAuth: Middleware = async (context, next) => {
 
 // Route to handle Azure B2C callback
 const handleAzureB2CCallback: Middleware = async (context) => {
-
   const code = context.request.url.searchParams.get("code");
 
   if (!code) {
     context.response.status = 400;
     context.response.body = { error: "Code not found" };
-    console.log("no code")
+    console.log("no code");
     return;
   }
 
@@ -152,7 +158,7 @@ async function setUser(idToken: string) {
   if (!user.versionstamp) {
     await kv.set(["user", oid], {
       firstName,
-      lastName
+      lastName,
     });
     user = await kv.get(["user", oid]);
   }

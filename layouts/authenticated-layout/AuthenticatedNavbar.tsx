@@ -1,7 +1,7 @@
 import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
 
 export default function AuthenticatedNavbar(
-  { activeModule }: { activeModule: string },
+  { activeModule, initials }: { activeModule: string, initials: string },
 ) {
   return (
     <nav className="navbar bg-base-200 shadow-md">
@@ -62,7 +62,7 @@ export default function AuthenticatedNavbar(
           role="button"
           class="btn btn-ghost text-white btn-circle avatar bg-red-400"
         >
-          AJ
+          {initials}
         </div>
       </div>
     </nav>
