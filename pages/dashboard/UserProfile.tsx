@@ -33,12 +33,14 @@ export default function UserProfile({ user }) {
           </table>
         </div>
         <div className="card-actions justify-end">
-          <a
+          <button
             className="btn btn-primary btn-sm"
-            href="/dashboard/me/edit"
+            hx-get="/dashboard/me/edit"
+            hx-target="body"
+            hx-swap="beforeend"
           >
             Edit
-          </a>
+          </button>
         </div>
       </div>
     </div>
