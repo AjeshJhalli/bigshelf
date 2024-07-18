@@ -1,8 +1,16 @@
-import { render } from 'https://cdn.skypack.dev/preact-render-to-string@v5.1.12';
-import AuthenticatedLayout from '../layouts/authenticated-layout/AuthenticatedLayout.tsx';
+import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
+import AuthenticatedLayout from "../layouts/authenticated-layout/AuthenticatedLayout.tsx";
 import { JSX } from "preact/jsx-runtime";
 import { Breadcrumb } from "../types/types.ts";
 
-export default function r(component: JSX.Element, breadcrumbs: Array<Breadcrumb> = []) {
-  return render(<AuthenticatedLayout breadcrumbs={breadcrumbs}>{component}</AuthenticatedLayout>);
+export default function r(
+  component: JSX.Element,
+  breadcrumbs: Array<Breadcrumb> = [],
+  activeModule: string,
+) {
+  return render(
+    <AuthenticatedLayout breadcrumbs={breadcrumbs} activeModule={activeModule}>
+      {component}
+    </AuthenticatedLayout>,
+  );
 }

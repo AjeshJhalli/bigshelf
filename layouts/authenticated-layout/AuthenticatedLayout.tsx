@@ -5,9 +5,10 @@ import AuthenticatedSidebar from "./AuthenticatedSidebar.tsx";
 import { Breadcrumb } from "../../types/types.ts";
 
 export default function AuthenticatedLayout(
-  { children, breadcrumbs = [] }: {
+  { children, breadcrumbs = [], activeModule }: {
     children: JSX.Element;
     breadcrumbs: Array<Breadcrumb>;
+    activeModule: string;
   },
 ) {
   return (
@@ -17,7 +18,7 @@ export default function AuthenticatedLayout(
         <div className="drawer">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content">
-            <AuthenticatedNavbar />
+            <AuthenticatedNavbar activeModule={activeModule} />
             {breadcrumbs.length > 0 && (
               <div className="breadcrumbs text-sm px-3 pt-6">
                 <ul>

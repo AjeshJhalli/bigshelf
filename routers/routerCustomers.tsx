@@ -24,7 +24,7 @@ routerCustomers
     context.response.body = r(<Customers customers={customerRecords} />,  [{
       displayName: "Customers",
       href: "/customers",
-    }]);
+    }], "customers");
   })
   .get("/new", (context) => {
     const fields: Array<FormField> = [

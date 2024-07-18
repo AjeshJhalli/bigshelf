@@ -51,6 +51,7 @@ routerCustomer
         displayName: customerRecord.value.name,
         href: `/customers/${customerId}`,
       }],
+      "customers"
     );
   })
   .get("/edit", async (context) => {

@@ -1,9 +1,13 @@
-export default function AuthenticatedNavbar() {
+import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
+
+export default function AuthenticatedNavbar(
+  { activeModule }: { activeModule: string },
+) {
   return (
     <nav className="navbar bg-base-200 shadow-md">
       <div class="navbar-start">
         <label
-          class="btn btn-square btn-ghost drawer-button"
+          class="lg:hidden flex btn btn-square btn-ghost drawer-button"
           htmlFor="my-drawer"
         >
           <svg
@@ -25,6 +29,33 @@ export default function AuthenticatedNavbar() {
           <h1>Bigshelf</h1>
         </a>
       </div>
+      <ul
+        tabIndex={0}
+        className="lg:flex hidden menu menu-horizontal w-full justify-center"
+      >
+        <li>
+          <a
+            className={classNames({ "active": activeModule === "dashboard" })}
+            href="/dashboard"
+          >
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a
+            className={classNames({ "active": activeModule === "customers" })}
+            href="/customers"
+          >
+            Customers
+          </a>
+        </li>
+        <li className="disabled">
+          <a>Module 3</a>
+        </li>
+        <li className="disabled">
+          <a>Module 4</a>
+        </li>
+      </ul>
       <div class="navbar-end flex gap-x-6 px-6 items-center">
         <div
           tabindex="0"
