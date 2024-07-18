@@ -1,5 +1,4 @@
-import { CustomerPeopleTab } from "./CustomerTabs.tsx";
-import Tabs from "../../components/Tabs.tsx";
+import CustomerPeople from "./CustomerPeople.tsx";
 import { CustomerRecord } from "../../types/types.ts";
 import { PersonRecord } from "../../types/types.ts";
 import { Address } from "../../types/types.ts";
@@ -31,7 +30,7 @@ export default function Customer(
           </div>
           <CustomerAddress address={customer.value.address} />
         </div>
-        <CustomerPeopleTab
+        <CustomerPeople
           customerId={customer.key[2]}
           people={people}
         />

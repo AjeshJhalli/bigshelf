@@ -1,7 +1,7 @@
 import { PersonRecord } from "../../types/types.ts";
 import formatDate from "../../utils/formatDate.ts";
 
-export function CustomerPeopleTab({ people, customerId }: { people: Array<PersonRecord>, customerId: string }) {
+export default function CustomerPeople({ people, customerId }: { people: Array<PersonRecord>, customerId: string }) {
   return (
     <table className="table w-full">
       <thead>
@@ -42,8 +42,4 @@ export function CustomerPeopleTab({ people, customerId }: { people: Array<Person
       </tbody>
     </table>
   );
-}
-
-export function CustomerBookingsTab() {
-  return <p>Bookings module not yet implemented</p>;
 }

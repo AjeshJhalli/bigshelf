@@ -5,8 +5,7 @@ import Customers from "../pages/Customer/Customers.tsx";
 import r from "../utils/r.tsx";
 import { CustomerValue } from "../types/types.ts";
 import { CustomerRecord } from "../types/types.ts";
-import EditFormModal from "../components/EditFormModal.tsx";
-import { FormField } from "../components/EditForm.tsx";
+import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
 import createCustomer from "../utils/createCustomer.ts";
 
 const kv = await Deno.openKv();

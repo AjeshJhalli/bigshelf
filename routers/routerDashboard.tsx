@@ -3,8 +3,7 @@ import r from "../utils/r.tsx";
 import Dashboard from "../pages/dashboard/Dashboard.tsx";
 import encodeDate from "../utils/encodeDate.ts";
 import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
-import { FormField } from "../components/EditForm.tsx";
-import EditFormModal from "../components/EditFormModal.tsx";
+import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
 import { DateString } from "../types/types.ts";
 import decodeDate from "../utils/decodeDate.ts";
 

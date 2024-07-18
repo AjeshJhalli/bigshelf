@@ -2,20 +2,14 @@ import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12"
 import { Router } from "jsr:@oak/oak/router";
 import r from "../utils/r.tsx";
 import Customer from "../pages/Customer/Customer.tsx";
-import { CustomerPeopleTab } from "../pages/Customer/CustomerTabs.tsx";
-import { CustomerBookingsTab } from "../pages/Customer/CustomerTabs.tsx";
-import Tabs from "../components/Tabs.tsx";
-import EditFormModal from "../components/EditFormModal.tsx";
-import { FormField } from "../components/EditFormModal.tsx";
+import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
 import decodeDate from "../utils/decodeDate.ts";
 import encodeDate from "../utils/encodeDate.ts";
 import { cuid } from "https://deno.land/x/cuid@v1.0.0/index.js";
 import {
-  Address,
   CustomerRecord,
   CustomerValue,
   DateString,
-  PersonRecord,
   PersonValue,
 } from "../types/types.ts";
 
