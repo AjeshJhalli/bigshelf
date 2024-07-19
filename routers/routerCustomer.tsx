@@ -5,13 +5,13 @@ import Customer from "../pages/Customer/Customer.tsx";
 import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
 import decodeDate from "../utils/decodeDate.ts";
 import encodeDate from "../utils/encodeDate.ts";
-import { cuid } from "https://deno.land/x/cuid@v1.0.0/index.js";
 import {
   CustomerRecord,
   CustomerValue,
   DateString,
   PersonValue,
 } from "../types/types.ts";
+import createPerson from "../utils/createPerson.ts";
 
 const kv = await Deno.openKv();
 
@@ -305,15 +305,15 @@ routerCustomer
 
     const data = await context.request.body.formData();
 
-    const firstName = data.get("firstName");
-    const lastName = data.get("lastName");
-    const jobTitle = data.get("jobTitle");
-    const gender = data.get("gender");
-    const emailAddress = data.get("emailAddress");
+    const firstName = data.get("firstName") as string;
+    const lastName = data.get("lastName") as string;
+    const jobTitle = data.get("jobTitle") as string;
+    const gender = data.get("gender") as string;
+    const emailAddress = data.get("emailAddress") as string;
 
-    const dobDay = data.get("dobDay");
-    const dobMonth = data.get("dobMonth");
-    const dobYear = data.get("dobYear");
+    const dobDay = data.get("dobDay") as string;
+    const dobMonth = data.get("dobMonth") as string;
+    const dobYear = data.get("dobYear") as string;
 
     let dob;
 
@@ -328,16 +328,14 @@ routerCustomer
 
     // Validate the data here
 
-    const personId = cuid();
-
-    await kv.set(["bigshelf_test", "person", customerId, personId], {
+    await createPerson(customerId, {
       firstName,
       lastName,
       jobTitle,
       gender,
       dob,
       emailAddress,
-    });
+    })
 
     context.response.redirect(`/customers/${customerId}`);
   })
