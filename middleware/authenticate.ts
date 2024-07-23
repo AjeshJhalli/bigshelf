@@ -1,6 +1,7 @@
 import { Middleware } from "https://deno.land/x/oak/mod.ts";
 import { decode } from "https://deno.land/x/djwt/mod.ts";
-import authUrl from "../utils/authUrl.ts";
+import createUser from "../data/createUser.ts";
+import getUser from "../data/getUser.ts";
 
 const kv = await Deno.openKv();
 
@@ -12,7 +13,7 @@ const redirectUri = Deno.env.get("APP_REDIRECT_URI");
 const scope = "openid offline_access";
 
 // Middleware to authenticate users with Azure B2C
-const azureB2CAuth: Middleware = async (context, next) => {
+const azureB2CAuth = async (context, next) => {
   if (context.request.url.pathname === "/auth/callback") {
     await next();
     return;
@@ -76,14 +77,14 @@ const azureB2CAuth: Middleware = async (context, next) => {
 
       context.state.user = await setUser(tokenData.id_token);
       console.log(context.state.user);
-      context.state.user.initials = `${context.state.user.value.firstName[0]}${
-        context.state.user.value.lastName[0]
+      context.state.user.initials = `${context.state.user.firstName[0]}${
+        context.state.user.lastName[0]
       }`;
     } else {
       context.state.user = await setUser(token);
       console.log(context.state.user);
-      context.state.user.initials = `${context.state.user.value.firstName[0]}${
-        context.state.user.value.lastName[0]
+      context.state.user.initials = `${context.state.user.firstName[0]}${
+        context.state.user.lastName[0]
       }`;
     }
 
@@ -153,14 +154,11 @@ async function setUser(idToken: string) {
   const firstName = payload.given_name;
   const lastName = payload.family_name;
 
-  let user = await kv.get(["user", oid]);
+  let user = await getUser(oid);
 
-  if (!user.versionstamp) {
-    await kv.set(["user", oid], {
-      firstName,
-      lastName,
-    });
-    user = await kv.get(["user", oid]);
+  if (!user) {
+    await createUser(oid, firstName, lastName, "", "", "");
+    user = await getUser(oid);
   }
 
   return user;

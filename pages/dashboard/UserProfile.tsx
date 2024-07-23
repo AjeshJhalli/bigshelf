@@ -1,6 +1,7 @@
+import { User } from "../../data/model.ts";
 import formatDate from "../../utils/formatDate.ts";
 
-export default function UserProfile({ user }) {
+export default function UserProfile({ user }: { user: User }) {
   return (
     <div
       id="user-profile-data-card"
@@ -15,21 +16,21 @@ export default function UserProfile({ user }) {
             <tbody>
               <tr>
                 <th>Full Name</th>
-                <td>{user.value.firstName + " " + user.value.lastName}</td>
+                <td>{user.firstName + " " + user.lastName}</td>
               </tr>
               <tr>
                 <th>Job Title</th>
-                <td>{user.value.jobTitle}</td>
+                <td>{user.jobTitle}</td>
               </tr>
               <tr>
                 <th>DOB</th>
                 <td>
-                  {formatDate(user.value.dob)}
+                  {formatDate(user.dob)}
                 </td>
               </tr>
               <tr>
                 <th>Gender</th>
-                <td>{user.value.gender}</td>
+                <td>{user.gender}</td>
               </tr>
             </tbody>
           </table>

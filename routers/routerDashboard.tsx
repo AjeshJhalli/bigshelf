@@ -6,6 +6,7 @@ import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12"
 import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
 import { DateString } from "../types/types.ts";
 import decodeDate from "../utils/decodeDate.ts";
+import getUser from "../data/getUser.ts";
 
 const kv = await Deno.openKv();
 
@@ -25,11 +26,16 @@ routerDashboard
   })
   .get("/me/edit", async (context) => {
 
+    const user = await getUser(context.state.user.key);
 
-    const person = await kv.get(context.state.user.key);
+    if (!user) {
+      context.response.body = "An unexpected error has occurred.";
+      context.response.status = 500;
+      return;
+    }
 
-    const { year, month, day } = decodeDate(
-      context.state.user.value.dob as DateString || "",
+    const dob = decodeDate(
+      user.dob as DateString || "",
     );
 
     const fields: Array<FormField> = [
@@ -37,25 +43,25 @@ routerDashboard
         type: "text",
         name: "firstName",
         displayName: "First Name",
-        value: person.value.firstName
+        value: user.firstName
       },
       {
         type: "text",
         name: "lastName",
         displayName: "Last Name",
-        value: person.value.lastName
+        value: user.lastName
       },
       {
         type: "text",
         name: "jobTitle",
         displayName: "Job Title",
-        value: person.value.jobTitle
+        value: user.jobTitle
       },
       {
         type: "dropdown",
         name: "gender",
         displayName: "Gender",
-        value: person.value.gender,
+        value: user.gender,
         options: [
           {
             value: "Male",
@@ -71,9 +77,7 @@ routerDashboard
         type: "date",
         name: "dob",
         displayName: "DOB",
-        day,
-        month,
-        year,
+        ...dob
       },
     ];
 
@@ -86,8 +90,6 @@ routerDashboard
     );
   })
   .post("/me/edit", async (context) => {
-
-    console.log("hello")
 
     const user = context.state.user;
 
@@ -104,12 +106,14 @@ routerDashboard
 
     const dob = encodeDate(dobYear, dobMonth, dobDay);
 
-    await kv.set(user.key, {
+    await kv.set(["user", user.oid], {
+      oid: user.oid,
       firstName,
       lastName,
       jobTitle,
       gender,
       dob,
+      tenants: user?.tenants?.length > 0 ? user.tenants : []
     });
 
     context.response.redirect("/dashboard");

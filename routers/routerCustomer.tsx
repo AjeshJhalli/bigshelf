@@ -11,7 +11,7 @@ import {
   DateString,
   PersonValue,
 } from "../types/types.ts";
-import createPerson from "../utils/createPerson.ts";
+import createPerson from "../data/createPerson.ts";
 
 const kv = await Deno.openKv();
 

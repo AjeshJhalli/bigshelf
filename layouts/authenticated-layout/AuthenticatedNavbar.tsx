@@ -1,7 +1,7 @@
 import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
 
 export default function AuthenticatedNavbar(
-  { activeModule, initials }: { activeModule: string, initials: string },
+  { activeModule, initials }: { activeModule: string; initials: string },
 ) {
   return (
     <nav className="navbar bg-base-200 shadow-md">
@@ -56,14 +56,43 @@ export default function AuthenticatedNavbar(
           <a>Module 4</a>
         </li>
       </ul>
-      <div class="navbar-end flex gap-x-6 px-6 items-center">
+      {
+        /* <div class="">
         <div
           tabindex="0"
           role="button"
-          class="btn btn-ghost text-white btn-circle avatar bg-red-400"
+          class=""
+        >
+
+        </div>
+      </div> */
+      }
+
+      <div className="dropdown dropdown-end navbar-end justify-end flex gap-x-6 px-6">
+        <div
+          tabIndex={0}
+          role="button"
+          className="btn btn-ghost text-white btn-circle avatar bg-red-400"
         >
           {initials}
         </div>
+        <ul
+          tabIndex={0}
+          className="menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow"
+        >
+          <li>
+            <a className="justify-between">
+              Profile
+              <span className="badge">New</span>
+            </a>
+          </li>
+          <li>
+            <a>Settings</a>
+          </li>
+          <li>
+            <a>Logout</a>
+          </li>
+        </ul>
       </div>
     </nav>
   );
