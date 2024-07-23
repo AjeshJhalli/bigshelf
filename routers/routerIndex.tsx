@@ -5,7 +5,7 @@ import routerDashboard from "../routers/routerDashboard.tsx";
 import routerAuth from "../routers/routerAuth.ts";
 import Index from "../pages/Index.tsx";
 import r from "../utils/r.tsx";
-import Tenants from "../pages/Tenants/Tenants.tsx";
+import Tenants from "../pages/tenants/Tenants.tsx";
 import { User } from "../data/model.ts";
 
 const kv = await Deno.openKv();
