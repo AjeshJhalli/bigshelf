@@ -26,7 +26,7 @@ routerDashboard
   })
   .get("/me/edit", async (context) => {
 
-    const user = await getUser(context.state.user.key);
+    const user = await getUser(context.state.user.oid);
 
     if (!user) {
       context.response.body = "An unexpected error has occurred.";
@@ -91,7 +91,8 @@ routerDashboard
   })
   .post("/me/edit", async (context) => {
 
-    const user = context.state.user;
+    const userId = context.state.user.oid;
+    const user = await getUser(userId);
 
     const data = await context.request.body.formData();
 
