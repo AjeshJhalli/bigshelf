@@ -126,6 +126,7 @@ routerDashboard
       jobTitle,
       gender,
       dob,
+      activeTenant: user?.activeTenant,
       tenants: user?.tenants?.length > 0 ? user.tenants : []
     });
 
