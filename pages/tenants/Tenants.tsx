@@ -3,6 +3,10 @@ import { User } from "../../data/model.ts";
 export default function Tenants(
   { activeTenantId, tenants }: { activeTenantId: string; tenants: Array<any> },
 ) {
+
+  console.log(`Tenant data: ${tenants}`);
+  console.log(activeTenantId);
+
   return (
     <div className="card bg-base-100 shadow-xl rounded-none max-w-[600px]">
       <div className="card-body">
