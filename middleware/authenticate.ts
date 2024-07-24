@@ -9,7 +9,7 @@ const policy = Deno.env.get("POLICY");
 const scope = "openid offline_access";
 
 // Middleware to authenticate users with Azure B2C
-const azureB2CAuth = async (context, next) => {
+const middlewareAuth = async (context, next) => {
   if (context.request.url.pathname === "/auth/callback") {
     await next();
     return;
@@ -114,4 +114,4 @@ async function setUser(idToken: string) {
   return user;
 }
 
-export { azureB2CAuth };
+export default middlewareAuth;
