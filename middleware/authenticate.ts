@@ -161,6 +161,11 @@ async function setUser(idToken: string) {
     user = await getUser(oid);
   }
 
+  console.log("The user:");
+  console.log(user);
+  console.log("The ID:")
+  console.log(oid);
+
   return user;
 }
 
