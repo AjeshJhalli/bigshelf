@@ -35,7 +35,7 @@ export default function Tenants(
                     type="radio"
                     name="tenant-selection"
                     className="radio checked:bg-blue-500"
-                    checked={tenant.key[2] === activeTenantId}
+                    checked={tenant.key[1] === activeTenantId}
                   />
                 </td>
               </tr>
