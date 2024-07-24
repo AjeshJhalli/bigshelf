@@ -7,21 +7,33 @@ import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
 import { DateString } from "../types/types.ts";
 import decodeDate from "../utils/decodeDate.ts";
 import getUser from "../data/getUser.ts";
+import { User } from "../data/model.ts";
 
 const kv = await Deno.openKv();
 
 const routerDashboard = new Router();
 
 routerDashboard
-  .get("/", (context) => {
+  .get("/", async (context) => {
+
+    const userRecord = await kv.get(["user", context.state.user.oid]);
+    const user = userRecord.value as User;
+
+    const tenants = [];
+
+    for (const tenantId of user.tenants) {
+      const tenant = await kv.get(["tenant", tenantId]);
+      tenants.push(tenant);
+    }
+
     context.response.body = r(
-      <Dashboard user={context.state.user} />,
+      <Dashboard user={context.state.user} tenants={tenants} />,
       [{
         displayName: "Dashboard",
         href: "/dashboard",
       }],
       "dashboard",
-      context.state.user.initials,
+      user.firstName[0] + user.lastName[0],
     );
   })
   .get("/me/edit", async (context) => {

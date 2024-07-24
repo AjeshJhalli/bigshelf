@@ -21,7 +21,7 @@ export default function AuthenticatedLayout(
           <div className="drawer-content">
             <AuthenticatedNavbar activeModule={activeModule} initials={initials} />
             {breadcrumbs.length > 0 && (
-              <div className="breadcrumbs text-sm px-3 pt-6">
+              <div className="breadcrumbs text-sm px-6 pt-6">
                 <ul>
                   {breadcrumbs.map((breadcrumb) => (
                     <li>
@@ -31,7 +31,7 @@ export default function AuthenticatedLayout(
                 </ul>
               </div>
             )}
-            <main className="flex flex-col flex-grow px-3 pt-3 h-full">
+            <main className="flex flex-col flex-grow px-6 pt-3 h-full">
               {children}
             </main>
           </div>

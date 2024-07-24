@@ -1,17 +1,44 @@
 import { User } from "../../data/model.ts";
 
 export default function Tenants(
-  { user, tenants }: { user: User; tenants: Array<any> },
+  { activeTenantId, tenants }: { activeTenantId: string; tenants: Array<any> },
 ) {
   return (
-    <div>
-      <h1>The tenants page</h1>
-      <p>
-        {JSON.stringify(user)}
-      </p>
-      <ul>
-        {tenants.map(tenant => JSON.stringify(tenant))}
-      </ul>
+    <div className="card bg-base-100 shadow-xl rounded-none max-w-[600px]">
+      <div className="card-body">
+        <h2 className="card-title">
+          Your Tenants
+        </h2>
+        <table className="table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Active</th>
+            </tr>
+          </thead>
+          <tbody>
+            {tenants.map((tenant) => (
+              <tr className="">
+                <td>
+                  {tenant.value.name}
+                </td>
+                <td>
+                  {tenant.value.description}
+                </td>
+                <td>
+                  <input
+                    type="radio"
+                    name="tenant-selection"
+                    className="radio checked:bg-blue-500"
+                    checked={tenant.key[2] === activeTenantId}
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

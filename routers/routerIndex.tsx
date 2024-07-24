@@ -16,25 +16,6 @@ routerIndex
   .get("/", (context) => {
     context.response.body = render(<Index />);
   })
-  .get("/tenants", async (context) => {
-
-    const userRecord = await kv.get(["user", context.state.user.oid]);
-    const user = userRecord.value as User;
-
-    const tenants = [];
-
-    for (const tenantId of user.tenants) {
-      const tenant = await kv.get(["tenant", tenantId]);
-      tenants.push(tenant);
-    }
-
-    context.response.body = r(
-      <Tenants user={user} tenants={tenants} />,
-      [{ displayName: "Tenants", href: "/tenants" }],
-      "Tenants",
-      context.state.user.initials,
-    );
-  })
   .use("/auth", routerAuth.routes())
   .use("/customers", routerCustomers.routes())
   .use("/dashboard", routerDashboard.routes());
