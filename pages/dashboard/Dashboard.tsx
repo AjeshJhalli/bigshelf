@@ -1,5 +1,5 @@
 import { User } from "../../data/model.ts";
-import Tenants from "../Tenants/Tenants.tsx";
+import Tenants from "../tenants/Tenants.tsx";
 import UserProfile from "./UserProfile.tsx";
 
 export default function Dashboard(
