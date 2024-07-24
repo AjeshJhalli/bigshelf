@@ -1,15 +1,11 @@
-import { Middleware } from "https://deno.land/x/oak/mod.ts";
 import { decode } from "https://deno.land/x/djwt/mod.ts";
 import createUser from "../data/createUser.ts";
 import getUser from "../data/getUser.ts";
-
-const kv = await Deno.openKv();
 
 const tenant = Deno.env.get("TENANT_NAME");
 const clientId = Deno.env.get("APP_CLIENT_ID");
 const clientSecret = Deno.env.get("APP_CLIENT_SECRET");
 const policy = Deno.env.get("POLICY");
-const redirectUri = Deno.env.get("APP_REDIRECT_URI");
 const scope = "openid offline_access";
 
 // Middleware to authenticate users with Azure B2C
@@ -101,52 +97,6 @@ const azureB2CAuth = async (context, next) => {
   }
 };
 
-// Route to handle Azure B2C callback
-const handleAzureB2CCallback: Middleware = async (context) => {
-  const code = context.request.url.searchParams.get("code");
-
-  if (!code) {
-    context.response.status = 400;
-    context.response.body = { error: "Code not found" };
-    console.log("no code");
-    return;
-  }
-
-  const tokenResponse = await fetch(
-    `https://${tenant}.b2clogin.com/${tenant}.onmicrosoft.com/${policy}/oauth2/v2.0/token`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        client_id: clientId,
-        scope: scope,
-        code: code,
-        redirect_uri: redirectUri,
-        grant_type: "authorization_code",
-        client_secret: clientSecret,
-      } as Record<string, string>),
-    },
-  );
-
-  const tokenData = await tokenResponse.json();
-  if (!tokenResponse.ok) {
-    context.response.status = 401;
-    context.response.body = {
-      error: tokenData.error_description || "Token exchange failed",
-    };
-    return;
-  }
-
-  await context.cookies.set("refresh_token", tokenData.refresh_token, {
-    httpOnly: true,
-  });
-  await context.cookies.set("id_token", tokenData.id_token, { httpOnly: true });
-
-  context.response.redirect("/dashboard");
-};
-
 async function setUser(idToken: string) {
   const payload = decode(idToken)[1];
 
@@ -161,12 +111,7 @@ async function setUser(idToken: string) {
     user = await getUser(oid);
   }
 
-  console.log("The user:");
-  console.log(user);
-  console.log("The ID:")
-  console.log(oid);
-
   return user;
 }
 
-export { azureB2CAuth, handleAzureB2CCallback };
+export { azureB2CAuth };
