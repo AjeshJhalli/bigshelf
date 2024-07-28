@@ -4,22 +4,34 @@
 
 import * as $_404 from "./routes/_404.tsx";
 import * as $_app from "./routes/_app.tsx";
-import * as $api_joke from "./routes/api/joke.ts";
-import * as $greet_name_ from "./routes/greet/[name].tsx";
+import * as $app_tenantId_customers from "./routes/app/[tenantId]/customers.tsx";
+import * as $app_layout from "./routes/app/_layout.tsx";
+import * as $app_middleware from "./routes/app/_middleware.ts";
+import * as $app_dashboard_middleware from "./routes/app/dashboard/_middleware.ts";
+import * as $app_dashboard_index from "./routes/app/dashboard/index.tsx";
+import * as $app_dashboard_me_edit from "./routes/app/dashboard/me/edit.tsx";
+import * as $auth_callback from "./routes/auth/callback.ts";
 import * as $index from "./routes/index.tsx";
-import * as $Counter from "./islands/Counter.tsx";
+import * as $EditFormModal from "./islands/EditFormModal.tsx";
+import * as $UserProfile from "./islands/UserProfile.tsx";
 import { type Manifest } from "$fresh/server.ts";
 
 const manifest = {
   routes: {
     "./routes/_404.tsx": $_404,
     "./routes/_app.tsx": $_app,
-    "./routes/api/joke.ts": $api_joke,
-    "./routes/greet/[name].tsx": $greet_name_,
+    "./routes/app/[tenantId]/customers.tsx": $app_tenantId_customers,
+    "./routes/app/_layout.tsx": $app_layout,
+    "./routes/app/_middleware.ts": $app_middleware,
+    "./routes/app/dashboard/_middleware.ts": $app_dashboard_middleware,
+    "./routes/app/dashboard/index.tsx": $app_dashboard_index,
+    "./routes/app/dashboard/me/edit.tsx": $app_dashboard_me_edit,
+    "./routes/auth/callback.ts": $auth_callback,
     "./routes/index.tsx": $index,
   },
   islands: {
-    "./islands/Counter.tsx": $Counter,
+    "./islands/EditFormModal.tsx": $EditFormModal,
+    "./islands/UserProfile.tsx": $UserProfile,
   },
   baseUrl: import.meta.url,
 } satisfies Manifest;
