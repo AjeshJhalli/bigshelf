@@ -4,9 +4,10 @@ import { PersonRecord } from "../../types/types.ts";
 import { Address } from "../../types/types.ts";
 
 export default function Customer(
-  { customer, people }: {
+  { customer, people, activeTenant }: {
     customer: CustomerRecord;
     people: Array<PersonRecord>;
+    activeTenant: string;
   },
 ) {
   return (
@@ -20,7 +21,7 @@ export default function Customer(
             <div className="flex gap-x-6">
               <button
                 className="btn btn-primary btn-sm"
-                hx-get={`/customers/${customer.key[2]}/edit`}
+                hx-get={`/${activeTenant}/customers/${customer.key[2]}/edit`}
                 hx-target="body"
                 hx-swap="beforeend"
               >
@@ -33,6 +34,7 @@ export default function Customer(
         <CustomerPeople
           customerId={customer.key[2]}
           people={people}
+          activeTenant={activeTenant}
         />
       </div>
     </div>

@@ -33,7 +33,7 @@ routerDashboard
         href: "/dashboard",
       }],
       "dashboard",
-      user.firstName[0] + user.lastName[0],
+      user.activeTenant,
     );
   })
   .get("/me/edit", async (context) => {

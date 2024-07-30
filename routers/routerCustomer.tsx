@@ -20,8 +20,10 @@ const routerCustomer = new Router();
 routerCustomer
   .get("/", async (context) => {
     const customerId = context.params.customerId as string;
+    const tenantId = context.state.tenantId as string;
+
     const customer = await kv.get<CustomerValue>([
-      "bigshelf_test",
+      tenantId,
       "customer",
       customerId,
     ]);
@@ -33,26 +35,32 @@ routerCustomer
     const customerRecord = customer as CustomerRecord;
 
     const people = await Array.fromAsync(
-      kv.list({ prefix: ["bigshelf_test", "person", customerId] }),
+      kv.list({ prefix: [tenantId, "person", customerId] }),
     );
 
     context.response.body = r(
-      <Customer customer={customerRecord} people={people} />,
+      <Customer
+        customer={customerRecord}
+        people={people}
+        activeTenant={tenantId}
+      />,
       [{
         displayName: "Customers",
-        href: "/customers",
+        href: `/${tenantId}/customers`,
       }, {
         displayName: customerRecord.value.name,
-        href: `/customers/${customerId}`,
+        href: `/${tenantId}/customers/${customerId}`,
       }],
       "customers",
-      context.state.user.initials,
+      context.state.user.activeTenant,
     );
   })
   .get("/edit", async (context) => {
     const customerId = context.params.customerId as string;
+    const tenantId = context.state.tenantId as string;
+
     const customer = await kv.get<CustomerValue>([
-      "bigshelf_test",
+      tenantId,
       "customer",
       customerId,
     ]);
@@ -105,19 +113,20 @@ routerCustomer
     context.response.body = render(
       <EditFormModal
         fields={fields}
-        saveHref={`/customers/${customerRecord.key[2]}/edit`}
-        deleteHref={`/customers/${customerRecord.key[2]}`}
+        saveHref={`/${tenantId}/customers/${customerRecord.key[2]}/edit`}
+        deleteHref={`/${tenantId}/customers/${customerRecord.key[2]}`}
         deleteConfirmation="Are you sure you want to delete this customer?"
         title=""
       />,
     );
   })
   .get("/people/:personId/edit", async (context) => {
+    const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId as string;
     const personId = context.params.personId;
 
     const person = await kv.get<PersonValue>([
-      "bigshelf_test",
+      tenantId,
       "person",
       customerId,
       personId,
@@ -185,14 +194,18 @@ routerCustomer
     context.response.body = render(
       <EditFormModal
         fields={fields}
-        saveHref={`/customers/${customerId}/people/${personId}/edit`}
-        deleteHref={`/customers/${customerId}/people/${personId}`}
+        saveHref={`/${tenantId}/customers/${customerId}/people/${personId}/edit`}
+        deleteHref={`/${tenantId}/customers/${customerId}/people/${personId}`}
         deleteConfirmation="Are you sure you want to delete this person?"
         title=""
       />,
     );
   })
   .post("/people/:personId/edit", async (context) => {
+
+    console.log(context);
+
+    const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId as string;
     const personId = context.params.personId;
 
@@ -204,29 +217,24 @@ routerCustomer
     const gender = data.get("gender");
     const emailAddress = data.get("emailAddress");
 
-    const dobDay = data.get("dobDay");
-    const dobMonth = data.get("dobMonth");
-    const dobYear = data.get("dobYear");
-
-    if (
-      !(typeof dobDay === "string" && typeof dobMonth === "string" &&
-        typeof dobYear === "string")
-    ) {
-      return;
-    }
+    const dobDay = data.get("dobDay") as string;
+    const dobMonth = data.get("dobMonth") as string;
+    const dobYear = data.get("dobYear") as string;
+    
+    console.log("andrew tate")
 
     const dob = encodeDate(dobYear, dobMonth, dobDay);
 
     // Validate the data here
 
     const oldPerson = await kv.get([
-      "bigshelf_test",
+      tenantId,
       "person",
       customerId,
       personId,
     ]);
 
-    await kv.set(["bigshelf_test", "person", customerId, personId], {
+    await kv.set([tenantId, "person", customerId, personId], {
       ...(oldPerson.value as PersonValue),
       firstName,
       lastName,
@@ -236,9 +244,12 @@ routerCustomer
       emailAddress,
     });
 
-    context.response.redirect(`/customers/${customerId}`);
+    console.log("sigma")
+
+    context.response.redirect(`/${tenantId}/customers/${customerId}`);
   })
   .get("/people/new", (context) => {
+    const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId;
 
     const fields: Array<FormField> = [
@@ -295,12 +306,13 @@ routerCustomer
     context.response.body = render(
       <EditFormModal
         fields={fields}
-        saveHref={`/customers/${customerId}/people/new`}
+        saveHref={`/${tenantId}/customers/${customerId}/people/new`}
         title=""
       />,
     );
   })
   .post("/people/new", async (context) => {
+    const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId as string;
 
     const data = await context.request.body.formData();
@@ -335,11 +347,12 @@ routerCustomer
       gender,
       dob,
       emailAddress,
-    })
+    }, tenantId);
 
-    context.response.redirect(`/customers/${customerId}`);
+    context.response.redirect(`/${tenantId}/customers/${customerId}`);
   })
   .post("/edit", async (context) => {
+    const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId as string;
 
     const data = await context.request.body.formData();
@@ -355,18 +368,19 @@ routerCustomer
 
     // Validate the data here
 
-    await kv.set(["bigshelf_test", "customer", customerId], {
+    await kv.set([tenantId, "customer", customerId], {
       name,
       address,
     });
 
-    context.response.redirect(`/customers/${customerId}`);
+    context.response.redirect(`/${tenantId}/customers/${customerId}`);
   })
   .delete("/", async (context) => {
+    const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId as string;
 
     const customer = await kv.get<CustomerRecord>([
-      "bigshelf_test",
+      tenantId,
       "customer",
       customerId,
     ]);
@@ -376,11 +390,11 @@ routerCustomer
 
     const deleteCustomerTransaction = kv.atomic()
       .check(customer)
-      .delete(["bigshelf_test", "customer", customerId]);
+      .delete([tenantId, "customer", customerId]);
 
     for await (
       const person of kv.list({
-        prefix: ["bigshelf_test", "person", customerId],
+        prefix: [tenantId, "person", customerId],
       })
     ) {
       console.log(person);
@@ -389,13 +403,14 @@ routerCustomer
 
     await deleteCustomerTransaction.commit();
 
-    context.response.headers.append("HX-Redirect", "/customers");
+    context.response.headers.append("HX-Redirect", `/${tenantId}/customers`);
   })
   .delete("/people/:personId", async (context) => {
+    const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId as string;
     const personId = context.params.personId as string;
-    await kv.delete(["bigshelf_test", "person", customerId, personId]);
-    context.response.headers.append("HX-Redirect", `/customers/${customerId}`);
+    await kv.delete([tenantId, "person", customerId, personId]);
+    context.response.headers.append("HX-Redirect", `/${tenantId}/customers/${customerId}`);
   });
 
 export default routerCustomer;

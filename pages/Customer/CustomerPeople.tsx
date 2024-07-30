@@ -1,7 +1,13 @@
 import { PersonRecord } from "../../types/types.ts";
 import formatDate from "../../utils/formatDate.ts";
 
-export default function CustomerPeople({ people, customerId }: { people: Array<PersonRecord>, customerId: string }) {
+export default function CustomerPeople(
+  { people, customerId, activeTenant }: {
+    people: Array<PersonRecord>;
+    customerId: string;
+    activeTenant: string;
+  },
+) {
   return (
     <table className="table w-full">
       <thead>
@@ -14,7 +20,7 @@ export default function CustomerPeople({ people, customerId }: { people: Array<P
           <th className="flex justify-end">
             <button
               className="btn btn-sm btn-primary"
-              hx-get={`/customers/${customerId}/people/new`}
+              hx-get={`/${activeTenant}/customers/${customerId}/people/new`}
               hx-target="body"
               hx-swap="beforeend"
             >
@@ -27,7 +33,7 @@ export default function CustomerPeople({ people, customerId }: { people: Array<P
         {people.map((person) => (
           <tr
             className="hover"
-            hx-get={`/customers/${customerId}/people/${person.key[3]}/edit`}
+            hx-get={`/${activeTenant}/customers/${customerId}/people/${person.key[3]}/edit`}
             hx-target="body"
             hx-swap="beforeend"
           >

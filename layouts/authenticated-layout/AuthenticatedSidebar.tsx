@@ -1,4 +1,4 @@
-export default function AuthenticatedSidebar() {
+export default function AuthenticatedSidebar({ activeTenant }: { activeTenant: string; }) {
   return (
     <div className="drawer-side">
       <label
@@ -12,7 +12,7 @@ export default function AuthenticatedSidebar() {
           <a href="/dashboard">Dashboard</a>
         </li>
         <li>
-          <a href="/customers">Customers</a>
+          <a href={`/${activeTenant}/customers`}>Customers</a>
         </li>
         <li className="disabled">
           <a>Module 3</a>

@@ -88,7 +88,7 @@ export type CustomerValue = {
 };
 
 export type CustomerRecord = {
-  key: ["bigshelf_test", "customer", string];
+  key: [string, "customer", string];
   value: CustomerValue;
   versionstamp: string | null;
 };
@@ -103,7 +103,7 @@ export type PersonValue = {
 };
 
 export type PersonRecord = {
-  key: ["bigshelf_test", "person", string, string];
+  key: [string, "person", string, string];
   value: PersonValue;
   versionstamp: string | null;
 };

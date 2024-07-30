@@ -1,8 +1,12 @@
+import tenantName from "../../data/tenantName.ts";
 import { CustomerRecord } from "../../types/types.ts";
 import addressLateral from "../../utils/addressLateral.ts";
 
 export default function Customers(
-  { customers }: { customers: Array<CustomerRecord> },
+  { customers, activeTenant }: {
+    customers: Array<CustomerRecord>;
+    activeTenant: string;
+  },
 ) {
   return (
     <div className="card bg-base-100 shadow-lg flex flex-grow rounded-none">
@@ -12,11 +16,11 @@ export default function Customers(
           <div className="card-actions">
             <a
               className="btn btn-sm btn-primary"
-              hx-get="/customers/new"
+              hx-get={`/${activeTenant}/customers/new`}
               hx-target="body"
               hx-swap="beforeend"
             >
-              New Customer
+              New
             </a>
           </div>
         </h2>
@@ -32,7 +36,7 @@ export default function Customers(
               {customers.map((customer) => (
                 <tr
                   className="hover:bg-base-200 hover:cursor-pointer"
-                  onClick={`window.location.href='/customers/${
+                  onClick={`window.location.href='/${activeTenant}/customers/${
                     customer.key[2]
                   }'`}
                 >

@@ -3,8 +3,8 @@ import { CustomerValue } from "../types/types.ts";
 
 const kv = await Deno.openKv();
 
-export default async function createCustomer(customerData: CustomerValue) {
+export default async function createCustomer(customerData: CustomerValue, tenantId: string) {
   const customerId = cuid();
-  await kv.set(["bigshelf_test", "customer", customerId], customerData);
+  await kv.set([tenantId, "customer", customerId], customerData);
   return customerId;
 }

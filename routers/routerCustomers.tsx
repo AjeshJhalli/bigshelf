@@ -14,23 +14,27 @@ const routerCustomers = new Router();
 
 routerCustomers
   .get("/", async (context) => {
+    const tenantId = context.state.tenantId;
+
     const customers = await Array.fromAsync(
-      kv.list<CustomerValue>({ prefix: ["bigshelf_test", "customer"] }),
+      kv.list<CustomerValue>({ prefix: [tenantId, "customer"] }),
     );
 
     const customerRecords = customers as Array<CustomerRecord>;
 
     context.response.body = r(
-      <Customers customers={customerRecords} />,
+      <Customers customers={customerRecords} activeTenant={tenantId} />,
       [{
         displayName: "Customers",
         href: "/customers",
       }],
       "customers",
-      context.state.user.initials,
+      tenantId
     );
   })
   .get("/new", (context) => {
+    const tenantId = context.state.tenantId;
+
     const fields: Array<FormField> = [
       {
         type: "text",
@@ -71,10 +75,12 @@ routerCustomers
     ];
 
     context.response.body = render(
-      <EditFormModal fields={fields} saveHref="/customers/new" title="" />,
+      <EditFormModal fields={fields} saveHref={`/${tenantId}/customers/new`} title="" />,
     );
   })
   .post("/new", async (context) => {
+    const tenantId = context.state.tenantId;
+
     const data = await context.request.body.formData();
 
     const name = data.get("name") as string;
@@ -86,9 +92,9 @@ routerCustomers
       postcode: data.get("addressPostcode") as string,
     };
 
-    const customerId = await createCustomer({ name, address });
+    const customerId = await createCustomer({ name, address }, tenantId);
 
-    context.response.redirect(`/customers/${customerId}`);
+    context.response.redirect(`/${tenantId}/customers/${customerId}`);
   });
 
 routerCustomers.use("/:customerId", routerCustomer.routes());
