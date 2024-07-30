@@ -220,8 +220,6 @@ routerCustomer
     const dobDay = data.get("dobDay") as string;
     const dobMonth = data.get("dobMonth") as string;
     const dobYear = data.get("dobYear") as string;
-    
-    console.log("andrew tate")
 
     const dob = encodeDate(dobYear, dobMonth, dobDay);
 
@@ -243,8 +241,6 @@ routerCustomer
       dob,
       emailAddress,
     });
-
-    console.log("sigma")
 
     context.response.redirect(`/${tenantId}/customers/${customerId}`);
   })
