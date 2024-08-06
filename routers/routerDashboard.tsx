@@ -7,7 +7,7 @@ import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
 import { DateString } from "../types/types.ts";
 import decodeDate from "../utils/decodeDate.ts";
 import getUser from "../data/getUser.ts";
-import { User } from "../data/model.ts";
+import { User } from "../types/types.ts";
 
 const kv = await Deno.openKv();
 

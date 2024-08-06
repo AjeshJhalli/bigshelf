@@ -1,5 +1,5 @@
 import { cuid } from "https://deno.land/x/cuid@v1.0.0/index.js";
-import { User } from "./model.ts";
+import { User } from "../types/types.ts";
 import tenantName from "./tenantName.ts";
 
 const kv = await Deno.openKv();

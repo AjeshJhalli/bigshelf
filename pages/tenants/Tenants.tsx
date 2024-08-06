@@ -1,5 +1,3 @@
-import { User } from "../../data/model.ts";
-
 export default function Tenants(
   { activeTenantId, tenants }: { activeTenantId: string; tenants: Array<any> },
 ) {

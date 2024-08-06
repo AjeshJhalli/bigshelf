@@ -1,4 +1,4 @@
-import { User } from "../../data/model.ts";
+import { User } from "../../types/types.ts";
 import Tenants from "../tenants/Tenants.tsx";
 import UserProfile from "./UserProfile.tsx";
 

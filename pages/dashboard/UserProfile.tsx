@@ -1,4 +1,4 @@
-import { User } from "../../data/model.ts";
+import { User } from "../../types/types.ts";
 import formatDate from "../../utils/formatDate.ts";
 
 export default function UserProfile({ user }: { user: User }) {

@@ -1,4 +1,4 @@
-import { User } from "../data/model.ts";
+import { User } from "../types/types.ts";
 
 export default async function checkTenant(context, next) {
   const tenantId = context.params.tenantId as string;
