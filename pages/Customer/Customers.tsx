@@ -1,10 +1,9 @@
-import tenantName from "../../data/tenantName.ts";
-import { CustomerRecord } from "../../types/types.ts";
+import { CustomerType } from "../../types/types.ts";
 import addressLateral from "../../utils/addressLateral.ts";
 
 export default function Customers(
   { customers, activeTenant }: {
-    customers: Array<CustomerRecord>;
+    customers: Array<CustomerType>;
     activeTenant: string;
   },
 ) {
@@ -37,14 +36,14 @@ export default function Customers(
                 <tr
                   className="hover:bg-base-200 hover:cursor-pointer"
                   onClick={`window.location.href='/${activeTenant}/customers/${
-                    customer.key[2]
+                    customer.id
                   }'`}
                 >
                   <td>
-                    {customer.value.name}
+                    {customer.name}
                   </td>
                   <td>
-                    {addressLateral(customer.value.address)}
+                    {addressLateral(customer.address)}
                   </td>
                 </tr>
               ))}

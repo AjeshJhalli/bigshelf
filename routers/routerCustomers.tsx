@@ -3,10 +3,9 @@ import routerCustomer from "./routerCustomer.tsx";
 import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
 import Customers from "../pages/Customer/Customers.tsx";
 import r from "../utils/r.tsx";
-import { CustomerValue } from "../types/types.ts";
-import { CustomerRecord } from "../types/types.ts";
 import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
 import createCustomer from "../data/createCustomer.ts";
+import { CustomerType } from "../types/types.ts";
 
 const kv = await Deno.openKv();
 
@@ -16,17 +15,17 @@ routerCustomers
   .get("/", async (context) => {
     const tenantId = context.state.tenantId;
 
-    const customers = await Array.fromAsync(
-      kv.list<CustomerValue>({ prefix: [tenantId, "customer"] }),
+    const customerRecords = await Array.fromAsync(
+      kv.list<CustomerType>({ prefix: [tenantId, "customer"] }),
     );
 
-    const customerRecords = customers as Array<CustomerRecord>;
+    const customers = customerRecords.map(record => record.value) as Array<CustomerType>;
 
     context.response.body = r(
-      <Customers customers={customerRecords} activeTenant={tenantId} />,
+      <Customers customers={customers} activeTenant={tenantId} />,
       [{
         displayName: "Customers",
-        href: "/customers",
+        href: `/${tenantId}/customers`,
       }],
       "customers",
       tenantId

@@ -3,15 +3,15 @@ import { Router } from "jsr:@oak/oak/router";
 import r from "../utils/r.tsx";
 import Customer from "../pages/Customer/Customer.tsx";
 import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
-import decodeDate from "../utils/decodeDate.ts";
 import encodeDate from "../utils/encodeDate.ts";
-import {
-  CustomerRecord,
-  CustomerValue,
-  DateString,
-  PersonValue,
-} from "../types/types.ts";
+import { CustomerType, Person } from "../types/types.ts";
 import createPerson from "../data/createPerson.ts";
+import getCustomer from "../data/getCustomer.ts";
+import getCustomerPeople from "../data/getCustomerPeople.ts";
+import formCustomer from "../forms/FormCustomer.ts";
+import formPerson from "../forms/formPerson.ts";
+import getPerson from "../data/getPerson.ts";
+import updateCustomer from "../data/updateCustomer.ts";
 
 const kv = await Deno.openKv();
 
@@ -22,25 +22,14 @@ routerCustomer
     const customerId = context.params.customerId as string;
     const tenantId = context.state.tenantId as string;
 
-    const customer = await kv.get<CustomerValue>([
-      tenantId,
-      "customer",
-      customerId,
-    ]);
+    const customer = await getCustomer(tenantId, customerId);
+    if (!customer) return;
 
-    if (!customer.versionstamp) {
-      return;
-    }
-
-    const customerRecord = customer as CustomerRecord;
-
-    const people = await Array.fromAsync(
-      kv.list({ prefix: [tenantId, "person", customerId] }),
-    );
+    const people = await getCustomerPeople(tenantId, customerId);
 
     context.response.body = r(
       <Customer
-        customer={customerRecord}
+        customer={customer}
         people={people}
         activeTenant={tenantId}
       />,
@@ -48,7 +37,7 @@ routerCustomer
         displayName: "Customers",
         href: `/${tenantId}/customers`,
       }, {
-        displayName: customerRecord.value.name,
+        displayName: customer.name,
         href: `/${tenantId}/customers/${customerId}`,
       }],
       "customers",
@@ -59,64 +48,17 @@ routerCustomer
     const customerId = context.params.customerId as string;
     const tenantId = context.state.tenantId as string;
 
-    const customer = await kv.get<CustomerValue>([
-      tenantId,
-      "customer",
-      customerId,
-    ]);
+    const customer = await getCustomer(tenantId, customerId);
+    if (!customer) return;
 
-    if (!customer.versionstamp) {
-      return;
-    }
-
-    const customerRecord = customer as CustomerRecord;
-
-    const fields: Array<FormField> = [
-      {
-        type: "text",
-        name: "name",
-        displayName: "Customer Name",
-        value: customerRecord.value.name,
-      },
-      {
-        type: "text",
-        name: "addressLine1",
-        displayName: "Address Line 1",
-        value: customerRecord.value.address.line1,
-      },
-      {
-        type: "text",
-        name: "addressLine2",
-        displayName: "Address Line 2",
-        value: customerRecord.value.address.line2,
-      },
-      {
-        type: "text",
-        name: "addressCity",
-        displayName: "City",
-        value: customerRecord.value.address.city,
-      },
-      {
-        type: "text",
-        name: "addressCountry",
-        displayName: "Country",
-        value: customerRecord.value.address.country,
-      },
-      {
-        type: "text",
-        name: "addressPostcode",
-        displayName: "Postcode",
-        value: customerRecord.value.address.postcode,
-      },
-    ];
+    const fields = formCustomer(customer);
 
     context.response.body = render(
       <EditFormModal
         fields={fields}
-        saveHref={`/${tenantId}/customers/${customerRecord.key[2]}/edit`}
-        deleteHref={`/${tenantId}/customers/${customerRecord.key[2]}`}
+        saveHref={`/${tenantId}/customers/${customerId}/edit`}
+        deleteHref={`/${tenantId}/customers/${customerId}`}
         deleteConfirmation="Are you sure you want to delete this customer?"
-        title=""
       />,
     );
   })
@@ -125,71 +67,10 @@ routerCustomer
     const customerId = context.params.customerId as string;
     const personId = context.params.personId;
 
-    const person = await kv.get<PersonValue>([
-      tenantId,
-      "person",
-      customerId,
-      personId,
-    ]);
+    const person = await getPerson(tenantId, customerId, personId);
+    if (!person) return;
 
-    if (!person.versionstamp) {
-      return;
-    }
-
-    const { year, month, day } = decodeDate(
-      person.value.dob as DateString || "",
-    );
-
-    const fields: Array<FormField> = [
-      {
-        type: "text",
-        name: "firstName",
-        displayName: "First Name",
-        value: person.value.firstName,
-      },
-      {
-        type: "text",
-        name: "lastName",
-        displayName: "Last Name",
-        value: person.value.lastName,
-      },
-      {
-        type: "text",
-        name: "jobTitle",
-        displayName: "Job Title",
-        value: person.value.jobTitle || "",
-      },
-      {
-        type: "dropdown",
-        name: "gender",
-        displayName: "Gender",
-        value: person.value.gender || "",
-        options: [
-          {
-            value: "Male",
-            displayName: "Male",
-          },
-          {
-            value: "Female",
-            displayName: "Female",
-          },
-        ],
-      },
-      {
-        type: "date",
-        name: "dob",
-        displayName: "DOB",
-        day,
-        month,
-        year,
-      },
-      {
-        type: "text",
-        name: "emailAddress",
-        displayName: "Email",
-        value: person.value.emailAddress || "",
-      },
-    ];
+    const fields = formPerson(person);
 
     context.response.body = render(
       <EditFormModal
@@ -197,14 +78,10 @@ routerCustomer
         saveHref={`/${tenantId}/customers/${customerId}/people/${personId}/edit`}
         deleteHref={`/${tenantId}/customers/${customerId}/people/${personId}`}
         deleteConfirmation="Are you sure you want to delete this person?"
-        title=""
       />,
     );
   })
   .post("/people/:personId/edit", async (context) => {
-
-    console.log(context);
-
     const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId as string;
     const personId = context.params.personId;
@@ -225,15 +102,10 @@ routerCustomer
 
     // Validate the data here
 
-    const oldPerson = await kv.get([
-      tenantId,
-      "person",
-      customerId,
-      personId,
-    ]);
+    const oldPerson = await getPerson(tenantId, customerId, personId);
 
     await kv.set([tenantId, "person", customerId, personId], {
-      ...(oldPerson.value as PersonValue),
+      ...(oldPerson as Person),
       firstName,
       lastName,
       jobTitle,
@@ -303,7 +175,6 @@ routerCustomer
       <EditFormModal
         fields={fields}
         saveHref={`/${tenantId}/customers/${customerId}/people/new`}
-        title=""
       />,
     );
   })
@@ -364,9 +235,10 @@ routerCustomer
 
     // Validate the data here
 
-    await kv.set([tenantId, "customer", customerId], {
+    await updateCustomer(tenantId, customerId, {
+      id: customerId,
       name,
-      address,
+      address
     });
 
     context.response.redirect(`/${tenantId}/customers/${customerId}`);
@@ -375,7 +247,7 @@ routerCustomer
     const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId as string;
 
-    const customer = await kv.get<CustomerRecord>([
+    const customer = await kv.get<CustomerType>([
       tenantId,
       "customer",
       customerId,
@@ -406,7 +278,10 @@ routerCustomer
     const customerId = context.params.customerId as string;
     const personId = context.params.personId as string;
     await kv.delete([tenantId, "person", customerId, personId]);
-    context.response.headers.append("HX-Redirect", `/${tenantId}/customers/${customerId}`);
+    context.response.headers.append(
+      "HX-Redirect",
+      `/${tenantId}/customers/${customerId}`,
+    );
   });
 
 export default routerCustomer;

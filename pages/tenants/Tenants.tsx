@@ -3,7 +3,7 @@ export default function Tenants(
 ) {
 
   return (
-    <div className="card bg-base-100 shadow-xl rounded-none max-w-[600px]">
+    <div className="card bg-base-100 shadow-xl rounded-none max-w-[600px] min-w-[400px]">
       <div className="card-body">
         <h2 className="card-title">
           Your Tenants

@@ -1,12 +1,11 @@
 import CustomerPeople from "./CustomerPeople.tsx";
-import { CustomerRecord } from "../../types/types.ts";
-import { PersonRecord } from "../../types/types.ts";
+import { CustomerType, Person } from "../../types/types.ts";
 import { Address } from "../../types/types.ts";
 
 export default function Customer(
   { customer, people, activeTenant }: {
-    customer: CustomerRecord;
-    people: Array<PersonRecord>;
+    customer: CustomerType;
+    people: Array<Person>;
     activeTenant: string;
   },
 ) {
@@ -16,12 +15,12 @@ export default function Customer(
         <div className="pb-10">
           <div className="card-actions justify-between">
             <h2 className="card-title py-3">
-              {customer.value.name}
+              {customer.name}
             </h2>
             <div className="flex gap-x-6">
               <button
                 className="btn btn-primary btn-sm"
-                hx-get={`/${activeTenant}/customers/${customer.key[2]}/edit`}
+                hx-get={`/${activeTenant}/customers/${customer.id}/edit`}
                 hx-target="body"
                 hx-swap="beforeend"
               >
@@ -29,10 +28,10 @@ export default function Customer(
               </button>
             </div>
           </div>
-          <CustomerAddress address={customer.value.address} />
+          <CustomerAddress address={customer.address} />
         </div>
         <CustomerPeople
-          customerId={customer.key[2]}
+          customerId={customer.id}
           people={people}
           activeTenant={activeTenant}
         />

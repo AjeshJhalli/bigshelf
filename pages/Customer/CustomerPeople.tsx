@@ -1,9 +1,9 @@
-import { PersonRecord } from "../../types/types.ts";
+import { Person } from "../../types/types.ts";
 import formatDate from "../../utils/formatDate.ts";
 
 export default function CustomerPeople(
   { people, customerId, activeTenant }: {
-    people: Array<PersonRecord>;
+    people: Array<Person>;
     customerId: string;
     activeTenant: string;
   },
@@ -29,19 +29,19 @@ export default function CustomerPeople(
           </th>
         </tr>
       </thead>
-      <tbody className="">
+      <tbody>
         {people.map((person) => (
           <tr
             className="hover"
-            hx-get={`/${activeTenant}/customers/${customerId}/people/${person.key[3]}/edit`}
+            hx-get={`/${activeTenant}/customers/${customerId}/people/${person.id}/edit`}
             hx-target="body"
             hx-swap="beforeend"
           >
-            <td>{`${person.value.firstName} ${person.value.lastName}`}</td>
-            <td>{formatDate(person.value.dob)}</td>
-            <td>{person.value.gender}</td>
-            <td>{person.value.jobTitle}</td>
-            <td>{person.value.emailAddress}</td>
+            <td>{`${person.firstName} ${person.lastName}`}</td>
+            <td>{formatDate(person.dob)}</td>
+            <td>{person.gender}</td>
+            <td>{person.jobTitle}</td>
+            <td>{person.emailAddress}</td>
             <td></td>
           </tr>
         ))}

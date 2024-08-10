@@ -176,10 +176,9 @@ function FieldDate({ displayName, name, day, month, year }: FieldDate) {
 }
 
 export default function EditFormModal(
-  { fields, saveHref, title, deleteHref, deleteConfirmation }: {
+  { fields, saveHref, deleteHref, deleteConfirmation }: {
     fields: Array<FormField>;
     saveHref: string;
-    title: string;
     deleteHref?: string;
     deleteConfirmation?: string;
   },
@@ -224,7 +223,6 @@ export default function EditFormModal(
               </button>
             </div>
           </div>
-          <h2 className="card-title">{title}</h2>
           <div className="form-control flex flex-col gap-y-1 justify-start items-start">
             {fields.map(field)}
           </div>

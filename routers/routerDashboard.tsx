@@ -4,10 +4,11 @@ import Dashboard from "../pages/dashboard/Dashboard.tsx";
 import encodeDate from "../utils/encodeDate.ts";
 import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
 import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
-import { DateString } from "../types/types.ts";
+import { CustomerType, DateString } from "../types/types.ts";
 import decodeDate from "../utils/decodeDate.ts";
 import getUser from "../data/getUser.ts";
 import { User } from "../types/types.ts";
+import deleteCustomer from "../data/deleteCustomer.ts";
 
 const kv = await Deno.openKv();
 
@@ -15,7 +16,6 @@ const routerDashboard = new Router();
 
 routerDashboard
   .get("/", async (context) => {
-
     const userRecord = await kv.get(["user", context.state.user.oid]);
     const user = userRecord.value as User;
 
@@ -37,7 +37,6 @@ routerDashboard
     );
   })
   .get("/me/edit", async (context) => {
-
     const user = await getUser(context.state.user.oid);
 
     if (!user) {
@@ -55,19 +54,19 @@ routerDashboard
         type: "text",
         name: "firstName",
         displayName: "First Name",
-        value: user.firstName
+        value: user.firstName,
       },
       {
         type: "text",
         name: "lastName",
         displayName: "Last Name",
-        value: user.lastName
+        value: user.lastName,
       },
       {
         type: "text",
         name: "jobTitle",
         displayName: "Job Title",
-        value: user.jobTitle
+        value: user.jobTitle,
       },
       {
         type: "dropdown",
@@ -89,7 +88,7 @@ routerDashboard
         type: "date",
         name: "dob",
         displayName: "DOB",
-        ...dob
+        ...dob,
       },
     ];
 
@@ -97,12 +96,10 @@ routerDashboard
       <EditFormModal
         fields={fields}
         saveHref="/dashboard/me/edit"
-        title=""
       />,
     );
   })
   .post("/me/edit", async (context) => {
-
     const userId = context.state.user.oid;
     const user = await getUser(userId);
 
@@ -127,10 +124,27 @@ routerDashboard
       gender,
       dob,
       activeTenant: user?.activeTenant,
-      tenants: user?.tenants?.length > 0 ? user.tenants : []
+      tenants: user?.tenants?.length > 0 ? user.tenants : [],
     });
 
     context.response.redirect("/dashboard");
+  })
+  .delete("/delete-all-customers", async (context) => {
+
+    console.log("About to delete all customers in a tenant")
+
+    const user = await getUser(context.state.user.oid);
+
+    console.log(user?.activeTenant);
+
+    if (!user) return;
+
+    const customerRecords = await Array.fromAsync(kv.list<CustomerType>({ prefix: [user.activeTenant, "customer"] }));
+
+    for (const record of customerRecords) {
+      await deleteCustomer(user.activeTenant, record.key[2] as string);
+    }
+
   });
 
 export default routerDashboard;

@@ -5,7 +5,7 @@ export default function UserProfile({ user }: { user: User }) {
   return (
     <div
       id="user-profile-data-card"
-      className="card bg-base-100 shadow-xl rounded-none max-w-[600px]"
+      className="card bg-base-100 shadow-xl rounded-none max-w-[600px] min-w-[400px]"
     >
       <div className="card-body">
         <h2 className="card-title">

@@ -1,15 +1,23 @@
 import { JSX } from "preact/jsx-runtime";
 
+export type Gender = "Male" | "Female";
+
 export type User = {
-  key: ["user", string];
-  value: {
-    firstName: string;
-    lastName: string;
-    jobTitle: string | undefined;
-    gender: string | undefined;
-    dob: DateString | undefined;
-  };
+  oid: string;
+  firstName: string;
+  lastName: string;
+  jobTitle: string | undefined;
+  gender: Gender | undefined;
+  dob: DateString | undefined;
+  tenants: Array<string>;
+  activeTenant: string;
 };
+
+export type Tenant = {
+  id: string;
+  name: string;
+  description: string;
+}
 
 type oneToNine = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 type zeroToNine = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
@@ -82,30 +90,21 @@ export type Address = {
   postcode: string;
 };
 
-export type CustomerValue = {
+export type CustomerType = {
+  id: string;
   name: string;
   address: Address;
 };
 
-export type CustomerRecord = {
-  key: [string, "customer", string];
-  value: CustomerValue;
-  versionstamp: string | null;
-};
-
-export type PersonValue = {
+export type Person = {
+  id: string;
+  customerId: string;
   firstName: string;
   lastName: string;
   jobTitle: string;
   gender: string;
-  dob: string;
+  dob: DateString;
   emailAddress: string;
-};
-
-export type PersonRecord = {
-  key: [string, "person", string, string];
-  value: PersonValue;
-  versionstamp: string | null;
 };
 
 export type Tab = {
