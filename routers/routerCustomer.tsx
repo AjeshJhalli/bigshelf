@@ -8,7 +8,7 @@ import { CustomerType, Person } from "../types/types.ts";
 import createPerson from "../data/createPerson.ts";
 import getCustomer from "../data/getCustomer.ts";
 import getCustomerPeople from "../data/getCustomerPeople.ts";
-import formCustomer from "../forms/FormCustomer.ts";
+import formCustomer from "../forms/formCustomer.ts";
 import formPerson from "../forms/formPerson.ts";
 import getPerson from "../data/getPerson.ts";
 import updateCustomer from "../data/updateCustomer.ts";
