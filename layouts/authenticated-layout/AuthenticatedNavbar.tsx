@@ -1,7 +1,10 @@
 import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
 
 export default function AuthenticatedNavbar(
-  { activeModule, activeTenant }: { activeModule: string; activeTenant: string },
+  { activeModule, activeTenant }: {
+    activeModule: string;
+    activeTenant: string;
+  },
 ) {
   return (
     <nav className="navbar bg-base-200">
@@ -50,14 +53,24 @@ export default function AuthenticatedNavbar(
           </a>
         </li>
         <li className="disabled">
-          <a>Module 3</a>
+          <a
+            className={classNames({ "active": activeModule === "projects" })}
+            // href={`/${activeTenant}/projects`}
+          >
+            Projects
+          </a>
         </li>
-        <li className="disabled">
-          <a>Module 4</a>
+        <li className="">
+          <a
+            className={classNames({ "active": activeModule === "inventory" })}
+            href={`/${activeTenant}/inventory`}
+          >
+            Inventory
+          </a>
         </li>
       </ul>
       <div className="navbar-end justify-end flex gap-x-6 px-6">
-        <a className="btn btn-primary" href="/auth/sign-out">Sign Out</a>
+        <a className="btn btn-sm btn-primary" href="/auth/sign-out">Sign Out</a>
       </div>
     </nav>
   );

@@ -17,7 +17,7 @@ export type Tenant = {
   id: string;
   name: string;
   description: string;
-}
+};
 
 type oneToNine = "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
 type zeroToNine = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9";
@@ -80,7 +80,7 @@ export type Day =
   | "30"
   | "31";
 
-export type DateString = `${YYYY}-${MM}-${DD}`;
+export type DateString = `${YYYY}-${MM}-${DD}` | "";
 
 export type Address = {
   line1: string;
@@ -123,4 +123,22 @@ export type Tab = {
 export type Breadcrumb = {
   displayName: string;
   href: string;
-}
+};
+
+export type InventoryItemType =
+  | "Raw Materials"
+  | "Work In Progress"
+  | "Finished Goods"
+  | "Repair & Maintenance"
+  | "";
+
+export type InventoryItem = {
+  id: string;
+  name: string;
+  type: InventoryItemType;
+  quantity: number;
+  allocations: Array<{
+    projectId: string;
+    quantity: number;
+  }>;
+};

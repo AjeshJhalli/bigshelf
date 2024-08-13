@@ -12,6 +12,7 @@ import formCustomer from "../forms/formCustomer.ts";
 import formPerson from "../forms/formPerson.ts";
 import getPerson from "../data/getPerson.ts";
 import updateCustomer from "../data/updateCustomer.ts";
+import { DateString } from "../types/types.ts";
 
 const kv = await Deno.openKv();
 
@@ -97,10 +98,7 @@ routerCustomer
     const dobDay = data.get("dobDay") as string;
     const dobMonth = data.get("dobMonth") as string;
     const dobYear = data.get("dobYear") as string;
-
     const dob = encodeDate(dobYear, dobMonth, dobDay);
-
-    // Validate the data here
 
     const oldPerson = await getPerson(tenantId, customerId, personId);
 
@@ -118,58 +116,18 @@ routerCustomer
   })
   .get("/people/new", (context) => {
     const tenantId = context.state.tenantId as string;
-    const customerId = context.params.customerId;
+    const customerId = context.params.customerId as string;
 
-    const fields: Array<FormField> = [
-      {
-        type: "text",
-        name: "firstName",
-        displayName: "First Name",
-        value: "",
-      },
-      {
-        type: "text",
-        name: "lastName",
-        displayName: "Last Name",
-        value: "",
-      },
-      {
-        type: "text",
-        name: "jobTitle",
-        displayName: "Job Title",
-        value: "",
-      },
-      {
-        type: "dropdown",
-        name: "gender",
-        displayName: "Gender",
-        value: "",
-        options: [
-          {
-            value: "Male",
-            displayName: "Male",
-          },
-          {
-            value: "Female",
-            displayName: "Female",
-          },
-        ],
-      },
-      {
-        type: "date",
-        name: "dob",
-        displayName: "DOB",
-        day: "",
-        month: "",
-        year: "",
-      },
-      {
-        type: "text",
-        name: "emailAddress",
-        displayName: "Email",
-        value: "",
-      },
-    ];
+    const fields = formPerson({
+      id: "",
+      customerId,
+      firstName: "",
+      lastName: "",
+      jobTitle: "",
+      gender: "",
+      dob: "" as DateString,
+      emailAddress: ""
+    });
 
     context.response.body = render(
       <EditFormModal
