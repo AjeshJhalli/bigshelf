@@ -103,6 +103,11 @@ routerDashboard
     const userId = context.state.user.oid;
     const user = await getUser(userId);
 
+    if (!user) {
+      context.response.status = 400;
+      return;
+    }
+
     const data = await context.request.body.formData();
 
     const firstName = data.get("firstName");
@@ -131,11 +136,7 @@ routerDashboard
   })
   .delete("/delete-all-customers", async (context) => {
 
-    console.log("About to delete all customers in a tenant")
-
     const user = await getUser(context.state.user.oid);
-
-    console.log(user?.activeTenant);
 
     if (!user) return;
 

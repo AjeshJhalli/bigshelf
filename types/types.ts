@@ -6,9 +6,9 @@ export type User = {
   oid: string;
   firstName: string;
   lastName: string;
-  jobTitle: string | undefined;
-  gender: Gender | undefined;
-  dob: DateString | undefined;
+  jobTitle: string;
+  gender: Gender | "";
+  dob: DateString | "";
   tenants: Array<string>;
   activeTenant: string;
 };

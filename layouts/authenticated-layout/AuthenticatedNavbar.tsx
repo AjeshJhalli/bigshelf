@@ -54,10 +54,16 @@ export default function AuthenticatedNavbar(
         </li>
         <li className="disabled">
           <a
-            className={classNames({ "active": activeModule === "projects" })}
-            // href={`/${activeTenant}/projects`}
+            className={classNames({ "active": activeModule === "suppliers" })}
           >
-            Projects
+            Suppliers
+          </a>
+        </li>
+        <li className="disabled">
+          <a
+            className={classNames({ "active": activeModule === "bookings" })}
+          >
+            Bookings
           </a>
         </li>
         <li className="">

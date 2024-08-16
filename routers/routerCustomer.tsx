@@ -152,7 +152,7 @@ routerCustomer
     const dobMonth = data.get("dobMonth") as string;
     const dobYear = data.get("dobYear") as string;
 
-    let dob;
+    let dob: DateString;
 
     if (
       !(typeof dobDay === "string" && typeof dobMonth === "string" &&
@@ -166,6 +166,7 @@ routerCustomer
     // Validate the data here
 
     await createPerson(customerId, {
+      customerId,
       firstName,
       lastName,
       jobTitle,
