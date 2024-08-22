@@ -4,7 +4,8 @@ import routerDashboard from "../routers/routerDashboard.tsx";
 import routerAuth from "../routers/routerAuth.ts";
 import Index from "../pages/Index.tsx";
 import checkTenant from "../middleware/checkTenant.ts";
-import routerTenant from "./routerTenant.ts";
+import routerCustomers from "./routerCustomers.tsx";
+import routerInventory from "./routerInventory.tsx";
 
 const routerIndex = new Router();
 
@@ -14,7 +15,8 @@ routerIndex
   })
   .use("/auth", routerAuth.routes())
   .use("/dashboard", routerDashboard.routes())
-  .use("/:tenantId", checkTenant)
-  .use("/:tenantId", routerTenant.routes());
+  .use("/", checkTenant)
+  .use("/customers", routerCustomers.routes())
+  .use("/inventory", routerInventory.routes());
 
 export default routerIndex;

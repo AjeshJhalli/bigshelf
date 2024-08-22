@@ -1,124 +1,50 @@
-import { Router } from "jsr:@oak/oak/router";
-import routerCustomer from "./routerCustomer.tsx";
-import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
-import r from "../utils/r.tsx";
-import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
-import createCustomer from "../data/createCustomer.ts";
 import getInventoryItems from "../data/getInventoryItems.ts";
-import Inventory from "../pages/inventory/Inventory.tsx";
-import { inventoryItemTypes } from "../valuelists/valuelists.ts";
 import getInventoryItem from "../data/getInventoryItem.ts";
 import formInventoryItem from "../forms/formInventoryItem.ts";
-import updateCustomer from "../data/updateCustomer.ts";
 import updateInventoryItem from "../data/updateInventoryItem.ts";
-import { InventoryItem, InventoryItemType } from "../types/types.ts";
+import { InventoryItemType } from "../types/types.ts";
 import createInventoryItem from "../data/createInventoryItem.ts";
+import routerModuleBase from "./routerModuleBase.tsx";
+import deleteInventoryItem from "../data/deleteInventoryItem.ts";
 
-const routerInventory = new Router();
+const routerInventory = routerModuleBase({
+  name: "inventory",
+  displayName: "Inventory",
+  getAll: getInventoryItems,
+  getOne: getInventoryItem,
+  update: updateInventoryItem,
+  create: createInventoryItem,
+  delete: deleteInventoryItem,
+  recordColumns: [
+    { name: "name", displayName: "Item Name" },
+    { name: "type", displayName: "Type" },
+    { name: "quantity", displayName: "Quantity" },
+  ],
+  form: formInventoryItem,
+  validateForm: validateFormInventoryItem,
+});
 
-routerInventory
-  .get("/", async (context) => {
-    const tenantId = context.state.tenantId;
+function validateFormInventoryItem(data: FormData) {
+  const name = data.get("name") as string;
+  const type = data.get("type") as InventoryItemType;
+  const quantity = parseInt(data.get("quantity") as string);
 
-    const inventoryItems = await getInventoryItems(tenantId);
+  const itemTypes = [
+    "Raw Materials",
+    "Work In Progress",
+    "Finished Goods",
+    "Repair & Maintenance",
+    "",
+  ];
 
-    context.response.body = r(
-      <Inventory inventoryItems={inventoryItems} activeTenant={tenantId} />,
-      [{
-        displayName: "Inventory",
-        href: `/${tenantId}/inventory`,
-      }],
-      "inventory",
-      tenantId,
-    );
-  })
-  .get("/:itemId/edit", async (context) => {
-    const tenantId = context.state.tenantId;
-    const itemId = context.params.itemId;
+  if (
+    name.length === 0 || quantity < 0 || type.length === 0 ||
+    !itemTypes.includes(type)
+  ) {
+    return null;
+  }
 
-    const item = await getInventoryItem(tenantId, itemId);
-
-    if (!item) {
-      context.response.status = 400;
-      return;
-    }
-
-    const fields = formInventoryItem(item);
-
-    context.response.body = render(
-      <EditFormModal
-        fields={fields}
-        saveHref={`/${tenantId}/inventory/${itemId}/edit`}
-      />,
-    );
-  })
-  .post("/:itemId/edit", async (context) => {
-    const tenantId = context.state.tenantId;
-    const itemId = context.params.itemId;
-
-    const item = await getInventoryItem(tenantId, itemId);
-
-    if (!item) {
-      context.response.status = 400;
-      return;
-    }
-
-    const data = await context.request.body.formData();
-
-    const name = data.get("name") as string;
-    const type = data.get("type") as InventoryItemType;
-    const quantity = parseInt(data.get("quantity") as string);
-
-    const newItem: InventoryItem = {
-      ...item,
-      name,
-      type,
-      quantity,
-    };
-
-    await updateInventoryItem(tenantId, newItem);
-
-    context.response.redirect(`/${tenantId}/inventory`);
-  })
-  .get("/new", (context) => {
-    const tenantId = context.state.tenantId;
-
-    const item: InventoryItem = {
-      id: "",
-      name: "",
-      type: "",
-      quantity: 1,
-      allocations: []
-    }
-
-    const fields = formInventoryItem(item);
-
-    context.response.body = render(
-      <EditFormModal
-        fields={fields}
-        saveHref={`/${tenantId}/inventory/new`}
-      />,
-    );
-  })
-  .post("/new", async (context) => {
-    const tenantId = context.state.tenantId;
-
-    const data = await context.request.body.formData();
-
-    const name = data.get("name") as string;
-    const type = data.get("type") as InventoryItemType;
-    const quantity = parseInt(data.get("quantity") as string);
-
-    await createInventoryItem(tenantId, {
-      name,
-      type,
-      quantity,
-      allocations: []
-    });
-
-    context.response.redirect(`/${tenantId}/inventory`);
-  });
-
-routerInventory.use("/:customerId", routerCustomer.routes());
+  return { name, type, quantity };
+}
 
 export default routerInventory;

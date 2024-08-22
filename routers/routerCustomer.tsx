@@ -2,7 +2,7 @@ import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12"
 import { Router } from "jsr:@oak/oak/router";
 import r from "../utils/r.tsx";
 import Customer from "../pages/Customer/Customer.tsx";
-import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
+import EditFormModal from "../components/EditFormModal.tsx";
 import encodeDate from "../utils/encodeDate.ts";
 import { CustomerType, Person } from "../types/types.ts";
 import createPerson from "../data/createPerson.ts";

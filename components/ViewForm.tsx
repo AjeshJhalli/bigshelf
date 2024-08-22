@@ -1,15 +1,27 @@
-import { InventoryItem } from "../../types/types.ts";
+type Record = {
+  editHref: string;
+  fields: Array<any>;
+};
 
-export default function Inventory({ activeTenant, inventoryItems }: { activeTenant: string, inventoryItems: Array<InventoryItem> }) {
+type ViewFormProps = {
+  title: string;
+  newHref: string;
+  columns: Array<string>;
+  records: Array<Record>;
+};
+
+export default function ViewForm(
+  { title, newHref, columns, records }: ViewFormProps,
+) {
   return (
     <div className="card bg-base-100 shadow-lg flex flex-grow rounded-none">
       <div className="card-body">
         <h2 className="card-title flex justify-between">
-          <span>Inventory</span>
+          <span>{title}</span>
           <div className="card-actions">
             <a
               className="btn btn-sm btn-primary"
-              hx-get={`/${activeTenant}/inventory/new`}
+              hx-get={newHref}
               hx-target="body"
               hx-swap="beforeend"
             >
@@ -21,28 +33,22 @@ export default function Inventory({ activeTenant, inventoryItems }: { activeTena
           <table className="table">
             <thead>
               <tr>
-                <th>Item Name</th>
-                <th>Type</th>
-                <th>Quantity</th>
+                {columns.map((column) => <th>{column}</th>)}
               </tr>
             </thead>
             <tbody>
-              {inventoryItems.map((item) => (
+              {records.map((record) => (
                 <tr
                   className="hover:bg-base-200 hover:cursor-pointer"
-                  hx-get={`/${activeTenant}/inventory/${item.id}/edit`}
+                  hx-get={record.editHref}
                   hx-target="body"
                   hx-swap="beforeend"
                 >
-                  <td>
-                    {item.name}
-                  </td>
-                  <td>
-                    {item.type}
-                  </td>
-                  <td>
-                    {item.quantity}
-                  </td>
+                  {record.fields.map((field) => (
+                    <td>
+                      {field}
+                    </td>
+                  ))}
                 </tr>
               ))}
             </tbody>

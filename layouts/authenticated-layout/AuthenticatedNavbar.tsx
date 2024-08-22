@@ -1,9 +1,47 @@
 import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
 
+type Module = {
+  name: string;
+  displayName: string;
+  href: string;
+  disabled: false;
+} | {
+  displayName: string;
+  disabled: true;
+};
+
+const modules: Array<Module> = [
+  {
+    name: "dashboard",
+    displayName: "Dashboard",
+    href: "/dashboard",
+    disabled: false,
+  },
+  {
+    name: "customers",
+    displayName: "Customers",
+    href: "/customers",
+    disabled: false,
+  },
+  {
+    displayName: "Suppliers",
+    disabled: true,
+  },
+  {
+    name: "inventory",
+    displayName: "Inventory",
+    href: "/inventory",
+    disabled: false,
+  },
+  {
+    displayName: "Bookings",
+    disabled: true,
+  },
+];
+
 export default function AuthenticatedNavbar(
-  { activeModule, activeTenant }: {
+  { activeModule }: {
     activeModule: string;
-    activeTenant: string;
   },
 ) {
   return (
@@ -36,48 +74,58 @@ export default function AuthenticatedNavbar(
         tabIndex={0}
         className="lg:flex hidden menu menu-horizontal w-full justify-center"
       >
-        <li>
-          <a
-            className={classNames({ "active": activeModule === "dashboard" })}
-            href="/dashboard"
-          >
-            Dashboard
-          </a>
-        </li>
-        <li>
-          <a
-            className={classNames({ "active": activeModule === "customers" })}
-            href={`/${activeTenant}/customers`}
-          >
-            Customers
-          </a>
-        </li>
-        <li className="disabled">
-          <a
-            className={classNames({ "active": activeModule === "suppliers" })}
-          >
-            Suppliers
-          </a>
-        </li>
-        <li className="disabled">
-          <a
-            className={classNames({ "active": activeModule === "bookings" })}
-          >
-            Bookings
-          </a>
-        </li>
-        <li className="">
-          <a
-            className={classNames({ "active": activeModule === "inventory" })}
-            href={`/${activeTenant}/inventory`}
-          >
-            Inventory
-          </a>
-        </li>
+        {modules.map((module) => (
+          module.disabled
+            ? <ModuleButtonDisabled displayName={module.displayName} />
+            : (
+              <ModuleButtonEnabled
+                name={module.name}
+                displayName={module.displayName}
+                href={module.href}
+                activeModule={activeModule}
+              />
+            )
+        ))}
       </ul>
       <div className="navbar-end justify-end flex gap-x-6 px-6">
         <a className="btn btn-sm btn-primary" href="/auth/sign-out">Sign Out</a>
       </div>
     </nav>
+  );
+}
+
+function ModuleButtonEnabled(
+  { name, href, displayName, activeModule }: {
+    name: string;
+    displayName: string;
+    href: string;
+    activeModule: string;
+  },
+) {
+  return (
+    <li>
+      <a
+        className={classNames({
+          "active": activeModule === name,
+        })}
+        href={href}
+      >
+        {displayName}
+      </a>
+    </li>
+  );
+}
+
+function ModuleButtonDisabled(
+  { displayName }: {
+    displayName: string;
+  },
+) {
+  return (
+    <li className="disabled">
+      <span>
+        {displayName}
+      </span>
+    </li>
   );
 }

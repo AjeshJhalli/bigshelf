@@ -1,20 +1,16 @@
 import { User } from "../types/types.ts";
 
 export default async function checkTenant(context, next) {
-  const tenantId = context.params.tenantId as string;
   const user = context.state.user as User;
+  const tenantId = user.activeTenant;
 
-  console.log(tenantId);
-  console.log(user);
-  console.log(context.params)
-
-  if (tenantId !== user.activeTenant) {
-    context.response.status = 401;
+  if (!tenantId) {
+    context.response.status = 400;
     context.response.body = "Unauthorized";
     return;
   }
 
-  context.state.tenantId = context.params.tenantId;
+  context.state.tenantId = user.activeTenant;
 
   await next();
 }
