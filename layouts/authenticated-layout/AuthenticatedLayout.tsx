@@ -34,7 +34,7 @@ export default function AuthenticatedLayout(
               {children}
             </main>
           </div>
-          <AuthenticatedSidebar />
+          <AuthenticatedSidebar activeModule={activeModule} />
         </div>
       </body>
     </html>

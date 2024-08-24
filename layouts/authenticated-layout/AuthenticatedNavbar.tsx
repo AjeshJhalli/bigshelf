@@ -1,43 +1,5 @@
 import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
-
-type Module = {
-  name: string;
-  displayName: string;
-  href: string;
-  disabled: false;
-} | {
-  displayName: string;
-  disabled: true;
-};
-
-const modules: Array<Module> = [
-  {
-    name: "dashboard",
-    displayName: "Dashboard",
-    href: "/dashboard",
-    disabled: false,
-  },
-  {
-    name: "customers",
-    displayName: "Customers",
-    href: "/customers",
-    disabled: false,
-  },
-  {
-    displayName: "Suppliers",
-    disabled: true,
-  },
-  {
-    name: "inventory",
-    displayName: "Inventory",
-    href: "/inventory",
-    disabled: false,
-  },
-  {
-    displayName: "Bookings",
-    disabled: true,
-  },
-];
+import modules from "./modules.ts";
 
 export default function AuthenticatedNavbar(
   { activeModule }: {

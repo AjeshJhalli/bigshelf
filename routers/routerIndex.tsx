@@ -6,6 +6,7 @@ import Index from "../pages/Index.tsx";
 import checkTenant from "../middleware/checkTenant.ts";
 import routerCustomers from "./routerCustomers.tsx";
 import routerInventory from "./routerInventory.tsx";
+import routerBookings from "./routerBookings.tsx";
 
 const routerIndex = new Router();
 
@@ -17,6 +18,7 @@ routerIndex
   .use("/dashboard", routerDashboard.routes())
   .use("/", checkTenant)
   .use("/customers", routerCustomers.routes())
+  .use("/bookings", routerBookings.routes())
   .use("/inventory", routerInventory.routes());
 
 export default routerIndex;
