@@ -27,7 +27,7 @@ export default function routerModuleBase(options: RouterModuleBaseOptions) {
 
       const records = await options.getAll(tenantId);
 
-      context.response.body = r(
+      context.response.body = render(
         <ViewForm
           title={options.displayName}
           newHref={`/${options.name}/new`}
@@ -36,12 +36,7 @@ export default function routerModuleBase(options: RouterModuleBaseOptions) {
             editHref: `/${options.name}/${record.id}/edit`,
             fields: options.recordColumns.map((column) => record[column.name]),
           }))}
-        />,
-        [{
-          displayName: options.displayName,
-          href: `/${options.name}`,
-        }],
-        options.name,
+        />
       );
     })
     .get("/:recordId/edit", async (context) => {

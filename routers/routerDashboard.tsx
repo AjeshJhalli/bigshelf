@@ -9,6 +9,8 @@ import decodeDate from "../utils/decodeDate.ts";
 import getUser from "../data/getUser.ts";
 import { User } from "../types/types.ts";
 import deleteCustomer from "../data/deleteCustomer.ts";
+import Breadcrumbs from "../components/Breadcrumbs.tsx";
+import ModuleNav from "../layouts/authenticated-layout/ModuleNav.tsx";
 
 const kv = await Deno.openKv();
 
@@ -26,14 +28,14 @@ routerDashboard
       tenants.push(tenant);
     }
 
-    context.response.body = r(
-      <Dashboard user={context.state.user} tenants={tenants} />,
-      [{
-        displayName: "Dashboard",
-        href: "/dashboard",
-      }],
-      "dashboard",
-      user.activeTenant,
+    context.response.body = render(
+      <>
+        <ModuleNav oob activeModule="dashboard" />
+        <Breadcrumbs
+          breadcrumbs={[{ displayName: "Dashboard", href: "/dashboard" }]}
+        />
+        <Dashboard user={context.state.user} tenants={tenants} />
+      </>,
     );
   })
   .get("/me/edit", async (context) => {
@@ -135,17 +137,17 @@ routerDashboard
     context.response.redirect("/dashboard");
   })
   .delete("/delete-all-customers", async (context) => {
-
     const user = await getUser(context.state.user.oid);
 
     if (!user) return;
 
-    const customerRecords = await Array.fromAsync(kv.list<CustomerType>({ prefix: [user.activeTenant, "customer"] }));
+    const customerRecords = await Array.fromAsync(
+      kv.list<CustomerType>({ prefix: [user.activeTenant, "customer"] }),
+    );
 
     for (const record of customerRecords) {
       await deleteCustomer(user.activeTenant, record.key[2] as string);
     }
-
   });
 
 export default routerDashboard;

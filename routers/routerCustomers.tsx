@@ -6,6 +6,8 @@ import r from "../utils/r.tsx";
 import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
 import createCustomer from "../data/createCustomer.ts";
 import { CustomerType } from "../types/types.ts";
+import Breadcrumbs from "../components/Breadcrumbs.tsx";
+import ModuleNav from "../layouts/authenticated-layout/ModuleNav.tsx";
 
 const kv = await Deno.openKv();
 
@@ -19,16 +21,18 @@ routerCustomers
       kv.list<CustomerType>({ prefix: [tenantId, "customer"] }),
     );
 
-    const customers = customerRecords.map(record => record.value) as Array<CustomerType>;
+    const customers = customerRecords.map((record) => record.value) as Array<
+      CustomerType
+    >;
 
-    context.response.body = r(
-      <Customers customers={customers} activeTenant={tenantId} />,
-      [{
-        displayName: "Customers",
-        href: `/${tenantId}/customers`,
-      }],
-      "customers",
-      tenantId
+    context.response.body = render(
+      <>
+        <ModuleNav oob activeModule="customers" />
+        <Breadcrumbs
+          breadcrumbs={[{ displayName: "Customers", href: "/customers" }]}
+        />
+        <Customers customers={customers} />
+      </>,
     );
   })
   .get("/new", (context) => {
@@ -74,7 +78,10 @@ routerCustomers
     ];
 
     context.response.body = render(
-      <EditFormModal fields={fields} saveHref={`/${tenantId}/customers/new`} title="" />,
+      <EditFormModal
+        fields={fields}
+        saveHref={`/${tenantId}/customers/new`}
+      />,
     );
   })
   .post("/new", async (context) => {

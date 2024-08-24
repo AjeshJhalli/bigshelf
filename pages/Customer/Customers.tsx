@@ -1,10 +1,10 @@
+import ButtonNew from "../../components/ButtonNew.tsx";
 import { CustomerType } from "../../types/types.ts";
 import addressLateral from "../../utils/addressLateral.ts";
 
 export default function Customers(
-  { customers, activeTenant }: {
+  { customers }: {
     customers: Array<CustomerType>;
-    activeTenant: string;
   },
 ) {
   return (
@@ -13,14 +13,7 @@ export default function Customers(
         <h2 className="card-title flex justify-between">
           <span>Customers</span>
           <div className="card-actions">
-            <a
-              className="btn btn-sm btn-primary"
-              hx-get={`/${activeTenant}/customers/new`}
-              hx-target="body"
-              hx-swap="beforeend"
-            >
-              New
-            </a>
+            <ButtonNew href="/customers/new" />
           </div>
         </h2>
         <div className="overflow-x-auto">
@@ -35,9 +28,9 @@ export default function Customers(
               {customers.map((customer) => (
                 <tr
                   className="hover:bg-base-200 hover:cursor-pointer"
-                  onClick={`window.location.href='/${activeTenant}/customers/${
-                    customer.id
-                  }'`}
+                  // onClick={`window.location.href='/customers/${customer.id}'`}
+                  hx-get={`/customers/${customer.id}`}
+                  hx-target="#module-container"
                 >
                   <td>
                     {customer.name}

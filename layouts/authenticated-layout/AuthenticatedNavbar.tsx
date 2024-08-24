@@ -1,5 +1,6 @@
 import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
-import modules from "./modules.ts";
+
+import ModuleNav from "./ModuleNav.tsx";
 
 export default function AuthenticatedNavbar(
   { activeModule }: {
@@ -28,66 +29,18 @@ export default function AuthenticatedNavbar(
             </path>
           </svg>
         </label>
-        <a className="btn btn-ghost text-xl" href="/dashboard">
+        <a
+          className="btn btn-ghost text-xl"
+          hx-get="/dashboard"
+          hx-target="#module-container"
+        >
           <h1>Bigshelf</h1>
         </a>
       </div>
-      <ul
-        tabIndex={0}
-        className="lg:flex hidden menu menu-horizontal w-full justify-center"
-      >
-        {modules.map((module) => (
-          module.disabled
-            ? <ModuleButtonDisabled displayName={module.displayName} />
-            : (
-              <ModuleButtonEnabled
-                name={module.name}
-                displayName={module.displayName}
-                href={module.href}
-                activeModule={activeModule}
-              />
-            )
-        ))}
-      </ul>
+      <ModuleNav activeModule={activeModule} oob={false} />
       <div className="navbar-end justify-end flex gap-x-6 px-6">
         <a className="btn btn-sm btn-primary" href="/auth/sign-out">Sign Out</a>
       </div>
     </nav>
-  );
-}
-
-function ModuleButtonEnabled(
-  { name, href, displayName, activeModule }: {
-    name: string;
-    displayName: string;
-    href: string;
-    activeModule: string;
-  },
-) {
-  return (
-    <li>
-      <a
-        className={classNames({
-          "active": activeModule === name,
-        })}
-        href={href}
-      >
-        {displayName}
-      </a>
-    </li>
-  );
-}
-
-function ModuleButtonDisabled(
-  { displayName }: {
-    displayName: string;
-  },
-) {
-  return (
-    <li className="disabled">
-      <span>
-        {displayName}
-      </span>
-    </li>
   );
 }

@@ -13,6 +13,8 @@ import formPerson from "../forms/formPerson.ts";
 import getPerson from "../data/getPerson.ts";
 import updateCustomer from "../data/updateCustomer.ts";
 import { DateString } from "../types/types.ts";
+import Breadcrumbs from "../components/Breadcrumbs.tsx";
+import ModuleNav from "../layouts/authenticated-layout/ModuleNav.tsx";
 
 const kv = await Deno.openKv();
 
@@ -28,21 +30,21 @@ routerCustomer
 
     const people = await getCustomerPeople(tenantId, customerId);
 
-    context.response.body = r(
-      <Customer
-        customer={customer}
-        people={people}
-        activeTenant={tenantId}
-      />,
-      [{
-        displayName: "Customers",
-        href: `/${tenantId}/customers`,
-      }, {
-        displayName: customer.name,
-        href: `/${tenantId}/customers/${customerId}`,
-      }],
-      "customers",
-      context.state.user.activeTenant,
+    context.response.body = render(
+      <>
+        <ModuleNav oob activeModule="customers" />
+        <Breadcrumbs
+          breadcrumbs={[{
+            displayName: "Customers",
+            href: "/customers",
+          }, { displayName: customer.name, href: `/customers/${customer.id}` }]}
+        />
+        <Customer
+          customer={customer}
+          people={people}
+          activeTenant={tenantId}
+        />
+      </>,
     );
   })
   .get("/edit", async (context) => {
@@ -126,7 +128,7 @@ routerCustomer
       jobTitle: "",
       gender: "",
       dob: "" as DateString,
-      emailAddress: ""
+      emailAddress: "",
     });
 
     context.response.body = render(
@@ -197,7 +199,7 @@ routerCustomer
     await updateCustomer(tenantId, customerId, {
       id: customerId,
       name,
-      address
+      address,
     });
 
     context.response.redirect(`/${tenantId}/customers/${customerId}`);

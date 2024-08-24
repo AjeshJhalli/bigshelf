@@ -26,12 +26,6 @@ const modules: Array<Module> = [
     disabled: true,
   },
   {
-    name: "inventory",
-    displayName: "Inventory",
-    href: "/inventory",
-    disabled: false,
-  },
-  {
     name: "bookings",
     displayName: "Bookings",
     href: "/bookings",
