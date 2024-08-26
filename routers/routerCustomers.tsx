@@ -2,12 +2,12 @@ import { Router } from "jsr:@oak/oak/router";
 import routerCustomer from "./routerCustomer.tsx";
 import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
 import Customers from "../pages/Customer/Customers.tsx";
-import r from "../utils/r.tsx";
 import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
 import createCustomer from "../data/createCustomer.ts";
 import { CustomerType } from "../types/types.ts";
 import Breadcrumbs from "../components/Breadcrumbs.tsx";
 import ModuleNav from "../layouts/authenticated-layout/ModuleNav.tsx";
+import formCustomer from "../forms/formCustomer.ts";
 
 const kv = await Deno.openKv();
 
@@ -36,51 +36,16 @@ routerCustomers
     );
   })
   .get("/new", (context) => {
-    const tenantId = context.state.tenantId;
-
-    const fields: Array<FormField> = [
-      {
-        type: "text",
-        name: "name",
-        displayName: "Customer Name",
-        value: "",
-      },
-      {
-        type: "text",
-        name: "addressLine1",
-        displayName: "Address Line 1",
-        value: "",
-      },
-      {
-        type: "text",
-        name: "addressLine2",
-        displayName: "Address Line 2",
-        value: "",
-      },
-      {
-        type: "text",
-        name: "addressCity",
-        displayName: "City",
-        value: "",
-      },
-      {
-        type: "text",
-        name: "addressCountry",
-        displayName: "Country",
-        value: "",
-      },
-      {
-        type: "text",
-        name: "addressPostcode",
-        displayName: "Postcode",
-        value: "",
-      },
-    ];
+    const fields: Array<FormField> = formCustomer({
+      id: "",
+      name: "",
+      address: { line1: "", line2: "", city: "", country: "", postcode: "" },
+    });
 
     context.response.body = render(
       <EditFormModal
         fields={fields}
-        saveHref={`/${tenantId}/customers/new`}
+        saveHref="/customers/new"
       />,
     );
   })
@@ -100,7 +65,7 @@ routerCustomers
 
     const customerId = await createCustomer({ name, address }, tenantId);
 
-    context.response.redirect(`/${tenantId}/customers/${customerId}`);
+    context.response.headers.set("HX-Redirect", `/customers/${customerId}`);
   });
 
 routerCustomers.use("/:customerId", routerCustomer.routes());

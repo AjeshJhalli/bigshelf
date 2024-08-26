@@ -23,14 +23,8 @@ routerIndex
     }
 
     const url = new URL(context.request.url);
-
     const path = url.pathname;
-
     const activeModule = path.split("/")[1];
-
-    console.log(path);
-
-    console.log("Module: " + activeModule)
 
     context.response.body = r(<div hx-get={path} hx-trigger="load" />, [], activeModule);
 

@@ -3,14 +3,18 @@ import { CustomerType, Person } from "../../types/types.ts";
 import { Address } from "../../types/types.ts";
 
 export default function Customer(
-  { customer, people, activeTenant }: {
+  { oob = false, customer, people }: {
+    oob: boolean;
     customer: CustomerType;
     people: Array<Person>;
-    activeTenant: string;
   },
 ) {
   return (
-    <div className="card bg-base-100 shadow-xl rounded-none h-full">
+    <div
+      id="customer-view-form"
+      {...(oob ? { "hx-swap-oob": "true" } : {})}
+      className="card bg-base-100 shadow-xl rounded-none h-full"
+    >
       <div className="card-body h-full">
         <div className="pb-10">
           <div className="card-actions justify-between">
@@ -20,7 +24,7 @@ export default function Customer(
             <div className="flex gap-x-6">
               <button
                 className="btn btn-primary btn-sm"
-                hx-get={`/${activeTenant}/customers/${customer.id}/edit`}
+                hx-get={`/customers/${customer.id}/edit`}
                 hx-target="body"
                 hx-swap="beforeend"
               >
@@ -33,7 +37,6 @@ export default function Customer(
         <CustomerPeople
           customerId={customer.id}
           people={people}
-          activeTenant={activeTenant}
         />
       </div>
     </div>

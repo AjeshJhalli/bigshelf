@@ -24,7 +24,6 @@ export default async function deleteCustomer(
       prefix: [tenantId, "person", customerId],
     })
   ) {
-    console.log(person);
     deleteCustomerTransaction.delete(person.key);
   }
 

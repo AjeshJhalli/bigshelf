@@ -1,6 +1,10 @@
 import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
 
-export type FormField = FieldText | FieldDropdown | FieldDate;
+export type FormField =
+  | FieldText
+  | FieldDropdown
+  | FieldDate
+  | FieldDynamicDropdown;
 
 export type FieldText = {
   type: "text";
@@ -20,6 +24,14 @@ export type FieldDropdown = {
   name: string;
   displayName: string;
   options: Array<FieldDropdownOption>;
+  value: string;
+};
+
+export type FieldDynamicDropdown = {
+  type: "dynamic-dropdown";
+  name: string;
+  displayName: string;
+  getOptions: (tenantId: string) => Promise<Array<FieldDropdownOption>>;
   value: string;
 };
 
@@ -187,19 +199,22 @@ export default function EditFormModal(
     <div
       id="edit-form-modal"
       className="modal modal-open"
-      _={"on closeModal add .closing then wait for animationend then remove me"}
+      // _={"on closeModal add .closing then wait for animationend then remove me"}
     >
       <form
         id="user-profile-edit-form"
         className="modal-box bg-base-100 shadow-xl"
-        method="POST"
-        action={saveHref}
+        hx-post={saveHref}
+        hx-swap="outerHTML"
+        hx-target="#edit-form-modal"
       >
         <div className="card-body flex">
-          <div className={classNames("card-actions", {
-            "justify-between": deleteHref,
-            "justify-end": !deleteHref
-          })}>
+          <div
+            className={classNames("card-actions", {
+              "justify-between": deleteHref,
+              "justify-end": !deleteHref,
+            })}
+          >
             {deleteHref && (
               <button
                 type="button"

@@ -42,7 +42,6 @@ routerCustomer
         <Customer
           customer={customer}
           people={people}
-          activeTenant={tenantId}
         />
       </>,
     );
@@ -59,8 +58,8 @@ routerCustomer
     context.response.body = render(
       <EditFormModal
         fields={fields}
-        saveHref={`/${tenantId}/customers/${customerId}/edit`}
-        deleteHref={`/${tenantId}/customers/${customerId}`}
+        saveHref={`/customers/${customerId}/edit`}
+        deleteHref={`/customers/${customerId}`}
         deleteConfirmation="Are you sure you want to delete this customer?"
       />,
     );
@@ -78,8 +77,8 @@ routerCustomer
     context.response.body = render(
       <EditFormModal
         fields={fields}
-        saveHref={`/${tenantId}/customers/${customerId}/people/${personId}/edit`}
-        deleteHref={`/${tenantId}/customers/${customerId}/people/${personId}`}
+        saveHref={`/customers/${customerId}/people/${personId}/edit`}
+        deleteHref={`/customers/${customerId}/people/${personId}`}
         deleteConfirmation="Are you sure you want to delete this person?"
       />,
     );
@@ -114,10 +113,9 @@ routerCustomer
       emailAddress,
     });
 
-    context.response.redirect(`/${tenantId}/customers/${customerId}`);
+    context.response.redirect(`/customers/${customerId}`);
   })
   .get("/people/new", (context) => {
-    const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId as string;
 
     const fields = formPerson({
@@ -134,7 +132,7 @@ routerCustomer
     context.response.body = render(
       <EditFormModal
         fields={fields}
-        saveHref={`/${tenantId}/customers/${customerId}/people/new`}
+        saveHref={`/customers/${customerId}/people/new`}
       />,
     );
   })
@@ -177,7 +175,21 @@ routerCustomer
       emailAddress,
     }, tenantId);
 
-    context.response.redirect(`/${tenantId}/customers/${customerId}`);
+    const updatedCustomer = await getCustomer(tenantId, customerId);
+    const customerPeople = await getCustomerPeople(tenantId, customerId);
+
+    if (!updatedCustomer) {
+      context.response.status = 500;
+      return;
+    }
+
+    context.response.body = render(
+      <Customer
+        oob
+        customer={updatedCustomer}
+        people={customerPeople}
+      />,
+    );
   })
   .post("/edit", async (context) => {
     const tenantId = context.state.tenantId as string;
@@ -202,7 +214,21 @@ routerCustomer
       address,
     });
 
-    context.response.redirect(`/${tenantId}/customers/${customerId}`);
+    const updatedCustomer = await getCustomer(tenantId, customerId);
+    const customerPeople = await getCustomerPeople(tenantId, customerId);
+
+    if (!updatedCustomer) {
+      context.response.status = 500;
+      return;
+    }
+
+    context.response.body = render(
+      <Customer
+        oob
+        customer={updatedCustomer}
+        people={customerPeople}
+      />,
+    );
   })
   .delete("/", async (context) => {
     const tenantId = context.state.tenantId as string;
@@ -226,13 +252,12 @@ routerCustomer
         prefix: [tenantId, "person", customerId],
       })
     ) {
-      console.log(person);
       deleteCustomerTransaction.delete(person.key);
     }
 
     await deleteCustomerTransaction.commit();
 
-    context.response.headers.append("HX-Redirect", `/${tenantId}/customers`);
+    context.response.headers.append("HX-Redirect", "/customers");
   })
   .delete("/people/:personId", async (context) => {
     const tenantId = context.state.tenantId as string;
@@ -241,7 +266,7 @@ routerCustomer
     await kv.delete([tenantId, "person", customerId, personId]);
     context.response.headers.append(
       "HX-Redirect",
-      `/${tenantId}/customers/${customerId}`,
+      `/customers/${customerId}`,
     );
   });
 

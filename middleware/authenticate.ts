@@ -72,13 +72,11 @@ const middlewareAuth = async (context, next) => {
       });
 
       context.state.user = await setUser(tokenData.id_token);
-      console.log(context.state.user);
       context.state.user.initials = `${context.state.user.firstName[0]}${
         context.state.user.lastName[0]
       }`;
     } else {
       context.state.user = await setUser(token);
-      console.log(context.state.user);
       context.state.user.initials = `${context.state.user.firstName[0]}${
         context.state.user.lastName[0]
       }`;

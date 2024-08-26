@@ -1,11 +1,11 @@
+import ButtonNew from "../../components/ButtonNew.tsx";
 import { Person } from "../../types/types.ts";
 import formatDate from "../../utils/formatDate.ts";
 
 export default function CustomerPeople(
-  { people, customerId, activeTenant }: {
+  { people, customerId }: {
     people: Array<Person>;
     customerId: string;
-    activeTenant: string;
   },
 ) {
   return (
@@ -18,14 +18,7 @@ export default function CustomerPeople(
           <th>Job Title</th>
           <th>Email</th>
           <th className="flex justify-end">
-            <button
-              className="btn btn-sm btn-primary"
-              hx-get={`/${activeTenant}/customers/${customerId}/people/new`}
-              hx-target="body"
-              hx-swap="beforeend"
-            >
-              New
-            </button>
+            <ButtonNew href={`/customers/${customerId}/people/new`} />
           </th>
         </tr>
       </thead>
@@ -33,7 +26,7 @@ export default function CustomerPeople(
         {people.map((person) => (
           <tr
             className="hover"
-            hx-get={`/${activeTenant}/customers/${customerId}/people/${person.id}/edit`}
+            hx-get={`/customers/${customerId}/people/${person.id}/edit`}
             hx-target="body"
             hx-swap="beforeend"
           >

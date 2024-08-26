@@ -28,9 +28,9 @@ export default function Customers(
               {customers.map((customer) => (
                 <tr
                   className="hover:bg-base-200 hover:cursor-pointer"
-                  // onClick={`window.location.href='/customers/${customer.id}'`}
                   hx-get={`/customers/${customer.id}`}
                   hx-target="#module-container"
+                  hx-push-url="true"
                 >
                   <td>
                     {customer.name}

@@ -1,5 +1,3 @@
-import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
-
 import ModuleNav from "./ModuleNav.tsx";
 
 export default function AuthenticatedNavbar(
