@@ -6,7 +6,7 @@ import ModuleNav from "../layouts/authenticated-layout/ModuleNav.tsx";
 import { createBooking, getBooking, getBookings, updateBooking } from "../data/booking.ts";
 import EditFormModal from "../components/EditFormModal.tsx";
 import formBooking from "../forms/formBooking.ts";
-import getCustomer from "../data/getCustomer.ts";
+import { getCustomer } from "../data/customer.ts";
 import ButtonEdit from "../components/ButtonEdit.tsx";
 import formatDate from "../utils/formatDate.ts";
 

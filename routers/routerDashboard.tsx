@@ -1,14 +1,12 @@
 import { Router } from "jsr:@oak/oak/router";
-import r from "../utils/r.tsx";
 import Dashboard from "../pages/dashboard/Dashboard.tsx";
 import encodeDate from "../utils/encodeDate.ts";
 import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
 import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
-import { CustomerType, DateString } from "../types/types.ts";
+import { DateString } from "../types/types.ts";
 import decodeDate from "../utils/decodeDate.ts";
 import getUser from "../data/getUser.ts";
 import { User } from "../types/types.ts";
-import deleteCustomer from "../data/deleteCustomer.ts";
 import Breadcrumbs from "../components/Breadcrumbs.tsx";
 import ModuleNav from "../layouts/authenticated-layout/ModuleNav.tsx";
 
@@ -135,19 +133,6 @@ routerDashboard
     });
 
     context.response.redirect("/dashboard");
-  })
-  .delete("/delete-all-customers", async (context) => {
-    const user = await getUser(context.state.user.oid);
-
-    if (!user) return;
-
-    const customerRecords = await Array.fromAsync(
-      kv.list<CustomerType>({ prefix: [user.activeTenant, "customer"] }),
-    );
-
-    for (const record of customerRecords) {
-      await deleteCustomer(user.activeTenant, record.key[2] as string);
-    }
   });
 
 export default routerDashboard;

@@ -1,17 +1,14 @@
 import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
 import { Router } from "jsr:@oak/oak/router";
-import r from "../utils/r.tsx";
 import Customer from "../pages/Customer/Customer.tsx";
 import EditFormModal from "../components/EditFormModal.tsx";
 import encodeDate from "../utils/encodeDate.ts";
-import { CustomerType, Person } from "../types/types.ts";
+import { Person } from "../types/types.ts";
 import createPerson from "../data/createPerson.ts";
-import getCustomer from "../data/getCustomer.ts";
-import getCustomerPeople from "../data/getCustomerPeople.ts";
+import { getCustomerPeople, getCustomer, updateCustomer, deleteCustomer } from "../data/customer.ts";
 import formCustomer from "../forms/formCustomer.ts";
 import formPerson from "../forms/formPerson.ts";
 import getPerson from "../data/getPerson.ts";
-import updateCustomer from "../data/updateCustomer.ts";
 import { DateString } from "../types/types.ts";
 import Breadcrumbs from "../components/Breadcrumbs.tsx";
 import ModuleNav from "../layouts/authenticated-layout/ModuleNav.tsx";
@@ -233,30 +230,7 @@ routerCustomer
   .delete("/", async (context) => {
     const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId as string;
-
-    const customer = await kv.get<CustomerType>([
-      tenantId,
-      "customer",
-      customerId,
-    ]);
-    if (customer.value === null) {
-      return;
-    }
-
-    const deleteCustomerTransaction = kv.atomic()
-      .check(customer)
-      .delete([tenantId, "customer", customerId]);
-
-    for await (
-      const person of kv.list({
-        prefix: [tenantId, "person", customerId],
-      })
-    ) {
-      deleteCustomerTransaction.delete(person.key);
-    }
-
-    await deleteCustomerTransaction.commit();
-
+    await deleteCustomer(tenantId, customerId);
     context.response.headers.append("HX-Redirect", "/customers");
   })
   .delete("/people/:personId", async (context) => {

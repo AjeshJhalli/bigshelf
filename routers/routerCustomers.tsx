@@ -3,7 +3,7 @@ import routerCustomer from "./routerCustomer.tsx";
 import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
 import Customers from "../pages/Customer/Customers.tsx";
 import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
-import createCustomer from "../data/createCustomer.ts";
+import { createCustomer } from "../data/customer.ts";
 import { CustomerType } from "../types/types.ts";
 import Breadcrumbs from "../components/Breadcrumbs.tsx";
 import ModuleNav from "../layouts/authenticated-layout/ModuleNav.tsx";

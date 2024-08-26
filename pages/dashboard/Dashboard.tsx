@@ -1,6 +1,5 @@
 import { Tenant, User } from "../../types/types.ts";
 import Tenants from "../tenants/Tenants.tsx";
-import AdminCommands from "./AdminCommands.tsx";
 import UserProfile from "./UserProfile.tsx";
 
 export default function Dashboard(
@@ -10,7 +9,6 @@ export default function Dashboard(
     <div className="flex flex-wrap gap-3">
       <UserProfile user={user} />
       <Tenants activeTenantId={user.activeTenant} tenants={tenants} />
-      <AdminCommands />
     </div>
   );
 }
