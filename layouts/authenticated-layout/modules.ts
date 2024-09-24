@@ -26,10 +26,8 @@ const modules: Array<Module> = [
     disabled: true,
   },
   {
-    name: "bookings",
     displayName: "Bookings",
-    href: "/bookings",
-    disabled: false,
+    disabled: true
   },
 ];
 

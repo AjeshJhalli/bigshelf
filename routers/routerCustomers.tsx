@@ -3,7 +3,7 @@ import routerCustomer from "./routerCustomer.tsx";
 import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
 import Customers from "../pages/Customer/Customers.tsx";
 import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
-import { createCustomer } from "../data/customer.ts";
+import { createCustomer, getCustomers } from "../data/customer.ts";
 import { CustomerType } from "../types/types.ts";
 import Breadcrumbs from "../components/Breadcrumbs.tsx";
 import ModuleNav from "../layouts/authenticated-layout/ModuleNav.tsx";
@@ -17,13 +17,7 @@ routerCustomers
   .get("/", async (context) => {
     const tenantId = context.state.tenantId;
 
-    const customerRecords = await Array.fromAsync(
-      kv.list<CustomerType>({ prefix: [tenantId, "customer"] }),
-    );
-
-    const customers = customerRecords.map((record) => record.value) as Array<
-      CustomerType
-    >;
+    const customers = await getCustomers(tenantId);
 
     context.response.body = render(
       <>

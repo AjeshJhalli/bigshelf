@@ -8,7 +8,7 @@ export default function Customers(
   },
 ) {
   return (
-    <div className="card bg-base-100 shadow-lg flex flex-grow rounded-none">
+    <div className="card flex flex-grow rounded-none">
       <div className="card-body">
         <h2 className="card-title flex justify-between">
           <span>Customers</span>

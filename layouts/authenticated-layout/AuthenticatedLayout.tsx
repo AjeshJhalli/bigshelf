@@ -12,7 +12,7 @@ export default function AuthenticatedLayout(
   return (
     <html data-theme="dim">
       <Head />
-      <body className="flex flex-col bg-base-200 h-screen">
+      <body className="flex flex-col h-screen">
         <div className="drawer">
           <input id="my-drawer" type="checkbox" className="drawer-toggle" />
           <div className="drawer-content">

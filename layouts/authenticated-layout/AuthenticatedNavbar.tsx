@@ -6,7 +6,7 @@ export default function AuthenticatedNavbar(
   },
 ) {
   return (
-    <nav className="navbar bg-base-200">
+    <nav className="navbar">
       <div class="navbar-start">
         <label
           class="lg:hidden flex btn btn-square btn-ghost drawer-button"

@@ -1,5 +1,5 @@
-import { cuid } from "https://deno.land/x/cuid@v1.0.0/index.js";
 import { Address, CustomerType, Person } from "../types/types.ts";
+import { dbPool } from "../database.ts";
 
 const kv = await Deno.openKv();
 
@@ -9,15 +9,10 @@ type CustomerData = {
 }
 
 export async function createCustomer(customerData: CustomerData, tenantId: string) {
-  const customerId = cuid();
-
-  const customer: CustomerType = {
-    ...customerData,
-    id: customerId
-  }
-
-  await kv.set([tenantId, "customer", customerId], customer);
-  return customerId;
+  using client = await dbPool.connect();
+  await client.queryArray(`INSERT INTO customer (tenant_id, name) VALUES ('${tenantId}', '${customerData.name}')`);
+  const resultId = await client.queryArray`SELECT LASTVAL()`;
+  return resultId.rows[0];
 }
 
 
@@ -51,13 +46,43 @@ export async function deleteCustomer(
 
 export async function getCustomer(tenantId: string, customerId: string) {
 
-  const customerRecord = await kv.get<CustomerType>([
-    tenantId,
-    "customer",
-    customerId,
-  ]);
+  using client = await dbPool.connect();
+  const result = await client.queryObject(`SELECT * FROM customer WHERE tenant_id = '${tenantId}' AND id = ${parseInt(customerId)}`);
 
-  return customerRecord.versionstamp ? customerRecord.value as CustomerType : null;
+  const customerRecord: CustomerType = {
+    id: result.rows[0].id,
+    name: result.rows[0].name,
+    address: {
+      line1: "",
+      line2: "",
+      city: "",
+      country: "",
+      postcode: ""
+    }
+  }
+  
+  return customerRecord;
+}
+
+export async function getCustomers(tenantId: string) {
+
+  using client = await dbPool.connect();
+  const result = await client.queryObject(`SELECT * FROM customer WHERE tenant_id = '${tenantId}'`);
+
+  const customers: Array<CustomerType> = result.rows.map(record => ({
+    id: record.id,
+    name: record.name,
+    address: {
+      line1: "",
+      line2: "",
+      city: "",
+      country: "",
+      postcode: ""
+    }
+  }));
+
+  return customers;
+
 }
 
 export async function getCustomerPeople(tenantId: string, customerId: string) {

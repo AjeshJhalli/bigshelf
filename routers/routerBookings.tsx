@@ -204,7 +204,7 @@ routerBookings
                     <td>{formatDate(sector.sectorDateStart)} - {formatDate(sector.sectorDateEnd)}</td>
                     <td>{sector.type}</td>
                     <td>{sector.allocations.length} / {sector.quantity}</td>
-                    <td>{sector.allocations.map(allocation => allocation.personName).join(", ")}</td>
+                    <td>{sector.allocations.map(allocation => allocation?.personName).join(", ")}</td>
                     <td></td>
                   </tr>
                 ))}
