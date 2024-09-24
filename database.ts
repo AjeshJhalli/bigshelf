@@ -8,12 +8,7 @@ export const dbPool = new Pool(
     hostname: "aws-0-eu-west-2.pooler.supabase.com",
     port: 6543,
     user: "postgres.wjucgknzgympnnywamjy",
+    password: Deno.env.get("PGPASSWORD")
   },
   POOL_CONNECTIONS,
 );
-
-{
-  using client = await dbPool.connect();
-  const result = await client.queryArray`SELECT * FROM customer`;
-  console.log(result.rows);
-}
