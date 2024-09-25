@@ -70,7 +70,7 @@ export async function getCustomers(tenantId: string) {
   const result = await client.queryObject(`
     SELECT customer.id, customer.name, email_address.email_address
     FROM customer
-    INNER JOIN email_address
+    LEFT JOIN email_address
     ON customer.id = email_address.customer_id AND email_address.default_flag = TRUE
     WHERE customer.tenant_id = '${tenantId}'
   `);
