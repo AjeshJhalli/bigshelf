@@ -71,8 +71,8 @@ export async function getCustomers(tenantId: string) {
     SELECT customer.id, customer.name, email_address.email_address
     FROM customer
     INNER JOIN email_address
-    ON customer.id = email_address.customer_id
-    WHERE customer.tenant_id = '${tenantId}' AND email_address.default_flag = TRUE
+    ON customer.id = email_address.customer_id AND email_address.default_flag = TRUE
+    WHERE customer.tenant_id = '${tenantId}'
   `);
 
   const customers: Array<CustomerType> = result.rows.map(record => ({
