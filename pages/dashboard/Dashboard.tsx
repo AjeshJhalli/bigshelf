@@ -6,8 +6,9 @@ export default function Dashboard(
   { user, tenants }: { user: User; tenants: Array<Tenant> },
 ) {
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="max-w-[500px]">
       <UserProfile user={user} />
+      <div className="divider" />
       <Tenants activeTenantId={user.activeTenant} tenants={tenants} />
     </div>
   );
