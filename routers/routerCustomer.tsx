@@ -361,12 +361,13 @@ routerCustomer
     const customerId = context.params.customerId as string;
 
     using client = await dbPool.connect();
+    using client2 = await dbPool.connect();
     await client.queryObject(
       `UPDATE email_address
       SET default_flag = FALSE
       WHERE tenant_id = '${tenantId}' AND customer_id = ${customerId}`,
     );
-    await client.queryObject(
+    await client2.queryObject(
       `UPDATE email_address
       SET default_flag = TRUE
       WHERE tenant_id = '${tenantId}' AND id = ${emailAddressId}`,
