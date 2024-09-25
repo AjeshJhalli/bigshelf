@@ -1,6 +1,5 @@
 import ButtonNew from "../../components/ButtonNew.tsx";
 import { CustomerType } from "../../types/types.ts";
-import addressLateral from "../../utils/addressLateral.ts";
 
 export default function Customers(
   { customers }: {
@@ -21,7 +20,7 @@ export default function Customers(
             <thead>
               <tr>
                 <th>Name</th>
-                <th>Address</th>
+                <th>Email</th>
               </tr>
             </thead>
             <tbody>
@@ -36,7 +35,7 @@ export default function Customers(
                     {customer.name}
                   </td>
                   <td>
-                    {addressLateral(customer.address)}
+                    {customer.email}
                   </td>
                 </tr>
               ))}

@@ -4,12 +4,10 @@ import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12"
 import Customers from "../pages/Customer/Customers.tsx";
 import EditFormModal, { FormField } from "../components/EditFormModal.tsx";
 import { createCustomer, getCustomers } from "../data/customer.ts";
-import { CustomerType } from "../types/types.ts";
+import { dbPool } from "../database.ts";
 import Breadcrumbs from "../components/Breadcrumbs.tsx";
 import ModuleNav from "../layouts/authenticated-layout/ModuleNav.tsx";
 import formCustomer from "../forms/formCustomer.ts";
-
-const kv = await Deno.openKv();
 
 const routerCustomers = new Router();
 

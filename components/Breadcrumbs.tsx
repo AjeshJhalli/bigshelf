@@ -14,6 +14,7 @@ export default function Breadcrumbs(
               className="link"
               hx-get={breadcrumb.href}
               hx-target="#module-container"
+              hx-push-url="true"
             >
               {breadcrumb.displayName}
             </a>

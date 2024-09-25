@@ -12,7 +12,6 @@ import createPerson from "../data/createPerson.ts";
 import {
   deleteCustomer,
   getCustomer,
-  getCustomerPeople,
   updateCustomer,
 } from "../data/customer.ts";
 import formCustomer from "../forms/formCustomer.ts";

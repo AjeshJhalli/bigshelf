@@ -67,11 +67,18 @@ export async function getCustomer(tenantId: string, customerId: string) {
 export async function getCustomers(tenantId: string) {
 
   using client = await dbPool.connect();
-  const result = await client.queryObject(`SELECT * FROM customer WHERE tenant_id = '${tenantId}'`);
+  const result = await client.queryObject(`
+    SELECT customer.id, customer.name, email_address.email_address
+    FROM customer
+    INNER JOIN email_address
+    ON customer.id = email_address.customer_id
+    WHERE customer.tenant_id = '${tenantId}' AND email_address.default_flag = TRUE
+  `);
 
   const customers: Array<CustomerType> = result.rows.map(record => ({
     id: record.id,
     name: record.name,
+    email: record.email_address,
     address: {
       line1: "",
       line2: "",
