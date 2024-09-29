@@ -9,27 +9,16 @@ export default function Customer(
       {...(oob ? { "hx-swap-oob": "true" } : {})}
       className="card rounded-none h-full"
     >
-      <div className="card-body h-full">
+      <div className="card-body h-full max-w-[1000px]">
         <div className="pb-10">
           <div className="card-actions justify-between">
-            <h2 className="card-title py-3">
+            <CustomerName customerId={customer.id}>
               {customer.name}
-            </h2>
-            <div className="flex gap-x-6">
-              <button
-                className="btn btn-primary btn-sm"
-                hx-get={`/customers/${customer.id}/edit`}
-                hx-target="body"
-                hx-swap="beforeend"
-              >
-                Edit
-              </button>
-            </div>
+            </CustomerName>
           </div>
-          <CustomerAddress address={customer.address} />
         </div>
-        <div class="max-w-[800px] overflow-auto">
-          <h2 class="text-md font-bold mb-4">Emails</h2>
+        <div class="overflow-auto">
+          <h2 class="text-md font-bold mb-4 px-3">Emails</h2>
           <table class="table table-fixed mb-4">
             <thead>
               <tr>
@@ -57,15 +46,40 @@ export default function Customer(
   );
 }
 
-function CustomerAddress({ address }) {
+export function CustomerName({ children, customerId }) {
   return (
-    <address className="w-72">
-      <div>{address.line1}</div>
-      <div>{address.line2}</div>
-      <div>{address.city}</div>
-      <div>{address.country}</div>
-      <div>{address.postcode}</div>
-    </address>
+    <h2
+      className="card-title px-3 py-3 hover:bg-base-200 hover:cursor-pointer w-full"
+      hx-get={`/customers/${customerId}/name/edit`}
+      hx-swap="outerHTML"
+    >
+      {children}
+    </h2>
+  );
+}
+export function CustomerNameForm({ children, saveHref, cancelHref }) {
+  return (
+    <form class="flex items-center" hx-post={saveHref} hx-swap="outerHTML">
+      <input
+        autoFocus
+        class="input input-bordered mr-3"
+        name="customerName"
+        value={children}
+      />
+      <button
+        class="btn btn-sm btn-error mr-3"
+        type="button"
+        hx-get={cancelHref}
+        hx-target="closest form"
+        hx-swap="outerHTML"
+        tabIndex="0"
+      >
+        Cancel
+      </button>
+      <button class="btn btn-sm btn-primary" type="submit" tabIndex="0">
+        Save
+      </button>
+    </form>
   );
 }
 

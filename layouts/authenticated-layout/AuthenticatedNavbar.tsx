@@ -32,7 +32,7 @@ export default function AuthenticatedNavbar(
           hx-get="/dashboard"
           hx-target="#module-container"
         >
-          <h1>Bigshelf</h1>
+          <h1>Room Flow</h1>
         </a>
       </div>
       <ModuleNav activeModule={activeModule} oob={false} />
