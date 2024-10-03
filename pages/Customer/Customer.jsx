@@ -12,11 +12,15 @@ export default function Customer(
       <div className="card-body h-full max-w-[1000px]">
         <div className="pb-10">
           <div className="card-actions justify-between">
-            <CustomerName customerId={customer.id}>
-              {customer.name}
-            </CustomerName>
+            <CustomerMain
+              customerId={customer.id}
+              name={customer.name}
+              defaultEmail={emailAddresses.find((email) => email.default_flag)
+                .email_address}
+            />
           </div>
         </div>
+        <div class="divider" />
         <div class="overflow-auto">
           <h2 class="text-md font-bold mb-4 px-3">Emails</h2>
           <table class="table table-fixed mb-4">
@@ -46,39 +50,84 @@ export default function Customer(
   );
 }
 
-export function CustomerName({ children, customerId }) {
+export function CustomerMain({ customerId, name, defaultEmail }) {
   return (
-    <h2
-      className="card-title px-3 py-3 hover:bg-base-200 hover:cursor-pointer w-full"
-      hx-get={`/customers/${customerId}/name/edit`}
-      hx-swap="outerHTML"
+    <div
+      class="flex flex-col w-full card "
+      id="customer-main"
     >
-      {children}
-    </h2>
+      <div class="grid grid-cols-2 max-w-[500px] px-3 items-center gap-y-2 py-3">
+        <span class="font-bold text-gray-400 text-sm">Name</span>
+        <span>
+          {name}
+        </span>
+        <span class="font-bold text-gray-400 text-sm">Email</span>
+        <a class="link text-blue-500" href={`mailto:${defaultEmail}`}>
+          {defaultEmail}
+        </a>
+        <span class="font-bold text-gray-400 text-sm">Phone Number</span>
+        <span>+44 7488 290928</span>
+      </div>
+      <div className="card-actions justify-end">
+        <button
+          class="btn btn-primary btn-sm self-end"
+          hx-get={`/customers/${customerId}/main/edit`}
+          hx-target="#customer-main"
+          hx-swap="outerHTML"
+        >
+          Edit
+        </button>
+      </div>
+    </div>
   );
 }
-export function CustomerNameForm({ children, saveHref, cancelHref }) {
+export function CustomerNameForm(
+  { name, saveHref, cancelHref, emailAddresses },
+) {
   return (
-    <form class="flex items-center" hx-post={saveHref} hx-swap="outerHTML">
-      <input
-        autoFocus
-        class="input input-bordered mr-3"
-        name="customerName"
-        value={children}
-      />
-      <button
-        class="btn btn-sm btn-error mr-3"
-        type="button"
-        hx-get={cancelHref}
-        hx-target="closest form"
-        hx-swap="outerHTML"
-        tabIndex="0"
-      >
-        Cancel
-      </button>
-      <button class="btn btn-sm btn-primary" type="submit" tabIndex="0">
-        Save
-      </button>
+    <form
+      class="flex flex-col w-full"
+      hx-post={saveHref}
+      // hx-swap="outerHTML"
+      hx-target="#module-container"
+    >
+      <div class="grid grid-cols-2 max-w-[500px] px-3 items-center gap-y-2 py-3">
+        <span class="font-bold text-gray-400 text-sm">Name</span>
+        <input
+          class="input input-sm input-bordered"
+          value={name}
+          name="customerName"
+        />
+        <span class="font-bold text-gray-400 text-sm">Email</span>
+        <select name="emailAddress">
+          {emailAddresses.map((email) => (
+            <option value={email.id} selected={email.default_flag}>
+              {email.email_address}
+            </option>
+          ))}
+        </select>
+        <span class="font-bold text-gray-400 text-sm">Phone Number</span>
+        <input
+          class="input input-sm input-bordered"
+          value="+44 7488 290928"
+          name="phoneNumber"
+        />
+      </div>
+      <div className="card-actions justify-end">
+        <button
+          class="btn btn-sm btn-error mr-3"
+          type="button"
+          hx-get={cancelHref}
+          hx-target="closest form"
+          hx-swap="outerHTML"
+          tabIndex="0"
+        >
+          Cancel
+        </button>
+        <button class="btn btn-sm btn-primary" type="submit" tabIndex="0">
+          Save
+        </button>
+      </div>
     </form>
   );
 }
