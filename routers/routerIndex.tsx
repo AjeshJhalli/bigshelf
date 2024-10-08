@@ -6,6 +6,7 @@ import Index from "../pages/Index.tsx";
 import checkTenant from "../middleware/checkTenant.ts";
 import routerCustomers from "./routerCustomers.tsx";
 import routerBookings from "./routerBookings.tsx";
+import routerEmailAddresses from "./routerEmailAddresses.jsx";
 import r from "../utils/r.tsx";
 
 const routerIndex = new Router();
@@ -32,6 +33,7 @@ routerIndex
   .use("/dashboard", routerDashboard.routes())
   .use("/", checkTenant)
   .use("/customers", routerCustomers.routes())
-  .use("/bookings", routerBookings.routes());
+  .use("/bookings", routerBookings.routes())
+  .use("/email-addresses", routerEmailAddresses.routes());
 
 export default routerIndex;

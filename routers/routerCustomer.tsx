@@ -6,6 +6,8 @@ import Customer, {
   CustomerEmailRowForm,
   CustomerMain,
   CustomerNameForm,
+  CustomerPhoneNumberLastRow,
+  CustomerPhoneNumberRow,
 } from "../pages/Customer/Customer.jsx";
 import { getCustomer } from "../data/customer.ts";
 import Breadcrumbs from "../components/Breadcrumbs.tsx";
@@ -41,6 +43,7 @@ routerCustomer
         <Customer
           customer={customer}
           emailAddresses={emailAddresses}
+          phoneNumbers={[]}
         />
       </>,
     );
@@ -106,143 +109,6 @@ routerCustomer
     context.response.body = render(
       <CustomerEmailLastRow customerId={customerId} />,
     );
-  })
-  .get("/email-addresses/:emailAddressId/edit", async (context) => {
-    const tenantId = context.state.tenantId as string;
-    const emailAddressId = context.params.emailAddressId as string;
-    const customerId = context.params.customerId as string;
-
-    using client = await dbPool.connect();
-    const emailAddressResult = await client.queryObject(
-      `SELECT id, label, email_address FROM email_address WHERE tenant_id = '${tenantId}' AND id = ${emailAddressId}`,
-    );
-
-    const label = emailAddressResult.rows[0].label;
-    const emailAddress = emailAddressResult.rows[0].email_address;
-
-    context.response.body = render(
-      <CustomerEmailRowForm
-        cancelHref={`/customers/${customerId}/email-addresses/${emailAddressId}`}
-        label={label}
-        emailAddress={emailAddress}
-        saveHref={`/customers/${customerId}/email-addresses/${emailAddressId}/edit`}
-      />,
-    );
-  })
-  .post("/email-addresses/:emailAddressId/edit", async (context) => {
-    const tenantId = context.state.tenantId as string;
-    const emailAddressId = parseInt(context.params.emailAddressId);
-    const customerId = context.params.customerId as string;
-
-    console.log(context.params.emailAddressId);
-    console.log(emailAddressId);
-
-    const data = await context.request.body.form();
-
-    const label = data.get("label");
-    const emailAddress = data.get("emailAddress");
-
-    using client = await dbPool.connect();
-    await client.queryObject(`UPDATE email_address
-      SET email_address = '${emailAddress}', label = '${label}'
-      WHERE tenant_id = '${tenantId}' AND id = ${emailAddressId}
-    `);
-
-    const emailAddressesResult = await client.queryObject(`
-      SELECT default_flag
-      FROM email_address
-      WHERE tenant_id = '${tenantId}' AND id = ${emailAddressId}
-    `);
-
-    const defaultFlag = emailAddressesResult.rows[0].default_flag;
-
-    context.response.body = render(
-      <CustomerEmailRow
-        customerId={customerId}
-        emailAddressId={emailAddressId}
-        label={label}
-        emailAddress={emailAddress}
-        defaultFlag={defaultFlag}
-      />,
-    );
-  })
-  .post("/email-addresses/:emailAddressId/make-default", async (context) => {
-    const tenantId = context.state.tenantId as string;
-    const emailAddressId = context.params.emailAddressId as string;
-    const customerId = context.params.customerId as string;
-
-    using client = await dbPool.connect();
-    using client2 = await dbPool.connect();
-    await client.queryObject(
-      `UPDATE email_address
-      SET default_flag = FALSE
-      WHERE tenant_id = '${tenantId}' AND customer_id = ${customerId}`,
-    );
-    await client2.queryObject(
-      `UPDATE email_address
-      SET default_flag = TRUE
-      WHERE tenant_id = '${tenantId}' AND id = ${emailAddressId}`,
-    );
-
-    const customer = await getCustomer(tenantId, customerId);
-    if (!customer) return;
-
-    const emailAddressesResult = await client.queryObject(
-      `SELECT label, email_address, id, customer_id, default_flag FROM email_address WHERE tenant_id = '${tenantId}' AND customer_id = ${customerId} ORDER BY default_flag DESC, creation_timestamp ASC`,
-    );
-
-    const emailAddresses = emailAddressesResult.rows;
-
-    context.response.body = render(
-      <>
-        <ModuleNav oob activeModule="customers" />
-        <Breadcrumbs
-          breadcrumbs={[{
-            displayName: "Customers",
-            href: "/customers",
-          }, { displayName: customer.name, href: `/customers/${customer.id}` }]}
-        />
-        <Customer
-          customer={customer}
-          emailAddresses={emailAddresses}
-        />
-      </>,
-    );
-  })
-  .get("/email-addresses/:emailAddressId", async (context) => {
-    const tenantId = context.state.tenantId as string;
-    const emailAddressId = context.params.emailAddressId as string;
-    const customerId = context.params.customerId as string;
-
-    using client = await dbPool.connect();
-    const emailAddressResult = await client.queryObject(
-      `SELECT label, email_address, default_flag FROM email_address WHERE tenant_id = '${tenantId}' AND id = ${emailAddressId}`,
-    );
-
-    const label = emailAddressResult.rows[0].label;
-    const emailAddress = emailAddressResult.rows[0].email_address;
-    const defaultFlag = emailAddressResult.rows[0].default_flag;
-
-    context.response.body = render(
-      <CustomerEmailRow
-        customerId={customerId}
-        emailAddress={emailAddress}
-        label={label}
-        emailAddressId={emailAddressId}
-        defaultFlag={defaultFlag}
-      />,
-    );
-  })
-  .delete("/email-addresses/:emailAddressId", async (context) => {
-    const tenantId = context.state.tenantId as string;
-    const emailAddressId = context.params.emailAddressId as string;
-
-    using client = await dbPool.connect();
-    await client.queryObject(
-      `DELETE FROM email_address WHERE tenant_id = '${tenantId}' AND id = ${emailAddressId}`,
-    );
-
-    context.response.body = "";
   })
   .get("/main/edit", async (context) => {
     const tenantId = context.state.tenantId as string;
@@ -351,6 +217,47 @@ routerCustomer
           customer={customer}
           emailAddresses={emailAddresses}
         />
+      </>,
+    );
+  })
+  .post("/phone-number-new", async (context) => {
+    const tenantId = context.state.tenantId as string;
+    const customerId = context.params.customerId as string;
+
+    const data = await context.request.body.form();
+    const label = data.get("label");
+    const phoneNumber = data.get("phoneNumber");
+
+    using client2 = await dbPool.connect();
+
+    const countResult = await client2.queryObject(
+      `SELECT COUNT (id) FROM email_address WHERE tenant_id = '${tenantId}' AND customer_id = ${customerId}`,
+    );
+
+    let phoneNumberDefault = "FALSE";
+
+    if (countResult.rows[0].count === 0n) {
+      console.log("make this one default");
+      phoneNumberDefault = "TRUE";
+    }
+
+    using client = await dbPool.connect();
+    await client.queryObject(
+      `INSERT INTO phone_number (tenant_id, customer_id, label, phone_number, default_flag, dialcode) VALUES ('${tenantId}', ${customerId}, '${label}', '${phoneNumber}', ${phoneNumberDefault}, '44')`,
+    );
+    const phoneNumberIdResult = await client.queryArray`SELECT LASTVAL()`;
+    const phoneNumberId = phoneNumberIdResult.rows[0][0];
+
+    context.response.body = render(
+      <>
+        <CustomerPhoneNumberRow
+          label={label}
+          emailAddress={phoneNumber}
+          customerId={customerId}
+          phoneNumberId={phoneNumberId}
+          defaultFlag={phoneNumberDefault === "TRUE"}
+        />
+        <CustomerPhoneNumberLastRow customerId={customerId} />
       </>,
     );
   });

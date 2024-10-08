@@ -1,7 +1,7 @@
 export default function Head() {
   return (
     <head>
-      <title>Bigshelf</title>
+      <title>Room Flow</title>
       <link
         href="https://cdn.jsdelivr.net/npm/daisyui@4.11.1/dist/full.min.css"
         rel="stylesheet"

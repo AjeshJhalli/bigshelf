@@ -1,7 +1,7 @@
 import classNames from "https://deno.land/x/classnames@0.1.1/index.ts";
 
 export default function Customer(
-  { oob = false, customer, emailAddresses },
+  { oob = false, customer, emailAddresses, phoneNumbers },
 ) {
   return (
     <div
@@ -16,35 +16,59 @@ export default function Customer(
               customerId={customer.id}
               name={customer.name}
               defaultEmail={emailAddresses.find((email) => email.default_flag)
-                .email_address}
+                ?.email_address}
             />
           </div>
         </div>
         <div class="divider" />
-        <div class="overflow-auto">
-          <h2 class="text-md font-bold mb-4 px-3">Emails</h2>
-          <table class="table table-fixed mb-4">
-            <thead>
-              <tr>
-                <th>Name</th>
-                <th>Email</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {emailAddresses.map((record) => (
-                <CustomerEmailRow
-                  label={record.label}
-                  emailAddress={record.email_address}
-                  customerId={record.customer_id}
-                  emailAddressId={record.id}
-                  defaultFlag={record.default_flag}
-                />
-              ))}
-              <CustomerEmailLastRow customerId={customer.id} />
-            </tbody>
-          </table>
-        </div>
+
+        <h2 class="text-md font-bold mb-4 px-3">Emails</h2>
+        <table class="table table-fixed">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {emailAddresses.map((record) => (
+              <CustomerEmailRow
+                label={record.label}
+                emailAddress={record.email_address}
+                customerId={record.customer_id}
+                emailAddressId={record.id}
+                defaultFlag={record.default_flag}
+              />
+            ))}
+            <CustomerEmailLastRow customerId={customer.id} />
+          </tbody>
+        </table>
+
+        <div class="divider" />
+
+        <h2 class="text-md font-bold mb-4 px-3">Phone Numbers</h2>
+        <table class="table table-fixed">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone Number</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {phoneNumbers?.map((record) => (
+              <CustomerPhoneNumberRow
+                label={record.label}
+                emailAddress={record.email_address}
+                customerId={record.customer_id}
+                emailAddressId={record.id}
+                defaultFlag={record.default_flag}
+              />
+            ))}
+            <CustomerPhoneNumberLastRow customerId={customer.id} />
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -99,7 +123,7 @@ export function CustomerNameForm(
           name="customerName"
         />
         <span class="font-bold text-gray-400 text-sm">Email</span>
-        <select name="emailAddress">
+        <select class="select select-sm select-bordered" name="emailAddress">
           {emailAddresses.map((email) => (
             <option value={email.id} selected={email.default_flag}>
               {email.email_address}
@@ -141,7 +165,7 @@ export function CustomerEmailRow(
         className={classNames("hover:bg-base-200 hover:cursor-pointer", {
           "font-bold text-primary": defaultFlag,
         })}
-        hx-get={`/customers/${customerId}/email-addresses/${emailAddressId}/edit`}
+        hx-get={`/email-addresses/${emailAddressId}/edit`}
         hx-swap="outerHTML"
         hx-target="closest tr"
       >
@@ -151,7 +175,7 @@ export function CustomerEmailRow(
         className={classNames("hover:bg-base-200 hover:cursor-pointer", {
           "font-bold": defaultFlag,
         })}
-        hx-get={`/customers/${customerId}/email-addresses/${emailAddressId}/edit`}
+        hx-get={`/email-addresses/${emailAddressId}/edit`}
         hx-swap="outerHTML"
         hx-target="closest tr"
       >
@@ -173,7 +197,7 @@ export function CustomerEmailRow(
           >
             <li>
               <a
-                hx-post={`/customers/${customerId}/email-addresses/${emailAddressId}/make-default`}
+                hx-post={`/email-addresses/${emailAddressId}/make-default`}
                 hx-target="#module-container"
               >
                 Make default
@@ -181,7 +205,68 @@ export function CustomerEmailRow(
             </li>
             <li>
               <a
-                hx-delete={`/customers/${customerId}/email-addresses/${emailAddressId}`}
+                hx-delete={`/email-addresses/${emailAddressId}`}
+                hx-confirm="Are you sure you want to delete this email address?"
+                hx-target="closest tr"
+                hx-swap="outerHTML"
+              >
+                Delete
+              </a>
+            </li>
+          </ul>
+        </div>
+      </td>
+    </tr>
+  );
+}
+
+export function CustomerPhoneNumberRow(
+  { label, phoneNumber, customerId, phoneNumberId, defaultFlag },
+) {
+  return (
+    <tr>
+      <td
+        className={classNames("hover:bg-base-200 hover:cursor-pointer", {
+          "font-bold text-primary": defaultFlag,
+        })}
+        hx-get={`/customers/${customerId}/email-addresses/${phoneNumberId}/edit`}
+        hx-swap="outerHTML"
+        hx-target="closest tr"
+      >
+        {label}
+      </td>
+      <td
+        className={classNames("hover:bg-base-200 hover:cursor-pointer", {
+          "font-bold": defaultFlag,
+        })}
+        hx-get={`/customers/${customerId}/phone-numbers/${phoneNumberId}/edit`}
+        hx-swap="outerHTML"
+        hx-target="closest tr"
+      >
+        <a
+          className={classNames({ "text-primary": defaultFlag })}
+        >
+          {phoneNumber}
+        </a>
+      </td>
+      <td className="flex justify-end">
+        <div className="dropdown dropdown-end">
+          <div tabIndex={0} role="button" className="btn btn-xs">Options</div>
+          <ul
+            tabIndex={0}
+            className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow-lg"
+          >
+            <li>
+              <a
+                hx-post={`/customers/${customerId}/email-addresses/${phoneNumberId}/make-default`}
+                hx-target="#module-container"
+              >
+                Make default
+              </a>
+            </li>
+            <li>
+              <a
+                hx-delete={`/customers/${customerId}/email-addresses/${phoneNumberId}`}
                 hx-confirm="Are you sure you want to delete this email address?"
                 hx-target="closest tr"
                 hx-swap="outerHTML"
@@ -263,6 +348,27 @@ export function CustomerEmailLastRow({ customerId }) {
           class="btn btn-sm btn-primary"
           hx-get={`/customers/${customerId}/email-new-row-form`}
           hx-target="#customer-emails-bottom-row"
+          hx-swap="outerHTML"
+        >
+          New
+        </button>
+      </td>
+    </tr>
+  );
+}
+
+export function CustomerPhoneNumberLastRow({ customerId }) {
+  return (
+    <tr id="customer-phone-number-bottom-row">
+      <td>
+      </td>
+      <td>
+      </td>
+      <td class="flex justify-end">
+        <button
+          class="btn btn-sm btn-primary"
+          hx-get={`/customers/${customerId}/phone-number-new-row-form`}
+          hx-target="#customer-phone-number-bottom-row"
           hx-swap="outerHTML"
         >
           New
