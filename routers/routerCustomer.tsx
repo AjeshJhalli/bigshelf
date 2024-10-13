@@ -8,6 +8,7 @@ import Customer, {
   CustomerNameForm,
   CustomerPhoneNumberLastRow,
   CustomerPhoneNumberRow,
+  CustomerTabs,
 } from "../pages/Customer/Customer.jsx";
 import { getCustomer } from "../data/customer.ts";
 import Breadcrumbs from "../components/Breadcrumbs.tsx";
@@ -220,46 +221,21 @@ routerCustomer
       </>,
     );
   })
-  .post("/phone-number-new", async (context) => {
+  .get("/email-addresses", async (context) => {
     const tenantId = context.state.tenantId as string;
     const customerId = context.params.customerId as string;
 
-    const data = await context.request.body.form();
-    const label = data.get("label");
-    const phoneNumber = data.get("phoneNumber");
-
-    using client2 = await dbPool.connect();
-
-    const countResult = await client2.queryObject(
-      `SELECT COUNT (id) FROM email_address WHERE tenant_id = '${tenantId}' AND customer_id = ${customerId}`,
-    );
-
-    let phoneNumberDefault = "FALSE";
-
-    if (countResult.rows[0].count === 0n) {
-      console.log("make this one default");
-      phoneNumberDefault = "TRUE";
-    }
-
     using client = await dbPool.connect();
-    await client.queryObject(
-      `INSERT INTO phone_number (tenant_id, customer_id, label, phone_number, default_flag, dialcode) VALUES ('${tenantId}', ${customerId}, '${label}', '${phoneNumber}', ${phoneNumberDefault}, '44')`,
+    const emailAddressesResult = await client.queryObject(
+      `SELECT label, email_address, id, customer_id, default_flag FROM email_address WHERE tenant_id = '${tenantId}' AND customer_id = ${customerId} ORDER BY default_flag DESC, creation_timestamp ASC`,
     );
-    const phoneNumberIdResult = await client.queryArray`SELECT LASTVAL()`;
-    const phoneNumberId = phoneNumberIdResult.rows[0][0];
 
-    context.response.body = render(
-      <>
-        <CustomerPhoneNumberRow
-          label={label}
-          emailAddress={phoneNumber}
-          customerId={customerId}
-          phoneNumberId={phoneNumberId}
-          defaultFlag={phoneNumberDefault === "TRUE"}
-        />
-        <CustomerPhoneNumberLastRow customerId={customerId} />
-      </>,
-    );
+    context.response.body = render(<CustomerTabs customerId={customerId} tabName="emails" records={emailAddressesResult.rows} />)
+  })
+  .get("/phone-numbers", (context) => {
+    // const tenantId = context.state.tenantId as string;
+    const customerId = context.params.customerId as string;
+    context.response.body = render(<CustomerTabs customerId={customerId} tabName="phone-numbers" records={[]} />)
   });
 
 export default routerCustomer;

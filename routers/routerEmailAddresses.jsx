@@ -1,7 +1,6 @@
 import { render } from "https://cdn.skypack.dev/preact-render-to-string@v5.1.12";
 import { Router } from "jsr:@oak/oak/router";
 import Customer, {
-  CustomerEmailLastRow,
   CustomerEmailRow,
   CustomerEmailRowForm,
 } from "../pages/Customer/Customer.jsx";
@@ -98,9 +97,12 @@ routerEmailAddresses
     const customer = await getCustomer(tenantId, customerId);
     if (!customer) return;
 
-    const emailAddressesResult = await client.queryObject(
-      `SELECT label, email_address, id, customer_id, default_flag FROM email_address WHERE tenant_id = '${tenantId}' AND customer_id = ${customerId} ORDER BY default_flag DESC, creation_timestamp ASC`,
-    );
+    const emailAddressesResult = await client.queryObject(`
+      SELECT label, email_address, id, default_flag
+      FROM email_address
+      WHERE tenant_id = '${tenantId}' AND customer_id = ${customerId}
+      ORDER BY default_flag DESC, creation_timestamp ASC
+    `);
 
     const emailAddresses = emailAddressesResult.rows;
 

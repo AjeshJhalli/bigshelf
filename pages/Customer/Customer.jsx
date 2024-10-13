@@ -20,58 +20,89 @@ export default function Customer(
             />
           </div>
         </div>
-        <div class="divider" />
-
-        <h2 class="text-md font-bold mb-4 px-3">Emails</h2>
-        <table class="table table-fixed">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {emailAddresses.map((record) => (
-              <CustomerEmailRow
-                label={record.label}
-                emailAddress={record.email_address}
-                customerId={record.customer_id}
-                emailAddressId={record.id}
-                defaultFlag={record.default_flag}
-              />
-            ))}
-            <CustomerEmailLastRow customerId={customer.id} />
-          </tbody>
-        </table>
-
-        <div class="divider" />
-
-        <h2 class="text-md font-bold mb-4 px-3">Phone Numbers</h2>
-        <table class="table table-fixed">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Phone Number</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {phoneNumbers?.map((record) => (
-              <CustomerPhoneNumberRow
-                label={record.label}
-                emailAddress={record.email_address}
-                customerId={record.customer_id}
-                emailAddressId={record.id}
-                defaultFlag={record.default_flag}
-              />
-            ))}
-            <CustomerPhoneNumberLastRow customerId={customer.id} />
-          </tbody>
-        </table>
+        <CustomerTabs
+          customerId={customer.id}
+          tabName="emails"
+          records={emailAddresses}
+        />
       </div>
     </div>
   );
+}
+
+export function CustomerTabs({ customerId, tabName, records }) {
+  return (
+    <div id="customer-tabs" role="tablist" className="tabs tabs-bordered">
+      <a
+        hx-get={`/customers/${customerId}/email-addresses`}
+        hx-target="#customer-tabs"
+        hx-swap="outerHTML"
+        name="my_tabs_1"
+        role="tab"
+        className={classNames("tab", { "tab-active": tabName === "emails" })}
+      >
+        Emails
+      </a>
+      <div
+        role="tabpanel"
+        className="tab-content py-6"
+      >
+        {tabName === "emails" && (
+          <TabEmailAddresses customerId={customerId} emailAddresses={records} />
+        )}
+      </div>
+      <a
+        hx-get={`/customers/${customerId}/phone-numbers`}
+        hx-target="#customer-tabs"
+        hx-swap="outerHTML"
+        name="my_tabs_1"
+        role="tab"
+        className={classNames("tab w-40", {
+          "tab-active": tabName === "phone-numbers",
+        })}
+      >
+        Phone Numbers
+      </a>
+      <div
+        role="tabpanel"
+        className="tab-content py-6"
+      >
+        {tabName === "phone-numbers" && (
+          <TabPhoneNumbers customerId={customerId} phoneNumbers={records} />
+        )}
+      </div>
+    </div>
+  );
+}
+
+function TabEmailAddresses({ customerId, emailAddresses }) {
+  return (
+    <table class="table table-fixed">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {emailAddresses.map((record) => (
+          <CustomerEmailRow
+            label={record.label}
+            emailAddress={record.email_address}
+            customerId={customerId}
+            emailAddressId={record.id}
+            defaultFlag={record.default_flag}
+          />
+        ))}
+        <CustomerEmailLastRow customerId={customerId} />
+      </tbody>
+    </table>
+  );
+}
+
+function TabPhoneNumbers({ customerId, phoneNumbers }) {
+  return <div>I am the phone numbers tab</div>;
 }
 
 export function CustomerMain({ customerId, name, defaultEmail }) {
