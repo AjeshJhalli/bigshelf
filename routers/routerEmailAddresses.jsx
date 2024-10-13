@@ -26,10 +26,10 @@ routerEmailAddresses
 
     context.response.body = render(
       <CustomerEmailRowForm
-        cancelHref={`/customers/0/email-addresses/${emailAddressId}`}
+        cancelHref={`/email-addresses/${emailAddressId}`}
         label={label}
         emailAddress={emailAddress}
-        saveHref={`/customers/0/email-addresses/${emailAddressId}/edit`}
+        saveHref={`/email-addresses/${emailAddressId}/edit`}
       />,
     );
   })

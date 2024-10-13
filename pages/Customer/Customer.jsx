@@ -193,22 +193,16 @@ export function CustomerEmailRow(
   return (
     <tr>
       <td
-        className={classNames("hover:bg-base-200 hover:cursor-pointer", {
+        className={classNames({
           "font-bold text-primary": defaultFlag,
         })}
-        hx-get={`/email-addresses/${emailAddressId}/edit`}
-        hx-swap="outerHTML"
-        hx-target="closest tr"
       >
         {label}
       </td>
       <td
-        className={classNames("hover:bg-base-200 hover:cursor-pointer", {
+        className={classNames({
           "font-bold": defaultFlag,
         })}
-        hx-get={`/email-addresses/${emailAddressId}/edit`}
-        hx-swap="outerHTML"
-        hx-target="closest tr"
       >
         <a
           className={classNames({
@@ -226,6 +220,15 @@ export function CustomerEmailRow(
             tabIndex={0}
             className="dropdown-content menu bg-base-100 rounded-box z-[1] w-52 p-2 shadow-lg"
           >
+            <li>
+              <a
+                hx-get={`/email-addresses/${emailAddressId}/edit`}
+                hx-target="closest tr"
+                hx-swap="outerHTML"
+              >
+                Edit
+              </a>
+            </li>
             <li>
               <a
                 hx-post={`/email-addresses/${emailAddressId}/make-default`}
@@ -257,22 +260,16 @@ export function CustomerPhoneNumberRow(
   return (
     <tr>
       <td
-        className={classNames("hover:bg-base-200 hover:cursor-pointer", {
+        className={classNames({
           "font-bold text-primary": defaultFlag,
         })}
-        hx-get={`/customers/${customerId}/email-addresses/${phoneNumberId}/edit`}
-        hx-swap="outerHTML"
-        hx-target="closest tr"
       >
         {label}
       </td>
       <td
-        className={classNames("hover:bg-base-200 hover:cursor-pointer", {
+        className={classNames({
           "font-bold": defaultFlag,
         })}
-        hx-get={`/customers/${customerId}/phone-numbers/${phoneNumberId}/edit`}
-        hx-swap="outerHTML"
-        hx-target="closest tr"
       >
         <a
           className={classNames({ "text-primary": defaultFlag })}
