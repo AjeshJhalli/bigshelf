@@ -188,7 +188,7 @@ export function CustomerNameForm(
 }
 
 export function CustomerEmailRow(
-  { label, emailAddress, customerId, emailAddressId, defaultFlag },
+  { label, emailAddress, emailAddressId, defaultFlag },
 ) {
   return (
     <tr>

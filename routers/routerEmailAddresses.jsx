@@ -127,10 +127,11 @@ routerEmailAddresses
     const tenantId = context.state.tenantId;
     const emailAddressId = context.params.emailAddressId;
 
+    using client3 = await dbPool.connect();
     const customerIdResponse = await client3.queryArray(`
       SELECT customer_id
       FROM email_address
-      WHERE tenant_id = '${tenantId}' AND id = ${id}
+      WHERE tenant_id = '${tenantId}' AND id = ${emailAddressId}
     `);
 
     const customerId = customerIdResponse.rows[0][0];
