@@ -86,7 +86,10 @@ routerCustomer
 
     using client = await dbPool.connect();
     await client.queryObject(
-      `INSERT INTO email_address (tenant_id, customer_id, label, email_address, default_flag) VALUES ('${tenantId}', ${customerId}, '${label}', '${emailAddress}', ${emailDefault})`,
+      `INSERT INTO email_address
+      (tenant_id, customer_id, label, email_address, default_flag)
+      VALUES ($1, $2, $3, $4, $5)`,
+      [tenantId, customerId, label, emailAddress, emailDefault]
     );
     const emailAddressIdResult = await client.queryArray`SELECT LASTVAL()`;
 

@@ -102,7 +102,7 @@ function TabEmailAddresses({ customerId, emailAddresses }) {
 }
 
 function TabPhoneNumbers({ customerId, phoneNumbers }) {
-  return <div>I am the phone numbers tab</div>;
+  return <div>Phone numbers coming soon</div>;
 }
 
 export function CustomerMain({ customerId, name, defaultEmail }) {
@@ -120,8 +120,8 @@ export function CustomerMain({ customerId, name, defaultEmail }) {
         <a class="link text-blue-500" href={`mailto:${defaultEmail}`}>
           {defaultEmail}
         </a>
-        <span class="font-bold text-gray-400 text-sm">Phone Number</span>
-        <span>+44 7488 290928</span>
+        {/* <span class="font-bold text-gray-400 text-sm">Phone Number</span> */}
+        {/* <span>+44 7488 290928</span> */}
       </div>
       <div className="card-actions justify-end">
         <button
@@ -161,12 +161,12 @@ export function CustomerNameForm(
             </option>
           ))}
         </select>
-        <span class="font-bold text-gray-400 text-sm">Phone Number</span>
+        {/* <span class="font-bold text-gray-400 text-sm">Phone Number</span>
         <input
           class="input input-sm input-bordered"
           value="+44 7488 290928"
           name="phoneNumber"
-        />
+        /> */}
       </div>
       <div className="card-actions justify-end">
         <button
